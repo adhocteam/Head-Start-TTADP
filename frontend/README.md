@@ -8,6 +8,18 @@ This project uses [docker](https://docs.docker.com/get-docker/) and [make](https
  2. Run `make init`. This will build the development docker image and install the project's dependencies
  3. Run `make start`. This fires up a development server that reloads with code updates
 
+Almost all make targets just call `yarn ...`, minus the integration tests which spin up a server first. Feel free to use `yarn` commands if you are more comfortable doing so.
+
+### Developing On Windows
+
+There is an extra step you'll need to take to use the makefile when developing on windows. In the scripts folder there is a script called `win-dev.ps1`. This powershell script does three things.
+
+ 1. It builds a docker image based on the [Docker in Docker image](https://hub.docker.com/_/docker), installing `make` along the way
+ 2. It fires up a container of the image built in step #1, binding in the frontend code in the `/app` directory
+ 3. Shells into the container that started in step #2
+
+At this point you should be able to run `make init`, `make start` and browse to `localhost:3000` to see the running app.
+
 ### Other Targets
 
 | Target | Description |
