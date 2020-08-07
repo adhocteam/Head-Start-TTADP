@@ -29,11 +29,13 @@ Almost all make targets just call `yarn ...`, minus the integration tests which 
 | `make zap` | - | Run `script/zap.sh` which launches [zap](https://www.zaproxy.org/) against a production bundle. Outputs a report to `reports/zap.html` |
 | `make accessibility` | - | Run `script/accessibility.sh` which runs [pa11y-ci](https://github.com/pa11y/pa11y-ci) against a production build |
 
-### Docker On Windows
+### Docker On Windows (WORK IN PROGRESS)
 
-There is an extra step you'll need to take to use the makefile when developing on windows. In the root directory there is a script called `win-dev.ps1`. This powershell script does three things.
+Note that this process has not been extensively tested on windows. I would suggest using the yarn commands on windows instead of trying to get docker working, unless you feel like tinkering with docker and windows. For some reason the `docker build` command when ran from the Docker in Docker (DIND) image takes a **long** time to run. The same `docker build` command from the windows host runs fast. If you are trying to get DIND working on windows that seems like a place to start digging in.
 
- 1. It builds a docker image based on the [Docker in Docker image](https://hub.docker.com/_/docker), installing `make` along the way
+There is an extra step you'll need to take to use the makefile when developing on windows. In the root directory there is a script called `win-dev.ps1`. This powershell script does three things:
+
+ 1. It builds a docker image based on the [DIND image](https://hub.docker.com/_/docker), installing `make` along the way
  2. It fires up a container of the image built in step #1, binding in the frontend code in the `/app` directory
  3. Shells into the container that started in step #2
 
