@@ -45,7 +45,11 @@
       "global": {
         "lines": 90
       }
-    }
+    },
+    "coveragePathIgnorePatterns" : [
+      "<rootDir>/src/serviceWorker.js",
+      "<rootDir>/src/index.js"
+    ]
   },
   "browserslist": {
     "production": [
