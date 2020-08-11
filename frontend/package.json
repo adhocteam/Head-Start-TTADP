@@ -46,7 +46,7 @@
         "lines": 90
       }
     },
-    "coveragePathIgnorePatterns" : [
+    "coveragePathIgnorePatterns": [
       "<rootDir>/src/serviceWorker.js",
       "<rootDir>/src/index.js"
     ]

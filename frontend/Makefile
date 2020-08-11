@@ -84,9 +84,11 @@ test-ci:
 lint-ci:
 	$(BASH_CI) "yarn eslint -f junit -o reports/lint.xml src"
 
+# Per https://classic.yarnpkg.com/en/docs/cli/audit/ exit codes of 4 or greater mean there is
+# a moderate or higher vulnerability
 .PHONY: audit
 audit:
-	$(BASH) "yarn audit --level moderate"
+	$(BASH) "yarn audit --level moderate; [[ $$? -ge 4 ]] && exit 1 || exit 0"
 
 .PHONY: up-integration
 up-integration: export DOCKER_IMAGE := $(DOCKER_IMAGE)
