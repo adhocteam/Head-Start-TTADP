@@ -4277,6 +4277,11 @@ eslint-config-react-app@^5.2.1:
   dependencies:
     confusing-browser-globals "^1.0.9"
 
+eslint-formatter-multiple@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-formatter-multiple/-/eslint-formatter-multiple-1.0.0.tgz#223db63a682038b001763c5d36d32975be4bdbb3"
+  integrity sha512-0Jv8gn7LmXj9c20E9BNAI1Wn3Lxw2v3nCvYRpk30kBLhc3wBees6DIXkJgaY2hoeOjvSq8n4peQ6KJstk5gmKQ==
+
 eslint-import-resolver-node@^0.3.2, eslint-import-resolver-node@^0.3.3:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-node/-/eslint-import-resolver-node-0.3.4.tgz#85ffa81942c25012d8231096ddf679c03042c717"
