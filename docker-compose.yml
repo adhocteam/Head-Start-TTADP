@@ -6,8 +6,6 @@ services:
       dockerfile: Dockerfile.dev
     command: yarn server
     user: ${CURRENT_USER:-root}
-    env_file:
-      - .env
     ports:
       - "8080:8080"
     volumes:
@@ -18,8 +16,6 @@ services:
       dockerfile: Dockerfile.dev
     command: yarn start
     user: ${CURRENT_USER:-root}
-    env_file:
-      - .env
     stdin_open: true
     ports:
       - "3000:3000"
