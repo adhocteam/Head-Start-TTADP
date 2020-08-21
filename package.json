@@ -7,6 +7,7 @@
     "deps": "yarn install && yarn --cwd frontend install",
     "start": "concurrently \"yarn server\" \"yarn client\"",
     "server": "nodemon src/index.js --ignore './frontend/' --exec babel-node",
+    "server:debug": "nodemon src/index.js --ignore './frontend/' --exec babel-node --inspect=0.0.0.0:9229",
     "client": "yarn --cwd frontend start",
     "test": "jest src && yarn --cwd frontend test --watchAll=false",
     "eslint": "eslint src",
@@ -53,6 +54,7 @@
     "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "concurrently": "^5.3.0",
+    "depcheck": "^1.2.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
@@ -65,10 +67,10 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
+    "axios": "^0.20.0",
+    "client-oauth2": "^4.3.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "helmet": "^4.1.0",
-    "passport": "^0.4.1",
-    "passport-oauth2": "^1.5.0"
+    "helmet": "^4.1.0"
   }
 }
