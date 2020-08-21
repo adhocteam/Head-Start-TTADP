@@ -9,6 +9,8 @@ jobs:
       - checkout
       - run: yarn deps
       - run: yarn run lint:ci
+      - store_artifacts:
+          path: reports/lint/
       - run: yarn run test:ci
       - store_test_results:
-          path: reports
+          path: reports/test/
