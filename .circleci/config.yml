@@ -8,9 +8,15 @@ jobs:
     steps:
       - checkout
       - run: yarn deps
-      - run: yarn run lint:ci
+      - run: yarn run lint:ci && yarn run test:ci
       - store_artifacts:
           path: reports/lint/
-      - run: yarn run test:ci
       - store_test_results:
           path: reports/test/
+      - run: cd frontend && yarn run lint:ci && yarn run test:ci && cd ..
+      - store_artifacts:
+          path: frontend/reports/lint/
+          destination: reports/lint/
+      - store_test_results:
+          path: frontend/reports/test/
+          destination: reports/test/
