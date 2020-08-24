@@ -16,6 +16,8 @@ jobs:
   lint:
     executor: docker-executor
     steps:
+      - run: pwd
+      - run: ls -la
       - run:
           name: lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
@@ -26,6 +28,8 @@ jobs:
   test:
     executor: docker-executor
     steps:
+      - run: pwd
+      - run: ls -la
       - run:
           name: test backend and frontend
           command: yarn run test:ci && cd frontend && yarn run test:ci
