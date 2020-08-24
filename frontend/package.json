@@ -11,6 +11,9 @@
     "react-scripts": "3.4.1",
     "uswds": "^2.8.1"
   },
+  "engines": {
+    "node": "^12"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
