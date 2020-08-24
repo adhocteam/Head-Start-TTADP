@@ -4,15 +4,17 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node:12.18.3
     steps:
       - checkout
       - run: yarn deps
+      # lint and test backend
       - run: yarn run lint:ci && yarn run test:ci
       - store_artifacts:
           path: reports/lint/
       - store_test_results:
           path: reports/test/
+      # lint and test frontend
       - run: cd frontend && yarn run lint:ci && yarn run test:ci && cd ..
       - store_artifacts:
           path: frontend/reports/lint/
