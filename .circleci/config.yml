@@ -13,9 +13,6 @@ jobs:
     steps:
       - checkout
       - run: yarn deps
-  lint:
-    executor: docker-executor
-    steps:
       - run: pwd
       - run: ls -la
       - run:
