@@ -24,6 +24,8 @@ jobs:
           path: frontend/reports/lint/
       - persist_to_workspace:
           root: .
+          paths:
+            - .
   test:
     executor: docker-executor
     steps:
