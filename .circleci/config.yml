@@ -13,8 +13,15 @@ jobs:
     steps:
       - checkout
       - run: yarn deps
-      - run: pwd
-      - run: ls -la
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  lint_backend_and_frontend:
+    executor: docker-executor
+    steps:
+      - attach_workspace:
+          at: .
       - run:
           name: lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
@@ -22,28 +29,36 @@ jobs:
           path: reports/lint/
       - store_artifacts:
           path: frontend/reports/lint/
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-  test:
+  test_backend:
     executor: docker-executor
     steps:
       - attach_workspace:
           at: .
-      - run: pwd
-      - run: ls -la
       - run:
-          name: test backend and frontend
-          command: yarn run test:ci && cd frontend && yarn run test:ci
+          name: test backend
+          command: yarn run test:ci
       - store_test_results:
           path: reports/test/
+  test_frontend:
+    executor: docker-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: test frontend
+          command: cd frontend && yarn run test:ci
       - store_test_results:
           path: frontend/reports/test/
 workflows:
   build_and_test:
     jobs:
       - build
-      - test:
+      - lint_backend_and_frontend:
+          requires:
+            - build
+      - test_backend:
+          requires:
+            - build
+      - test_frontend:
           requires:
             - build
