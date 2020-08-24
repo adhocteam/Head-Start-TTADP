@@ -1,24 +1,45 @@
 version: 2.1
 orbs:
   node: circleci/node@4.0.0
-jobs:
-  build:
+executors:
+  docker-executor:
+    # for docker you must specify an image to use for the primary container
     docker:
       - image: circleci/node:12.18.3
+jobs:
+  build:
+    # Each job must declare an executor
+    executor: docker-executor
     steps:
       - checkout
       - run: yarn deps
-      # lint and test backend
-      - run: yarn run lint:ci && yarn run test:ci
+  lint:
+    executor: docker-executor
+    steps:
+      - run:
+          name: lint backend and frontend
+          command: yarn run lint:ci && cd frontend && yarn run lint:ci
       - store_artifacts:
           path: reports/lint/
-      - store_test_results:
-          path: reports/test/
-      # lint and test frontend
-      - run: cd frontend && yarn run lint:ci && yarn run test:ci && cd ..
       - store_artifacts:
           path: frontend/reports/lint/
-          destination: reports/lint/
+  test:
+    executor: docker-executor
+    steps:
+      - run:
+          name: test backend and frontend
+          command: yarn run test:ci && cd frontend && yarn run test:ci
+      - store_test_results:
+          path: reports/test/
       - store_test_results:
           path: frontend/reports/test/
-          destination: reports/test/
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - lint:
+        requires:
+          - build
+      - test:
+        requires:
+          - build
