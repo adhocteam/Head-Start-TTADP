@@ -10,7 +10,26 @@ export const hsesAuth = new ClientOAuth2({
   scopes: ['user_info'],
 });
 
-// Placeholder to add any auth logic
+/**
+ * Authentication Middleware
+ *
+ * This middleware handles user authentication using the request session
+ * uid that gets set after successful login via HSES. Non-authenticated
+ * users who attempt to access a page that requires authentication will be
+ * redirected to the HSES login page.
+ * @param {*} req - request
+ * @param {*} res - response
+ * @param {*} next - next middleware
+ */
+
 export default async function authMiddleware(req, res, next) {
-  next();
+  req.session.originalUrl = req.originalUrl;
+  if (!req.session.userId) {
+    req.session.originalUrl = req.originalUrl; // save the url
+    const uri = hsesAuth.code.getUri();
+
+    res.redirect(uri);
+  } else {
+    next();
+  }
 }
