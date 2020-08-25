@@ -38,7 +38,9 @@ jobs:
           name: Test backend
           command: yarn run test:ci
       - store_test_results:
-          path: reports/
+          path: reports/unit.xml
+      - store_artifacts:
+          path: reports/coverage/
   test_frontend:
     executor: docker-executor
     steps:
