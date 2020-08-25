@@ -23,7 +23,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: lint backend and frontend
+          name: Lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
       - store_artifacts:
           path: reports
@@ -35,7 +35,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test backend
+          name: Test backend
           command: yarn run test:ci
       - store_test_results:
           path: reports/
@@ -45,7 +45,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test frontend
+          name: Test frontend
           command: cd frontend && yarn run test:ci
       - store_test_results:
           path: frontend/reports/
