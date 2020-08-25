@@ -9,7 +9,7 @@
     "server": "nodemon src/index.js --ignore './frontend/' --exec babel-node",
     "client": "yarn --cwd frontend start",
     "test": "jest src",
-    "test:ci": "cross-env JEST_JUNIT_OUTPUT_DIR=reports/test/ JEST_JUNIT_OUTPUT_NAME=unit.xml CI=true jest src --coverage --coverageDirectory=reports/coverage/ --reporters=default --reporters=jest-junit",
+    "test:ci": "cross-env JEST_JUNIT_OUTPUT_DIR=reports JEST_JUNIT_OUTPUT_NAME=unit.xml CI=true jest src --coverage --reporters=default --reporters=jest-junit",
     "test:all": "yarn test:ci && yarn --cwd frontend test:ci",
     "lint": "eslint src",
     "lint:ci": "eslint -f eslint-formatter-multiple src",
