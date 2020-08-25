@@ -26,9 +26,9 @@ jobs:
           name: lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
       - store_artifacts:
-          path: reports/lint/
+          path: reports
       - store_artifacts:
-          path: frontend/reports/lint/
+          path: frontend/reports
   test_backend:
     executor: docker-executor
     steps:
@@ -38,7 +38,7 @@ jobs:
           name: test backend
           command: yarn run test:ci
       - store_test_results:
-          path: reports/test/
+          path: reports/
   test_frontend:
     executor: docker-executor
     steps:
@@ -48,7 +48,7 @@ jobs:
           name: test frontend
           command: cd frontend && yarn run test:ci
       - store_test_results:
-          path: frontend/reports/test/
+          path: frontend/reports/
 workflows:
   build_and_test:
     jobs:
