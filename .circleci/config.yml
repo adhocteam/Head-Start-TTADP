@@ -38,7 +38,7 @@ jobs:
           name: Test backend
           command: yarn run test:ci
       - store_test_results:
-          path: reports/unit.xml
+          path: reports/test/
       - store_artifacts:
           path: reports/coverage/
   test_frontend:
