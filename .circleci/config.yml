@@ -40,7 +40,7 @@ jobs:
       - store_test_results:
           path: reports/
       - store_artifacts:
-          path: coverage/
+          path: coverage/lcov-report
   test_frontend:
     executor: docker-executor
     steps:
