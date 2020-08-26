@@ -1,4 +1,4 @@
-# 3. Configuration
+# 3. Configuration By Environment Variable
 
 Date: 2020-08-25
 
