@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Office of Head Start Training & Technical Assistance Data Platform\r =============================================",
   "main": "index.js",
+  "engines": {
+    "node": "^12.18"
+  },
   "scripts": {
     "deps": "yarn install && yarn --cwd frontend install",
     "start": "concurrently \"yarn server\" \"yarn client\"",
@@ -95,6 +98,9 @@
     "express-unless": "^0.5.0",
     "helmet": "^4.1.0",
     "lodash": "^4.17.20",
-    "memorystore": "^1.6.2"
+    "memorystore": "^1.6.2",
+    "dotenv": "^8.2.0",
+    "express-winston": "^4.0.5",
+    "winston": "^3.3.3"
   }
 }
