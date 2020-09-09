@@ -58,8 +58,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run migrations
-          command: yarn run db:migrate
+          name: Run migrations ci
+          command: yarn run db:migrate:ci
       - run:
           name: Test backend
           command: yarn run test:ci
