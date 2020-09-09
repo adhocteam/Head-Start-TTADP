@@ -7,7 +7,6 @@ executors:
     docker:
       - image: circleci/node:12.18
       - image: circleci/postgres:12.4-ram
-      - image: circleci/postgres:12.4-ram
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
