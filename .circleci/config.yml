@@ -11,6 +11,7 @@ executors:
       - image: circleci/postgres:12.4-ram
         environment:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: secretpass
 jobs:
   build:
     # Each job must declare an executor
