@@ -6,8 +6,8 @@ executors:
     # for docker you must specify an image to use for the primary container
     docker:
       - image: circleci/node:12.18
-      environment:
-        TEST_DATABASE_URL: postgresql://root@localhost/circle_test
+        environment:
+          TEST_DATABASE_URL: postgresql://root@localhost/circle_test
       - image: circleci/postgres:12.4-ram
         environment:
           POSTGRES_USERNAME: postgres
