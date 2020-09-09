@@ -7,10 +7,10 @@ executors:
     docker:
       - image: circleci/node:12.18
         environment:
-          TEST_DATABASE_URL: postgresql://postgres@localhost/circle_test
+          TEST_DATABASE_URL: postgresql://circleci@localhost/circle_test
       - image: circleci/postgres:12.4-ram
         environment:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: circleci
           POSTGRES_PASSWORD: secretpass
 jobs:
   build:
@@ -55,6 +55,9 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Run migrations
+          command: yarn run db:migrate
       - run:
           name: Test backend
           command: yarn run test:ci
