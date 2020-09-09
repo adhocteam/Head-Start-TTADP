@@ -9,10 +9,6 @@ executors:
         environment:
           TEST_DATABASE_URL: postgresql://root@localhost/circle_test
       - image: circleci/postgres:12.4-ram
-        environment:
-          POSTGRES_USERNAME: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: circle_test
 jobs:
   build:
     # Each job must declare an executor
