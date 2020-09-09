@@ -6,6 +6,8 @@ executors:
     # for docker you must specify an image to use for the primary container
     docker:
       - image: circleci/node:12.18
+      environment:
+        TEST_DATABASE_URL: postgresql://root@localhost/circle_test
       - image: circleci/postgres:12.4-ram
         environment:
           POSTGRES_USERNAME: postgres
@@ -18,6 +20,21 @@ jobs:
     steps:
       - checkout
       - run: yarn deps
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client-9.6
+      - run: whoami
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "CREATE TABLE test (name char(25));"
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Jennifer');"
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "SELECT * from test"
       - persist_to_workspace:
           root: .
           paths:
