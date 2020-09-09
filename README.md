@@ -39,7 +39,8 @@ Other Commands
 | `yarn docker:test` | Runs tests for the frontend and backend in docker containers |
 | `yarn docker:lint` | Runs the linter for the frontend and backend in docker containers |
 | `yarn deps` | Install dependencies for the frontend and backend |
-| `yarn start` | Starts the backend and frontend |
+| `yarn start` | Starts the backend (for deployment) |
+| `yarn start:dev` | Starts the backend and frontend (for local development)|
 | `yarn server` | Starts the backend |
 | `yarn client` | Start the frontend |
 | `yarn test` | Run tests for only the backend |

@@ -8,7 +8,8 @@
   },
   "scripts": {
     "deps": "yarn install && yarn --cwd frontend install",
-    "start": "concurrently \"yarn server\" \"yarn client\"",
+    "start:dev": "concurrently \"yarn server\" \"yarn client\"",
+    "start": "yarn ./src/index.js",
     "server": "nodemon src/index.js --ignore './frontend/' --exec babel-node",
     "server:debug": "nodemon src/index.js --ignore './frontend/' --exec babel-node --inspect=0.0.0.0:9229",
     "client": "yarn --cwd frontend start",

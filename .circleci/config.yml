@@ -132,7 +132,7 @@ jobs:
                 name: Push application with prod vars
                 command: cf push --vars-file deployment_config/prod_vars.yml
 workflows:
-  build_test_conditional_deploy:
+  build_test_deploy:
     jobs:
       - build
       - lint:
