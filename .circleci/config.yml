@@ -48,8 +48,6 @@ jobs:
       - run:
           name: Lint backend and frontend
           command: yarn run lint:ci && cd frontend && yarn run lint:ci
-        environment:
-          DATABASE_URL: postgresql://circleci@localhost/circle_test
       - store_artifacts:
           path: reports
       - store_artifacts:
