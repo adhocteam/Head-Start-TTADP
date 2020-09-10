@@ -9,7 +9,8 @@
   "scripts": {
     "deps": "yarn install && yarn --cwd frontend install",
     "start:dev": "concurrently \"yarn server\" \"yarn client\"",
-    "start": "yarn ./src/index.js",
+    "build": "babel src -d ./build/server",
+    "start": "node ./build/server/index.js",
     "server": "nodemon src/index.js --ignore './frontend/' --exec babel-node",
     "server:debug": "nodemon src/index.js --ignore './frontend/' --exec babel-node --inspect=0.0.0.0:9229",
     "client": "yarn --cwd frontend start",
@@ -70,10 +71,11 @@
   },
   "homepage": "https://github.com/adhocteam/Head-Start-TTADP#readme",
   "devDependencies": {
-    "@babel/core": "^7.11.0",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
     "@babel/node": "^7.10.5",
     "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-env": "^7.11.5",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.2",
     "depcheck": "^1.2.0",

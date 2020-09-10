@@ -90,6 +90,12 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Build backend assets
+          command: yarn build
+      - run:
+          name: Build frontend assets
+          command: cd frontend && yarn build
       - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
       - run: sudo dpkg -i cf-cli_amd64.deb
       - run:
