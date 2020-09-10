@@ -6,31 +6,35 @@ executors:
     # for docker you must specify an image to use for the primary container
     docker:
       - image: circleci/node:12.18
+commands:
+  create_combined_yarnlock:
+  description: "Concatenate all yarn.json files into single file.
+    File is used as checksum source for part of caching key."
+  parameters:
+    filename:
+      type: string
+      default: "combined-yarnlock.txt"
+  steps:
+    - run:
+        name: Combine package-lock.json files to single file
+        command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
 jobs:
   build:
     # Each job must declare an executor
     executor: docker-executor
     steps:
       - checkout
+      - create_combined_yarnlock
       - restore_cache:
           keys:
-            - v1-yarn-backend-deps-{{ checksum "yarn.lock" }}
+            - v1-yarn-deps-{{ checksum "combined-yarnlock.txt" }}
             # If no exact match is found, partial cache restore with latest
-            - v1-yarn-backend-deps-
-      - restore_cache:
-          keys:
-            - v1-yarn-frontend-deps-{{ checksum "yarn.lock" }}
-            # If no exact match is found, partial cache restore with latest
-            - v1-yarn-frontend-deps-
+            - v1-yarn-deps-
       - run: yarn deps
       - save_cache:
           paths:
-            - ./node_modules
-          key: v1-yarn-backend-deps-{{ checksum "yarn.lock" }}
-      - save_cache:
-          paths:
-            - ./frontend/node_modules
-          key: v1-yarn-frontend-deps-{{ checksum "yarn.lock" }}
+            - combined-yarnlock.txt
+          key: v1-yarn-deps-{{ checksum "combined-yarnlock.txt" }}
       - persist_to_workspace:
           root: .
           paths:
