@@ -12,7 +12,25 @@ jobs:
     executor: docker-executor
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-yarn-backend-deps-{{ checksum "yarn.lock" }}
+            # If no exact match is found, partial cache restore with latest
+            - v1-yarn-backend-deps-
+      - restore_cache:
+          keys:
+            - v1-yarn-frontend-deps-{{ checksum "yarn.lock" }}
+            # If no exact match is found, partial cache restore with latest
+            - v1-yarn-frontend-deps-
       - run: yarn deps
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v1-yarn-backend-deps-{{ checksum "yarn.lock" }}
+      - save_cache:
+          paths:
+            - ./frontend/node_modules
+          key: v1-yarn-frontend-deps-{{ checksum "yarn.lock" }}
       - persist_to_workspace:
           root: .
           paths:
