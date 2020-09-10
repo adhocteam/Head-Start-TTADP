@@ -8,16 +8,16 @@ executors:
       - image: circleci/node:12.18
 commands:
   create_combined_yarnlock:
-  description: "Concatenate all yarn.json files into single file.
-    File is used as checksum source for part of caching key."
-  parameters:
-    filename:
-      type: string
-      default: "combined-yarnlock.txt"
-  steps:
-    - run:
-        name: Combine package-lock.json files to single file
-        command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
+    description: "Concatenate all yarn.json files into single file.
+      File is used as checksum source for part of caching key."
+    parameters:
+      filename:
+        type: string
+        default: "combined-yarnlock.txt"
+    steps:
+      - run:
+          name: Combine package-lock.json files to single file
+          command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
 jobs:
   build:
     # Each job must declare an executor
