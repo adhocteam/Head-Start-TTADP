@@ -18,6 +18,7 @@ commands:
       - run:
           name: Combine package-lock.json files to single file
           command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
+      - run: tail -n 10 combined-yarnlock.txt
 jobs:
   build:
     # Each job must declare an executor
