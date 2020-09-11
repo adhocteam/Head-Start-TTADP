@@ -20,22 +20,6 @@ jobs:
     steps:
       - checkout
       - run: yarn deps
-      - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client-9.6
-      - run: whoami
-      - run: printenv
-      - run: |
-          psql \
-          -d $DATABASE_URL \
-          -c "CREATE TABLE test (name char(25));"
-      - run: |
-          psql \
-          -d $DATABASE_URL \
-          -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Jennifer');"
-      - run: |
-          psql \
-          -d $DATABASE_URL \
-          -c "SELECT * from test"
       - persist_to_workspace:
           root: .
           paths:
