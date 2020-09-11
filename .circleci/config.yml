@@ -7,12 +7,12 @@ executors:
     docker:
       - image: circleci/node:12.18
         environment:
-          DATABASE_URL: postgresql://circleci@localhost/circle_test
+          DATABASE_URL: postgresql://postgres@localhost/ttasmarthub
       - image: circleci/postgres:12.4-ram
         environment:
-          POSTGRES_USER: circleci
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: secretpass
-          POSTGRES_DB: circle_test
+          POSTGRES_DB: ttasmarthub
 jobs:
   build:
     # Each job must declare an executor
