@@ -18,10 +18,8 @@ commands:
       - run:
           name: Combine package-lock.json files to single file
           command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
-      - run: tail -n 10 combined-yarnlock.txt
 jobs:
   build:
-    # Each job must declare an executor
     executor: docker-executor
     steps:
       - checkout
@@ -29,7 +27,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-yarn-deps-{{ checksum "combined-yarnlock.txt" }}
-            # If no exact match is found, partial cache restore with latest
+            # If no exact match is found, restore partial cache
             - v1-yarn-deps-
       - run: yarn deps
       - save_cache:
