@@ -6,6 +6,13 @@ executors:
     # for docker you must specify an image to use for the primary container
     docker:
       - image: circleci/node:12.18
+        environment:
+          DATABASE_URL: postgresql://postgres@localhost/ttasmarthub
+      - image: circleci/postgres:12.4-ram
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: secretpass
+          POSTGRES_DB: ttasmarthub
 commands:
   create_combined_yarnlock:
     description: "Concatenate all yarn.json files into single file.
@@ -55,6 +62,9 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Run migrations ci
+          command: yarn run db:migrate:ci
       - run:
           name: Test backend
           command: yarn run test:ci
