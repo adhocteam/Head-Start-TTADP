@@ -8,7 +8,7 @@
   },
   "scripts": {
     "deps": "yarn install && yarn --cwd frontend install",
-    "start:dev": "concurrently \"yarn server\" \"yarn client\"",
+    "start:local": "concurrently \"yarn server\" \"yarn client\"",
     "build": "./node_modules/.bin/babel src -d ./build/server",
     "start": "node ./build/server/index.js",
     "server": "nodemon src/index.js --ignore './frontend/' --exec babel-node",

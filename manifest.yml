@@ -2,4 +2,4 @@
 applications:
 - name: tta-smarthub
   instances: ((instances))
-  command: yarn start
+  command: NODE_ENV=production yarn start

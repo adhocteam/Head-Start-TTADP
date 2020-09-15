@@ -6,7 +6,7 @@ Welcome to the home of the OHS TTADP.
 What We're Building and Why
 ---------------
 
-For the latest on our product mission, goals, initiatives, and KPIs, see the [Product Planning page](https://github.com/HHS/Head-Start-TTADP/wiki/Product-Planning).  
+For the latest on our product mission, goals, initiatives, and KPIs, see the [Product Planning page](https://github.com/HHS/Head-Start-TTADP/wiki/Product-Planning).
 
 
 Getting Started
@@ -47,7 +47,7 @@ Other Commands
 | `yarn docker:db:migrate:undo` | Undo migrations in docker containers |
 | `yarn deps` | Install dependencies for the frontend and backend |
 | `yarn start` | Starts the backend (for deployment) |
-| `yarn start:dev` | Starts the backend and frontend (for local development)|
+| `yarn start:local` | Starts the backend and frontend (for local development)|
 | `yarn server` | Starts the backend |
 | `yarn client` | Start the frontend |
 | `yarn test` | Run tests for only the backend |
