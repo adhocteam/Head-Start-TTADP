@@ -40,7 +40,8 @@ jobs:
       - run: yarn deps
       - save_cache:
           paths:
-            - combined-yarnlock.txt
+            - node_modules
+            - frontend/node_modules
           key: v1-yarn-deps-{{ checksum "combined-yarnlock.txt" }}
       - persist_to_workspace:
           root: .
