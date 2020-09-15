@@ -35,21 +35,27 @@ parameters:
     default: "https://api.fr.cloud.gov"
     type: string
   prod_git_url:
+    description: "URL of github repo that will deploy to prod"
     default: "https://github.com/HHS/Head-Start-TTADP"
     type: string
   staging_git_url:
+    description: "URL of github repo that will deploy to staging"
     default: "https://github.com/HHS/Head-Start-TTADP"
     type: string
   dev_git_url:
+    description: "URL of github repo that will deploy to dev"
     default: "https://github.com/adhocteam/Head-Start-TTADP"
     type: string
   prod_git_branch:
+    description: "name of branch that will deploy to prod"
     default: "production"
     type: string
   staging_git_branch:
+    description: "name of branch that will deploy to staging"
     default: "main"
     type: string
   dev_git_branch:
+    description: "name of branch that will deploy to dev"
     default: "main"
     type: string
   sandbox_git_branch:  # this will be removed before PR#23 is merged
