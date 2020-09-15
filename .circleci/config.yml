@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   node: circleci/node@4.0.0
-  cloudfoundry: circleci/cloudfoundry@0.1.73
 executors:
   docker-executor:
     # for docker you must specify an image to use for the primary container
@@ -53,7 +52,7 @@ parameters:
   dev_git_branch:
     default: "main"
     type: string
-  sandbox_git_branch:
+  sandbox_git_branch:  # this will be removed before PR#23 is merged
     default: "sj-cd-init"
     type: string
 jobs:
@@ -116,7 +115,6 @@ jobs:
           path: frontend/reports/
       - store_artifacts:
           path: frontend/coverage/
-
   deploy:
     executor: docker-executor
     steps:
@@ -130,42 +128,51 @@ jobs:
           command: cd frontend && yarn build
       - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
       - run: sudo dpkg -i cf-cli_amd64.deb
-      - run:
-          name: Login with service account
-          command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_DEPLOYER_USERNAME -p $CLOUDGOV_DEPLOYER_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_SPACE
-      - when:
+      - when:  # sandbox - this will be removed before PR#23 is merged
           condition:
             and:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
             - run:
+                name: Login with service account
+                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_SANDBOX_USERNAME -p $CLOUDGOV_SANDBOX_PASSWORD -o << pipeline.parameters.cg_org >> -s ohstta-sandbox
+            - run:
                 name: Push application with sandbox vars
                 command: cf push --vars-file deployment_config/dev_vars.yml
-      - when:
+      - when:  # dev
           condition:
             and:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
           steps:
             - run:
+                name: Login with service account
+                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_DEV_USERNAME -p $CLOUDGOV_DEV_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_DEV_SPACE
+            - run:
                 name: Push application with dev vars
                 command: cf push --vars-file deployment_config/dev_vars.yml
-      - when:
+      - when:  # staging
           condition:
             and:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.staging_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
           steps:
             - run:
+                name: Login with service account
+                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_STAGING_USERNAME -p $CLOUDGOV_STAGING_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_STAGING_SPACE
+            - run:
                 name: Push application with staging vars
                 command: cf push --vars-file deployment_config/staging_vars.yml
-      - when:
+      - when:  # prod
           condition:
             and:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.prod_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
           steps:
+            - run:
+                name: Login with service account
+                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_PROD_USERNAME -p $CLOUDGOV_PROD_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_PROD_SPACE
             - run:
                 name: Push application with prod vars
                 command: cf push --vars-file deployment_config/prod_vars.yml
@@ -191,7 +198,7 @@ workflows:
           filters:
             branches:
               only:
-                - << pipeline.parameters.sandbox_git_branch >>
+                - << pipeline.parameters.sandbox_git_branch >>  # this will be removed before PR#23 is merged
                 - << pipeline.parameters.dev_git_branch >>
                 - << pipeline.parameters.staging_git_branch >>
                 - << pipeline.parameters.prod_git_branch >>
