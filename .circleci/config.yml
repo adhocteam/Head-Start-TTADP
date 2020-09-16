@@ -32,7 +32,7 @@ commands:
       cloudgov_password:
         type: env_var_name
       cloudgov_space:
-        type: env_var_name
+        type: string
       deploy_config_file:
         type: string
     steps:
@@ -43,7 +43,7 @@ commands:
             -u ${<< parameters.cloudgov_username >>} \\
             -p ${<< parameters.cloudgov_password >>} \\
             -o << pipeline.parameters.cg_org >> \\
-            -s ${<< parameters.cloudgov_space >>}
+            -s << parameters.cloudgov_space >>
       - run:
           name: Push application with deployment vars
           command: cf push --vars-file ${<< parameters.deploy_config_file >>}
