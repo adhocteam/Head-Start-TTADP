@@ -63,14 +63,9 @@ parameters:
     type: string
 jobs:
   build:
-    parameters:
-      something_secret:
-        type: env_var_name
-        default: FAKE_SECRET
     executor: docker-executor
     steps:
       - run: echo "hello"
-      - run: echo ${<< parameters.something_secret >>}
       - checkout
       - create_combined_yarnlock
       - restore_cache:
