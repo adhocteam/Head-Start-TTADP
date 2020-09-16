@@ -48,11 +48,7 @@ commands:
       - run:
           name: Login with service account
           command: |
-            cf login -a << pipeline.parameters.cg_api >> \\
-            -u ${<< parameters.cloudgov_username >>} \\
-            -p ${<< parameters.cloudgov_password >>} \\
-            -o << pipeline.parameters.cg_org >> \\
-            -s ${<< parameters.cloudgov_space >>}
+            cf login -a << pipeline.parameters.cg_api >> -u ${<< parameters.cloudgov_username >>} -p ${<< parameters.cloudgov_password >>} -o << pipeline.parameters.cg_org >> -s ${<< parameters.cloudgov_space >>}
       - run:
           name: Push application with deployment vars
           command: cf push --vars-file ${<< parameters.deploy_config_file >>}
