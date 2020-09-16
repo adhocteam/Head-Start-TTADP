@@ -26,6 +26,9 @@ commands:
           name: Combine package-lock.json files to single file
           command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
 parameters:
+  something_secret:
+    type: env_var_name
+    default: FAKE_SECRET
   cg_org:
     description: "Cloud Foundry cloud.gov organization name"
     default: "hhs-acf-prototyping"
@@ -65,6 +68,8 @@ jobs:
   build:
     executor: docker-executor
     steps:
+      - run: echo "hello"
+      - run: echo ${<< parameters.something_secret >>}
       - checkout
       - create_combined_yarnlock
       - restore_cache:
