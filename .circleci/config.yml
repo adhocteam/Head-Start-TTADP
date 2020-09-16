@@ -47,11 +47,12 @@ commands:
     steps:
       - run:
           name: Login with service account
-          command: cf login -a << pipeline.parameters.cg_api >> \
-            -u ${<< parameters.cloudgov_username >>} \
-            -p ${<< parameters.cloudgov_password >>} \
-            -o << pipeline.parameters.cg_org >> \
-            -s ${<< parameters.cloudgov_space >>} \
+          command: |
+            cf login -a << pipeline.parameters.cg_api >> \
+              -u ${<< parameters.cloudgov_username >>} \
+              -p ${<< parameters.cloudgov_password >>} \
+              -o << pipeline.parameters.cg_org >> \
+              -s ${<< parameters.cloudgov_space >>}
       - run:
           name: Push application with deployment vars
           command: cf push --vars-file << parameters.deploy_config_file >>
@@ -163,8 +164,11 @@ jobs:
       - run:
           name: Build frontend assets
           command: cd frontend && yarn build
-      - run: curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
-      - run: sudo dpkg -i cf-cli_amd64.deb
+      - run:
+          name: Install Cloud Foundry
+          command: |
+            curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
+            sudo dpkg -i cf-cli_amd64.deb
       - when:  # sandbox - this will be removed before PR#23 is merged
           condition:
             and:
@@ -224,7 +228,6 @@ workflows:
             - build
       - deploy:
           requires:
-            - build
             - lint
             - test_backend
             - test_frontend
