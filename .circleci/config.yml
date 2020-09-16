@@ -55,6 +55,9 @@ jobs:
       - run:
           name: Lint backend
           command: yarn run lint:ci
+      - run:
+          name: Lint frontend
+          command: yarn --cwd frontend run lint:ci
       - store_artifacts:
           path: reports
   lint_frontend:
