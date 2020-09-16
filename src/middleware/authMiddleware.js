@@ -1,3 +1,4 @@
+import {} from 'dotenv/config';
 import ClientOAuth2 from 'client-oauth2';
 
 export const hsesAuth = new ClientOAuth2({
