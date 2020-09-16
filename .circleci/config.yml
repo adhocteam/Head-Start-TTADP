@@ -60,14 +60,6 @@ jobs:
           command: yarn --cwd frontend run lint:ci
       - store_artifacts:
           path: reports
-  lint_frontend:
-    executor: docker-executor
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Lint frontend
-          command: cd frontend && yarn run lint:ci
       - store_artifacts:
           path: frontend/reports
   test_backend:
