@@ -47,7 +47,7 @@ jobs:
           root: .
           paths:
             - .
-  lint_backend:
+  lint_backend_and_frontend:
     executor: docker-executor
     steps:
       - attach_workspace:
