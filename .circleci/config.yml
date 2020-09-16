@@ -25,15 +25,24 @@ commands:
       - run:
           name: Combine package-lock.json files to single file
           command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
-  cf_login_push:
+  cf_deploy:
+    description: "Login to cloud foundry space with service account credentials
+      and push application using deployment configuration file."
     parameters:
       cloudgov_username:
+        description: "Name of CircleCi project environment variable that
+          holds deployer username for cloudgov space"
         type: env_var_name
       cloudgov_password:
+        description: "Name of CircleCi project environment variable that
+          holds deployer password for cloudgov space"
         type: env_var_name
       cloudgov_space:
-        type: string
+        description: "Name of CircleCi project environment variable that
+          holds name of cloudgov space to target for application deployment"
+        type: env_var_name
       deploy_config_file:
+        description: "Path to deployment configuration file"
         type: string
     steps:
       - run:
@@ -43,7 +52,7 @@ commands:
             -u ${<< parameters.cloudgov_username >>} \\
             -p ${<< parameters.cloudgov_password >>} \\
             -o << pipeline.parameters.cg_org >> \\
-            -s << parameters.cloudgov_space >>
+            -s ${<< parameters.cloudgov_space >>}
       - run:
           name: Push application with deployment vars
           command: cf push --vars-file ${<< parameters.deploy_config_file >>}
@@ -69,15 +78,15 @@ parameters:
     default: "https://github.com/adhocteam/Head-Start-TTADP"
     type: string
   prod_git_branch:
-    description: "name of branch that will deploy to prod"
+    description: "Name of github branch that will deploy to prod"
     default: "production"
     type: string
   staging_git_branch:
-    description: "name of branch that will deploy to staging"
+    description: "Name of github branch that will deploy to staging"
     default: "main"
     type: string
   dev_git_branch:
-    description: "name of branch that will deploy to dev"
+    description: "Name of github branch that will deploy to dev"
     default: "main"
     type: string
   sandbox_git_branch:  # this will be removed before PR#23 is merged
@@ -111,7 +120,7 @@ jobs:
           at: .
       - run:
           name: Lint backend and frontend
-          command: yarn run lint:ci && cd frontend && yarn run lint:ci
+          command: yarn run lint:ci && yarn --cwd frontend run lint:ci
       - store_artifacts:
           path: reports
       - store_artifacts:
@@ -138,7 +147,7 @@ jobs:
           at: .
       - run:
           name: Test frontend
-          command: cd frontend && yarn run test:ci
+          command: yarn --cwd frontend run test:ci
       - store_test_results:
           path: frontend/reports/
       - store_artifacts:
@@ -162,10 +171,10 @@ jobs:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
-            - cf_login_push:
+            - cf_deploy:
                 cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
-                cloudgov_space: ohstta-sandbox
+                cloudgov_space: CLOUDGOV_SANDBOX_SPACE
                 deploy_config_file: deployment_config/dev_vars.yml
       - when:  # dev
           condition:
@@ -173,36 +182,33 @@ jobs:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
           steps:
-            - run:
-                name: Login with service account
-                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_DEV_USERNAME -p $CLOUDGOV_DEV_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_DEV_SPACE
-            - run:
-                name: Push application with dev vars
-                command: cf push --vars-file deployment_config/dev_vars.yml
+            - cf_deploy:
+                cloudgov_username: CLOUDGOV_DEV_USERNAME
+                cloudgov_password: CLOUDGOV_DEV_PASSWORD
+                cloudgov_space: CLOUDGOV_DEV_SPACE
+                deploy_config_file: deployment_config/dev_vars.yml
       - when:  # staging
           condition:
             and:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.staging_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
           steps:
-            - run:
-                name: Login with service account
-                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_STAGING_USERNAME -p $CLOUDGOV_STAGING_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_STAGING_SPACE
-            - run:
-                name: Push application with staging vars
-                command: cf push --vars-file deployment_config/staging_vars.yml
+            - cf_deploy:
+                cloudgov_username: CLOUDGOV_STAGING_USERNAME
+                cloudgov_password: CLOUDGOV_STAGING_PASSWORD
+                cloudgov_space: CLOUDGOV_STAGING_SPACE
+                deploy_config_file: deployment_config/staging_vars.yml
       - when:  # prod
           condition:
             and:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.prod_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
           steps:
-            - run:
-                name: Login with service account
-                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_PROD_USERNAME -p $CLOUDGOV_PROD_PASSWORD -o << pipeline.parameters.cg_org >> -s $CLOUDGOV_PROD_SPACE
-            - run:
-                name: Push application with prod vars
-                command: cf push --vars-file deployment_config/prod_vars.yml
+            - cf_deploy:
+                cloudgov_username: CLOUDGOV_PROD_USERNAME
+                cloudgov_password: CLOUDGOV_PROD_PASSWORD
+                cloudgov_space: CLOUDGOV_PROD_SPACE
+                deploy_config_file: deployment_config/prod_vars.yml
 workflows:
   build_test_deploy:
     jobs:
