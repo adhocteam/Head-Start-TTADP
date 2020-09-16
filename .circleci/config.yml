@@ -25,6 +25,28 @@ commands:
       - run:
           name: Combine package-lock.json files to single file
           command: cat yarn.lock frontend/yarn.lock > << parameters.filename >>
+  cf_login_push:
+    parameters:
+      cloudgov_username:
+        type: env_var_name
+      cloudgov_password:
+        type: env_var_name
+      cloudgov_space:
+        type: env_var_name
+      deploy_config_file:
+        type: string
+    steps:
+      - run:
+          name: Login with service account
+          command: |
+            cf login -a << pipeline.parameters.cg_api >> \\
+            -u ${<< parameters.cloudgov_username >>} \\
+            -p ${<< parameters.cloudgov_password >>} \\
+            -o << pipeline.parameters.cg_org >> \\
+            -s ${<< parameters.cloudgov_space >>}
+      - run:
+          name: Push application with deployment vars
+          command: cf push --vars-file ${<< parameters.deploy_config_file >>}
 parameters:
   cg_org:
     description: "Cloud Foundry cloud.gov organization name"
@@ -65,7 +87,6 @@ jobs:
   build:
     executor: docker-executor
     steps:
-      - run: echo "hello"
       - checkout
       - create_combined_yarnlock
       - restore_cache:
@@ -141,12 +162,11 @@ jobs:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
-            - run:
-                name: Login with service account
-                command: cf login -a << pipeline.parameters.cg_api >> -u $CLOUDGOV_SANDBOX_USERNAME -p $CLOUDGOV_SANDBOX_PASSWORD -o << pipeline.parameters.cg_org >> -s ohstta-sandbox
-            - run:
-                name: Push application with sandbox vars
-                command: cf push --vars-file deployment_config/dev_vars.yml
+            - cf_login_push:
+                cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
+                cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
+                cloudgov_space: ohstta-sandbox
+                deploy_config_file: deployment_config/dev_vars.yml
       - when:  # dev
           condition:
             and:
