@@ -1,4 +1,4 @@
-# ADR 8: Database
+# ADR 6: Database
 
 Date: 2020-09-10
 
