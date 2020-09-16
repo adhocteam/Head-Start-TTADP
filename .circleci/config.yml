@@ -69,7 +69,7 @@ jobs:
     executor: docker-executor
     steps:
       - run: echo "hello"
-      - run: echo ${<< parameters.something_secret >>}
+      - run: echo ${<< pipeline.parameters.something_secret >>}
       - checkout
       - create_combined_yarnlock
       - restore_cache:
