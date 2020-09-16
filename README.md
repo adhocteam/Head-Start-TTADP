@@ -45,9 +45,10 @@ Other Commands
 | `yarn docker:lint` | Runs the linter for the frontend and backend in docker containers |
 | `yarn docker:db:migrate` | Run migrations in docker containers |
 | `yarn docker:db:migrate:undo` | Undo migrations in docker containers |
+| `yarn deps:local` | Install dependencies for the frontend and backend (for local development)  |
 | `yarn deps` | Install dependencies for the frontend and backend |
-| `yarn start` | Starts the backend (for deployment) |
 | `yarn start:local` | Starts the backend and frontend (for local development)|
+| `yarn start` | Starts the backend (for deployment) |
 | `yarn server` | Starts the backend |
 | `yarn client` | Start the frontend |
 | `yarn test` | Run tests for only the backend |
