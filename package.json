@@ -9,7 +9,7 @@
   "scripts": {
     "build": "./node_modules/.bin/babel src -d ./build/server",
     "deps:local": "yarn install && yarn --cwd frontend install",
-    "deps": "yarn install && yarn --cwd frontend install",
+    "deps": "yarn install --frozen-lockfile && yarn --cwd frontend install --frozen-lockfile",
     "start:local": "concurrently \"yarn server\" \"yarn client\"",
     "start": "node ./build/server/index.js",
     "server": "nodemon src/index.js --ignore './frontend/' --exec babel-node",
