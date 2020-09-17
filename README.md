@@ -67,15 +67,16 @@ Deployment
 ----------
 
 This application consists of three deployment environments: development/dev, staging, and
-production/prod. Commits to specific branches in github repositories start up automatic
-deployments to these environments. The continuous deployment (CD) pipeline is configured via CircleCi.
-The bulk of CD configurations can be found in this repo's [circleci/config.yml](circleci/config.yml) file,
+production/prod. The continuous deployment (CD) pipeline is configured via CircleCi.
+The bulk of CD configurations can be found in this repo's [.circleci/config.yml](.circleci/config.yml) file,
 the [application manifest](manifest.yml) and the environment specific [deployment_config](deployment_config/)
 variable files.
 
-* [main branch][adhoc-main] of Ad Hoc fork of HHS/Head-Start-TTADP repo deploys to **dev**
-* [main branch][hhs-main] of HHS/Head-Start-TTADP repo deploys to **staging**
-* [production branch][hhs-prod] of HHS/Head-Start-TTADP repo deploys to **prod**
+Commits to specific branches in github repositories start automatic deployments as follows:
+
+* **Dev** deployed by commit to [main branch][adhoc-main] of Ad Hoc fork of HHS/Head-Start-TTADP repo
+* **Staging** deployed by commit to [main branch][hhs-main] of HHS/Head-Start-TTADP repo
+* **Prod** deployed by commit to [production branch][hhs-prod] of HHS/Head-Start-TTADP repo
 
 The application is deployed to the following URLs:
 
