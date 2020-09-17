@@ -1,6 +1,6 @@
 ---
 applications:
-- name: tta-smarthub
+- name: tta-smarthub-((env))
   instances: ((instances))
   command: yarn start
   env:

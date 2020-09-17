@@ -182,7 +182,7 @@ jobs:
                 cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
                 cloudgov_space: CLOUDGOV_SANDBOX_SPACE
-                deploy_config_file: deployment_config/dev_vars.yml
+                deploy_config_file: deployment_config/sandbox_vars.yml
       - when:  # dev
           condition:
             and:
