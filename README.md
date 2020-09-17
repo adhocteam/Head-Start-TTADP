@@ -61,7 +61,7 @@ Linting, unit tests and test coverage analysis are all run automatically on each
 to the Ad Hoc fork of HHS/Head-Start-TTADP repo and the HHS/Head-Start-TTADP repo. In
 the Ad Hoc repository, merges to the main branch are blocked if the continuous
 integration (CI) tests do not pass. The continuous integration pipeline is configured via CircleCi.
-The bulk of CI configurations can be found in this repo's [circleci/config.yml](circleci/config.yml) file.
+The bulk of CI configurations can be found in this repo's [.circleci/config.yml](.circleci/config.yml) file.
 
 Deployment
 ----------
