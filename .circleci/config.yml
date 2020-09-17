@@ -89,9 +89,6 @@ parameters:
     description: "Name of github branch that will deploy to dev"
     default: "main"
     type: string
-  sandbox_git_branch:  # this will be removed before PR#23 is merged
-    default: "sj-cd-init"
-    type: string
 jobs:
   build:
     executor: docker-executor
@@ -172,17 +169,6 @@ jobs:
           command: |
             curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
             sudo dpkg -i cf-cli_amd64.deb
-      - when:  # sandbox - this will be removed before PR#23 is merged
-          condition:
-            and:
-              - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
-              - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
-          steps:
-            - cf_deploy:
-                cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
-                cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
-                cloudgov_space: CLOUDGOV_SANDBOX_SPACE
-                deploy_config_file: deployment_config/dev_vars.yml
       - when:  # dev
           condition:
             and:
@@ -237,7 +223,6 @@ workflows:
           filters:
             branches:
               only:
-                - << pipeline.parameters.sandbox_git_branch >>  # this will be removed before PR#23 is merged
                 - << pipeline.parameters.dev_git_branch >>
                 - << pipeline.parameters.staging_git_branch >>
                 - << pipeline.parameters.prod_git_branch >>
