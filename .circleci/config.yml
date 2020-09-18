@@ -166,7 +166,7 @@ jobs:
           command: yarn build
       - run:
           name: Build frontend assets
-          command: cd frontend && yarn build
+          command: yarn --cwd frontend run build
       - run:
           name: Install Cloud Foundry
           command: |
