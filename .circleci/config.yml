@@ -48,7 +48,6 @@ commands:
         description: "Abbreviated name of environment used as prefix for
           application secrets stored in CircleCi project environment variables"
         type: string
-        default: env: dev
     steps:
       - run:
           name: Login with service account
