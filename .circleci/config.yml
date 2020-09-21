@@ -192,12 +192,12 @@ jobs:
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
             - cf_deploy:
+                auth_client_id: SANDBOX_CLIENT_ID
+                auth_client_secret: SANDBOX_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
                 cloudgov_space: CLOUDGOV_SANDBOX_SPACE
                 deploy_config_file: deployment_config/sandbox_vars.yml
-                auth_client_id: SANDBOX_CLIENT_ID
-                auth_client_secret: SANDBOX_CLIENT_SECRET
                 session_secret: SANDBOX_SESSION_SECRET
       - when:  # dev
           condition:
@@ -208,10 +208,13 @@ jobs:
             - run:
                 command: ENV="DEV"
             - cf_deploy:
+                auth_client_id: DEV_CLIENT_ID
+                auth_client_secret: DEV_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_DEV_USERNAME
                 cloudgov_password: CLOUDGOV_DEV_PASSWORD
                 cloudgov_space: CLOUDGOV_DEV_SPACE
                 deploy_config_file: deployment_config/dev_vars.yml
+                session_secret: DEV_SESSION_SECRET
       - when:  # staging
           condition:
             and:
@@ -221,10 +224,13 @@ jobs:
             - run:
                 command: ENV="STAGING"
             - cf_deploy:
+                auth_client_id: STAGING_CLIENT_ID
+                auth_client_secret: STAGING_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_STAGING_USERNAME
                 cloudgov_password: CLOUDGOV_STAGING_PASSWORD
                 cloudgov_space: CLOUDGOV_STAGING_SPACE
                 deploy_config_file: deployment_config/staging_vars.yml
+                session_secret: STAGING_SESSION_SECRET
       - when:  # prod
           condition:
             and:
@@ -234,10 +240,13 @@ jobs:
             - run:
                 command: ENV="PROD"
             - cf_deploy:
+                auth_client_id: PROD_CLIENT_ID
+                auth_client_secret: PROD_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_PROD_USERNAME
                 cloudgov_password: CLOUDGOV_PROD_PASSWORD
                 cloudgov_space: CLOUDGOV_PROD_SPACE
                 deploy_config_file: deployment_config/prod_vars.yml
+                session_secret: PROD_SESSION_SECRET
 workflows:
   build_test_deploy:
     jobs:
