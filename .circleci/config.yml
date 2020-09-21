@@ -45,14 +45,14 @@ commands:
         description: "Path to deployment configuration file"
         type: string
       auth_client_id:
-        type: string
         default: $ENV"_AUTH_CLIENT_ID"
+        type: env_var_name
       auth_client_secret:
-        type: string
         default: $ENV"_AUTH_CLIENT_SECRET"
+        type: env_var_name
       session_secret:
-        type: string
         default: $ENV"_SESSION_SECRET"
+        type: env_var_name
     steps:
       - run:
           name: Login with service account
@@ -207,6 +207,8 @@ jobs:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.dev_git_branch >>]
           steps:
+            - run:
+                command: ENV="DEV"
             - cf_deploy:
                 cloudgov_username: CLOUDGOV_DEV_USERNAME
                 cloudgov_password: CLOUDGOV_DEV_PASSWORD
@@ -218,6 +220,8 @@ jobs:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.staging_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.staging_git_branch >>]
           steps:
+            - run:
+                command: ENV="STAGING"
             - cf_deploy:
                 cloudgov_username: CLOUDGOV_STAGING_USERNAME
                 cloudgov_password: CLOUDGOV_STAGING_PASSWORD
@@ -229,6 +233,8 @@ jobs:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.prod_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.prod_git_branch >>]
           steps:
+            - run:
+                command: ENV="PROD"
             - cf_deploy:
                 cloudgov_username: CLOUDGOV_PROD_USERNAME
                 cloudgov_password: CLOUDGOV_PROD_PASSWORD
