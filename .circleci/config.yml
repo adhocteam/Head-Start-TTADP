@@ -44,6 +44,10 @@ commands:
       deploy_config_file:
         description: "Path to deployment configuration file"
         type: string
+      env:
+        description: "Abbreviated name of environment used as prefix for
+          application secrets stored in CircleCi project environment variables"
+        type: string
     steps:
       - run:
           name: Login with service account
@@ -53,6 +57,18 @@ commands:
               -p ${<< parameters.cloudgov_password >>} \
               -o << pipeline.parameters.cg_org >> \
               -s ${<< parameters.cloudgov_space >>}
+      - run:
+          name: Interpret env parameter
+          command: |
+            env=`echo << parameters.env >> | tr '[:upper:]' '[:lower:]'`
+            ENV=`echo << parameters.env >> | tr '[:lower:]' '[:upper:]'`
+      - run:
+          name: Set secret environment variables for application
+          command: |
+            cf set-env tta-smarthub-$env \
+              AUTH_CLIENT_ID ${$ENV_AUTH_CLIENT_ID} \
+              AUTH_CLIENT_SECRET ${$ENV_AUTH_CLIENT_SECRET} \
+              SESSION_SECRET ${$ENV_SESSION_SECRET} \
       - run:
           name: Push application with deployment vars
           command: cf push --vars-file << parameters.deploy_config_file >>
@@ -90,7 +106,7 @@ parameters:
     default: "main"
     type: string
   sandbox_git_branch:  # change to feature branch to test deployment
-    default: "sj-cd-env-var"
+    default: "sj-fix-env-var"
     type: string
 jobs:
   build:
@@ -183,6 +199,7 @@ jobs:
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
                 cloudgov_space: CLOUDGOV_SANDBOX_SPACE
                 deploy_config_file: deployment_config/sandbox_vars.yml
+                env: sandbox
       - when:  # dev
           condition:
             and:
