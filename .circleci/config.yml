@@ -195,8 +195,8 @@ jobs:
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
             - cf_deploy:
-                auth_client_id: SANDBOX_CLIENT_ID
-                auth_client_secret: SANDBOX_CLIENT_SECRET
+                auth_client_id: SANDBOX_AUTH_CLIENT_ID
+                auth_client_secret: SANDBOX_AUTH_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
                 cloudgov_space: CLOUDGOV_SANDBOX_SPACE
@@ -211,8 +211,8 @@ jobs:
             - run:
                 command: ENV="DEV"
             - cf_deploy:
-                auth_client_id: DEV_CLIENT_ID
-                auth_client_secret: DEV_CLIENT_SECRET
+                auth_client_id: DEV_AUTH_CLIENT_ID
+                auth_client_secret: DEV_AUTH_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_DEV_USERNAME
                 cloudgov_password: CLOUDGOV_DEV_PASSWORD
                 cloudgov_space: CLOUDGOV_DEV_SPACE
@@ -227,8 +227,8 @@ jobs:
             - run:
                 command: ENV="STAGING"
             - cf_deploy:
-                auth_client_id: STAGING_CLIENT_ID
-                auth_client_secret: STAGING_CLIENT_SECRET
+                auth_client_id: STAGING_AUTH_CLIENT_ID
+                auth_client_secret: STAGING_AUTH_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_STAGING_USERNAME
                 cloudgov_password: CLOUDGOV_STAGING_PASSWORD
                 cloudgov_space: CLOUDGOV_STAGING_SPACE
@@ -243,8 +243,8 @@ jobs:
             - run:
                 command: ENV="PROD"
             - cf_deploy:
-                auth_client_id: PROD_CLIENT_ID
-                auth_client_secret: PROD_CLIENT_SECRET
+                auth_client_id: PROD_AUTH_CLIENT_ID
+                auth_client_secret: PROD_AUTH_CLIENT_SECRET
                 cloudgov_username: CLOUDGOV_PROD_USERNAME
                 cloudgov_password: CLOUDGOV_PROD_PASSWORD
                 cloudgov_space: CLOUDGOV_PROD_SPACE
