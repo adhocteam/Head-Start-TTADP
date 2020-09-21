@@ -45,14 +45,11 @@ commands:
         description: "Path to deployment configuration file"
         type: string
       auth_client_id:
-        default: $ENV"_AUTH_CLIENT_ID"
-        type: string
+        type: env_var_name
       auth_client_secret:
-        default: $ENV"_AUTH_CLIENT_SECRET"
-        type: string
+        type: env_var_name
       session_secret:
-        default: $ENV"_SESSION_SECRET"
-        type: string
+        type: env_var_name
     steps:
       - run:
           name: Login with service account
@@ -194,13 +191,14 @@ jobs:
               - equal: [<< pipeline.project.git_url >>, << pipeline.parameters.dev_git_url >>]
               - equal: [<< pipeline.git.branch >>, << pipeline.parameters.sandbox_git_branch >>]
           steps:
-            - run:
-                command: ENV="SANDBOX"
             - cf_deploy:
                 cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
                 cloudgov_space: CLOUDGOV_SANDBOX_SPACE
                 deploy_config_file: deployment_config/sandbox_vars.yml
+                auth_client_id: SANDBOX_CLIENT_ID
+                auth_client_secret: SANDBOX_CLIENT_SECRET
+                session_secret: SANDBOX_SESSION_SECRET
       - when:  # dev
           condition:
             and:
