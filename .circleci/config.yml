@@ -46,13 +46,13 @@ commands:
         type: string
       auth_client_id:
         default: $ENV"_AUTH_CLIENT_ID"
-        type: env_var_name
+        type: string
       auth_client_secret:
         default: $ENV"_AUTH_CLIENT_SECRET"
-        type: env_var_name
+        type: string
       session_secret:
         default: $ENV"_SESSION_SECRET"
-        type: env_var_name
+        type: string
     steps:
       - run:
           name: Login with service account
@@ -65,7 +65,7 @@ commands:
       - run:
           name: Set secret environment variables for application
           command: |
-            cf set-env tta-smarthub-$env \
+            cf set-env tta-smarthub-sandbox \
               AUTH_CLIENT_ID ${<< parameters.auth_client_id >>} \
               AUTH_CLIENT_SECRET ${<< parameters.auth_client_secret >>} \
               SESSION_SECRET ${<< parameters.session_secret >>} \
