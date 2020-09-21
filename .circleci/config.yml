@@ -213,7 +213,6 @@ jobs:
                 cloudgov_password: CLOUDGOV_DEV_PASSWORD
                 cloudgov_space: CLOUDGOV_DEV_SPACE
                 deploy_config_file: deployment_config/dev_vars.yml
-                env: dev
       - when:  # staging
           condition:
             and:
@@ -225,7 +224,6 @@ jobs:
                 cloudgov_password: CLOUDGOV_STAGING_PASSWORD
                 cloudgov_space: CLOUDGOV_STAGING_SPACE
                 deploy_config_file: deployment_config/staging_vars.yml
-                env: staging
       - when:  # prod
           condition:
             and:
@@ -237,7 +235,6 @@ jobs:
                 cloudgov_password: CLOUDGOV_PROD_PASSWORD
                 cloudgov_space: CLOUDGOV_PROD_SPACE
                 deploy_config_file: deployment_config/prod_vars.yml
-                env: prod
 workflows:
   build_test_deploy:
     jobs:
