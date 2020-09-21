@@ -201,7 +201,6 @@ jobs:
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
                 cloudgov_space: CLOUDGOV_SANDBOX_SPACE
                 deploy_config_file: deployment_config/sandbox_vars.yml
-                env: sandbox
       - when:  # dev
           condition:
             and:
