@@ -183,6 +183,7 @@ function Admin(props) {
   return (
     <section className="usa-section">
       <GridContainer>
+        <h1 className="text-center">User Administration</h1>
         <Grid row gap>
           <Grid col={4}>
             <Button className="width-full" onClick={() => { history.push('/admin/new'); }}>Create New User</Button>
