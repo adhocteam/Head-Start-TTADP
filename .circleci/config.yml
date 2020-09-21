@@ -29,6 +29,9 @@ commands:
     description: "Login to cloud foundry space with service account credentials
       and push application using deployment configuration file."
     parameters:
+      cloudgov_application:
+        description: "Name of cloudgov application"
+        type: string
       cloudgov_username:
         description: "Name of CircleCi project environment variable that
           holds deployer username for cloudgov space"
@@ -45,10 +48,16 @@ commands:
         description: "Path to deployment configuration file"
         type: string
       auth_client_id:
+        description: "Name of CircleCi project environment variable that
+          holds authentication client id, a required application variable"
         type: env_var_name
       auth_client_secret:
+        description: "Name of CircleCi project environment variable that
+          holds authentication client secret, a required application variable"
         type: env_var_name
       session_secret:
+        description: "Name of CircleCi project environment variable that
+          holds session secret, a required application variable"
         type: env_var_name
     steps:
       - run:
@@ -60,12 +69,11 @@ commands:
               -o << pipeline.parameters.cg_org >> \
               -s ${<< parameters.cloudgov_space >>}
       - run:
+          command: cf env tta-smarthub-sandbox
+      - run:
           name: Set secret environment variables for application
           command: |
-            cf set-env tta-smarthub-sandbox \
-              AUTH_CLIENT_ID ${<< parameters.auth_client_id >>} \
-              AUTH_CLIENT_SECRET ${<< parameters.auth_client_secret >>} \
-              SESSION_SECRET ${<< parameters.session_secret >>} \
+            cf set-env tta-smarthub-sandbox AUTH_CLIENT_ID ${<< parameters.auth_client_id >>} AUTH_CLIENT_SECRET ${<< parameters.auth_client_secret >>} SESSION_SECRET ${<< parameters.session_secret >>}
       - run:
           name: Push application with deployment vars
           command: cf push --vars-file << parameters.deploy_config_file >>
@@ -194,6 +202,7 @@ jobs:
             - cf_deploy:
                 auth_client_id: SANDBOX_CLIENT_ID
                 auth_client_secret: SANDBOX_CLIENT_SECRET
+                cloudgov_application: tta-smarthub-sandbox
                 cloudgov_username: CLOUDGOV_SANDBOX_USERNAME
                 cloudgov_password: CLOUDGOV_SANDBOX_PASSWORD
                 cloudgov_space: CLOUDGOV_SANDBOX_SPACE
@@ -210,6 +219,7 @@ jobs:
             - cf_deploy:
                 auth_client_id: DEV_CLIENT_ID
                 auth_client_secret: DEV_CLIENT_SECRET
+                cloudgov_application: tta-smarthub-dev
                 cloudgov_username: CLOUDGOV_DEV_USERNAME
                 cloudgov_password: CLOUDGOV_DEV_PASSWORD
                 cloudgov_space: CLOUDGOV_DEV_SPACE
@@ -226,6 +236,7 @@ jobs:
             - cf_deploy:
                 auth_client_id: STAGING_CLIENT_ID
                 auth_client_secret: STAGING_CLIENT_SECRET
+                cloudgov_application: tta-smarthub-staging
                 cloudgov_username: CLOUDGOV_STAGING_USERNAME
                 cloudgov_password: CLOUDGOV_STAGING_PASSWORD
                 cloudgov_space: CLOUDGOV_STAGING_SPACE
@@ -242,6 +253,7 @@ jobs:
             - cf_deploy:
                 auth_client_id: PROD_CLIENT_ID
                 auth_client_secret: PROD_CLIENT_SECRET
+                cloudgov_application: tta-smarthub-prod
                 cloudgov_username: CLOUDGOV_PROD_USERNAME
                 cloudgov_password: CLOUDGOV_PROD_PASSWORD
                 cloudgov_space: CLOUDGOV_PROD_SPACE
