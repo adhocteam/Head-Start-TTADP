@@ -8,4 +8,3 @@ applications:
     AUTH_CLIENT_SECRET:
     NODE_ENV: ((NODE_ENV))
     SESSION_SECRET:
-
