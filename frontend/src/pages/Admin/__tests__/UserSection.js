@@ -10,8 +10,7 @@ describe('UserSection', () => {
     const user = {
       id: 1,
       email: 'email',
-      firstName: 'first',
-      lastName: 'last',
+      fullName: 'first last',
       jobTitle: 'Grantee Specialist',
       region: '1',
       permissions: [
@@ -30,10 +29,10 @@ describe('UserSection', () => {
   });
 
   it('properly controls user info', () => {
-    const inputBox = screen.getByLabelText('First Name');
-    expect(inputBox).toHaveValue('first');
+    const inputBox = screen.getByLabelText('Full Name');
+    expect(inputBox).toHaveValue('first last');
     userEvent.type(inputBox, '{selectall}{backspace}new name');
-    expect(screen.getByLabelText('First Name')).toHaveValue('new name');
+    expect(screen.getByLabelText('Full Name')).toHaveValue('new name');
   });
 
   it('properly controls global permissions', () => {

@@ -19,13 +19,9 @@ function UserInfo({ user, onUserChange }) {
           <Label htmlFor="input-email-name">Email</Label>
           <TextInput id="input-email-name" type="text" name="email" value={user.email || ''} onChange={onUserChange} />
         </Grid>
-        <Grid col={6}>
-          <Label htmlFor="input-first-name">First Name</Label>
-          <TextInput id="input-first-name" type="text" name="firstName" value={user.firstName || ''} onChange={onUserChange} />
-        </Grid>
-        <Grid col={6}>
-          <Label htmlFor="input-last-name">Last Name</Label>
-          <TextInput id="input-last-name" type="text" name="lastName" value={user.lastName || ''} onChange={onUserChange} />
+        <Grid col={12}>
+          <Label htmlFor="input-full-name">Full Name</Label>
+          <TextInput id="input-full-name" type="text" name="fullName" value={user.fullName || ''} onChange={onUserChange} />
         </Grid>
       </Grid>
       <Grid row gap>
@@ -43,8 +39,7 @@ function UserInfo({ user, onUserChange }) {
 UserInfo.propTypes = {
   user: PropTypes.shape({
     email: PropTypes.string,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
+    fullName: PropTypes.string,
     region: PropTypes.string,
     jobTitle: PropTypes.string,
   }).isRequired,

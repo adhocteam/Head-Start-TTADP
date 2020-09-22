@@ -14,12 +14,8 @@ describe('UserInfo', () => {
       expect(screen.getByLabelText('Email')).toHaveValue('');
     });
 
-    test('has a blank firstName', () => {
-      expect(screen.getByLabelText('First Name')).toHaveValue('');
-    });
-
-    test('has a blank lastName', async () => {
-      expect(screen.getByLabelText('Last Name')).toHaveValue('');
+    test('has a blank fullName', () => {
+      expect(screen.getByLabelText('Full Name')).toHaveValue('');
     });
 
     test('has the default region', () => {
@@ -35,8 +31,7 @@ describe('UserInfo', () => {
     beforeEach(() => {
       const user = {
         email: 'email',
-        firstName: 'first',
-        lastName: 'last',
+        fullName: 'first last',
         region: '1',
         jobTitle: 'Grantee Specialist',
       };
@@ -48,12 +43,8 @@ describe('UserInfo', () => {
       expect(screen.getByLabelText('Email')).toHaveValue('email');
     });
 
-    test('has correct firstName', () => {
-      expect(screen.getByLabelText('First Name')).toHaveValue('first');
-    });
-
-    test('has correct lastName', async () => {
-      expect(screen.getByLabelText('Last Name')).toHaveValue('last');
+    test('has correct fullName', () => {
+      expect(screen.getByLabelText('Full Name')).toHaveValue('first last');
     });
 
     test('has correct region', () => {

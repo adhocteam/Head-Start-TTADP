@@ -14,8 +14,7 @@ const fetchedUsers = [
     id: 1,
     email: 'dumbledore@hogwarts.com',
     jobTitle: undefined,
-    firstName: undefined,
-    lastName: undefined,
+    fullName: undefined,
     permissions: undefined,
     region: undefined,
   },
@@ -23,8 +22,7 @@ const fetchedUsers = [
     id: 2,
     email: 'hermionegranger@hogwarts.com',
     jobTitle: 'Systems Specialist',
-    firstName: 'Hermione',
-    lastName: 'Granger',
+    fullName: 'Hermione Granger',
     permissions: [
       {
         region: 0,
@@ -41,8 +39,7 @@ const fetchedUsers = [
     id: 3,
     email: 'harrypotter@hogwarts.com',
     jobTitle: 'Grantee Specialist',
-    firstName: 'Harry',
-    lastName: 'Potter',
+    fullName: 'Harry Potter',
     permissions: [
       {
         region: 0,
@@ -99,8 +96,7 @@ const fetchedUsers = [
     id: 4,
     email: 'ronweasley@hogwarts.com',
     jobTitle: 'Program Specialist',
-    firstName: 'Ron',
-    lastName: 'Weasley',
+    fullName: 'Ron Weasley',
     permissions: [
       {
         region: 0,
@@ -116,17 +112,17 @@ const fetchedUsers = [
 ];
 
 /**
- * Render the left hand user navigation in the Admin UI. Use the user's first and last name
- * or email address if the user doesn't have a first name or last name.
+ * Render the left hand user navigation in the Admin UI. Use the user's full name
+ * or email address if the user doesn't have a full name.
  */
 function renderUserNav(users) {
   return users.map((user) => {
     const {
-      firstName, lastName, email, id,
+      fullName, email, id,
     } = user;
     let display = email;
-    if (firstName) {
-      display = `${firstName} ${lastName}`;
+    if (fullName) {
+      display = fullName;
     }
     return <NavLink to={`/admin/${id}`}>{display}</NavLink>;
   });
@@ -135,7 +131,7 @@ function renderUserNav(users) {
 /**
  * Admin UI page component. It is split into two main sections, the user list and the
  * user section. The user list can be filtered to make searching for users easier. The
- * user section contains all info on the user that can be updated (first/last name,
+ * user section contains all info on the user that can be updated (full name,
  * permissions, etc...). This component handles fetching of users from the API and will
  * be responsible for sending updates/creates back to the API (not yet implemented).
  */
@@ -176,8 +172,8 @@ function Admin(props) {
   }
 
   const filteredUsers = _.filter(users, (u) => {
-    const { email, firstName, lastName } = u;
-    return `${email}${firstName}${lastName}`.includes(userSearch);
+    const { email, fullName } = u;
+    return `${email}${fullName}`.includes(userSearch);
   });
 
   return (

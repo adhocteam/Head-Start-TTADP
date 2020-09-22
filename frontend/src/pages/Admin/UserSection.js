@@ -77,8 +77,7 @@ UserSection.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number,
     email: PropTypes.string,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
+    fullName: PropTypes.string,
     region: PropTypes.string,
     jobTitle: PropTypes.string,
     permissions: PropTypes.arrayOf(PropTypes.shape({
