@@ -66,6 +66,7 @@ commands:
               -o << pipeline.parameters.cg_org >> \
               -s ${<< parameters.cloudgov_space >>}
       - run:
+          name: Add secrets to deployment configuration file
           command: |
             sed -ie 's/AUTH_CLIENT_ID:/AUTH_CLIENT_ID: '${<< parameters.auth_client_id >>}'/' << parameters.deploy_config_file >>
             sed -ie 's/AUTH_CLIENT_SECRET:/AUTH_CLIENT_SECRET: '${<< parameters.auth_client_secret >>}'/' << parameters.deploy_config_file >>
