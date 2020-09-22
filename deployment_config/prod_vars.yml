@@ -1,3 +1,6 @@
+AUTH_CLIENT_ID:
+AUTH_CLIENT_SECRET:
 env: prod
 instances: 2
 NODE_ENV: production
+SESSION_SECRET:
