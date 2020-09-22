@@ -67,9 +67,9 @@ commands:
               -s ${<< parameters.cloudgov_space >>}
       - run:
           command: |
-            sed -ie 's/AUTH_CLIENT_ID:/AUTH_CLIENT_ID: '${<< parameters.auth_client_id >>}'/' << parameters.deploy_config_file >> \
-              sed -ie 's/AUTH_CLIENT_SECRET:/AUTH_CLIENT_SECRET: '${<< parameters.auth_client_secret >>}'/' << parameters.deploy_config_file >> \
-              sed -ie 's/SESSION_SECRET:/SESSION_SECRET: '${<< parameters.session_secret >>}'/' << parameters.deploy_config_file >>
+            sed -ie 's/AUTH_CLIENT_ID:/AUTH_CLIENT_ID: '${<< parameters.auth_client_id >>}'/' << parameters.deploy_config_file >>
+            sed -ie 's/AUTH_CLIENT_SECRET:/AUTH_CLIENT_SECRET: '${<< parameters.auth_client_secret >>}'/' << parameters.deploy_config_file >>
+            sed -ie 's/SESSION_SECRET:/SESSION_SECRET: '${<< parameters.session_secret >>}'/' << parameters.deploy_config_file >>
       - run:
           name: Push application with deployment vars
           command: |
