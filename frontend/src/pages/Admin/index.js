@@ -90,7 +90,7 @@ const fetchedUsers = [
         scope: 'READ_REPORTS',
       },
     ],
-    region: '4',
+    region: '1',
   },
   {
     id: 4,
