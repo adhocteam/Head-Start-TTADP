@@ -4,4 +4,8 @@ applications:
   instances: ((instances))
   command: yarn start
   env:
+    AUTH_CLIENT_ID:
+    AUTH_CLIENT_SECRET:
     NODE_ENV: ((NODE_ENV))
+    SESSION_SECRET:
+
