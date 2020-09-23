@@ -24,7 +24,6 @@ export const hsesAuth = new ClientOAuth2({
 
 export default async function authMiddleware(req, res, next) {
   req.session.originalUrl = req.originalUrl;
-  // console.log(`session: ${JSON.stringify(req.session)}`);
   if (!req.session.userId) {
     const uri = hsesAuth.code.getUri();
 
