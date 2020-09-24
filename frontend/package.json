@@ -102,5 +102,12 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "history": "^5.0.0",
     "jest-junit": "^11.1.0"
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 90
+      }
+    }
   }
 }
