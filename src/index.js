@@ -7,9 +7,9 @@ import memorystore from 'memorystore';
 import unless from 'express-unless';
 import _ from 'lodash';
 import path from 'path';
-import logger from './logger';
+import logger, { requestLogger } from './logger';
 
-import authMiddleware, { hsesAuth } from './middleware/authMiddleware';
+import authMiddleware, { hsesAuth, login } from './middleware/authMiddleware';
 
 const app = express();
 const router = express.Router();
@@ -17,12 +17,19 @@ const router = express.Router();
 const MemoryStore = memorystore(session);
 
 const oauth2CallbackPath = '/oauth2-client/login/oauth2/code/';
+const loginPath = '/login';
 
+app.use(requestLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(session({
   secret: process.env.SESSION_SECRET,
+  key: 'session',
+  cookie: {
+    httpOnly: true,
+    sameSite: 'strict',
+  },
   store: new MemoryStore({ // Potentially change this to a different store
     checkPeriod: 86400000, // prune expired entries every 24h
   }),
@@ -31,11 +38,23 @@ app.use(session({
 }));
 
 authMiddleware.unless = unless;
-app.use(authMiddleware.unless({ path: oauth2CallbackPath }));
+app.use(authMiddleware.unless({ path: ['client', oauth2CallbackPath, loginPath] }));
 
 router.get('/', (req, res) => {
   res.send('Hello from ttadp');
 });
+
+router.get('/user', (req, res) => {
+  const { userId, role, name } = req.session;
+  res.send({ userId, role, name });
+});
+
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.sendStatus(204);
+});
+
+router.get(loginPath, login);
 
 router.get(oauth2CallbackPath, async (req, res) => {
   try {
@@ -53,8 +72,9 @@ router.get(oauth2CallbackPath, async (req, res) => {
     const { authorities } = data;
     req.session.userId = 1; // temporary
     req.session.role = _.get(authorities[0], 'authority');
+    req.session.name = data.name;
     logger.info(`role: ${req.session.role}`);
-    res.redirect(req.session.originalUrl);
+    res.redirect(process.env.LOGIN_REDIRECT_URL);
   } catch (error) {
     // console.log(error);
   }
@@ -67,7 +87,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const server = app.listen(process.env.PORT || 8080, () => {
-  // TODO: add a logging message
+  logger.info('listening on 8080');
 });
 
 module.exports = server;
