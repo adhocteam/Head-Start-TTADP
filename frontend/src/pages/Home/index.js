@@ -23,11 +23,6 @@ function Home() {
           )}
         </UserContext.Consumer>
       </Route>
-      <Route path="/second">
-        <div>
-          Hello second Page!
-        </div>
-      </Route>
     </Switch>
   );
 }
