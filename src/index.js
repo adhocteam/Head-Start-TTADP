@@ -78,7 +78,7 @@ app.get(oauth2CallbackPath, async (req, res) => {
     req.session.role = _.get(authorities[0], 'authority');
     req.session.name = data.name;
     logger.info(`role: ${req.session.role}`);
-    res.redirect(process.env.LOGIN_REDIRECT_URL);
+    res.redirect(process.env.TTA_SMART_HUB_URI);
   } catch (error) {
     // console.log(error);
   }
