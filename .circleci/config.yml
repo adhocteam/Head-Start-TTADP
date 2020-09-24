@@ -52,6 +52,9 @@ commands:
       deploy_config_file:
         description: "Path to deployment configuration file"
         type: string
+      eclkc_api_key:
+        description: "API key to access the eclkc programs and centers data"
+        type: string
       session_secret:
         description: "Name of CircleCi project environment variable that
           holds session secret, a required application variable"
@@ -71,6 +74,7 @@ commands:
             cf push --vars-file << parameters.deploy_config_file >> \
               --var AUTH_CLIENT_ID=${<< parameters.auth_client_id >>} \
               --var AUTH_CLIENT_SECRET=${<< parameters.auth_client_secret >>} \
+              --var ECLKC_API_KEY=${<< parameters.eclkc_api_key >>} \
               --var SESSION_SECRET=${<< parameters.session_secret >>}
 parameters:
   cg_org:
@@ -215,6 +219,7 @@ jobs:
                 cloudgov_password: CLOUDGOV_DEV_PASSWORD
                 cloudgov_space: CLOUDGOV_DEV_SPACE
                 deploy_config_file: deployment_config/dev_vars.yml
+                eclkc_api_key: ECLKC_API_KEY
                 session_secret: DEV_SESSION_SECRET
       - when:  # staging
           condition:
@@ -229,6 +234,7 @@ jobs:
                 cloudgov_password: CLOUDGOV_STAGING_PASSWORD
                 cloudgov_space: CLOUDGOV_STAGING_SPACE
                 deploy_config_file: deployment_config/staging_vars.yml
+                eclkc_api_key: ECLKC_API_KEY
                 session_secret: STAGING_SESSION_SECRET
       - when:  # prod
           condition:
@@ -243,6 +249,7 @@ jobs:
                 cloudgov_password: CLOUDGOV_PROD_PASSWORD
                 cloudgov_space: CLOUDGOV_PROD_SPACE
                 deploy_config_file: deployment_config/prod_vars.yml
+                eclkc_api_key: ECLKC_API_KEY
                 session_secret: PROD_SESSION_SECRET
 workflows:
   build_test_deploy:

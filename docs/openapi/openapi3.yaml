@@ -1,0 +1,41 @@
+openapi: 3.0.2
+tags:
+  - name: status
+info:
+  version: 0.0.1
+  title: TTADP
+  contact:
+    email: josh@adhocteam.us
+servers:
+  - url: http://localhost:8080
+  - url: http://backend:8080
+paths:
+  /hello:
+    get:
+      tags:
+        - status
+      operationId: Hello World
+      description: Get the hello world message
+      responses:
+        "200":
+          description: Hello world message
+          content:
+            text/html; charset=utf-8:
+              schema:
+                type: string
+                example: Hello from ttadp
+    post:
+      tags:
+        - status
+      operationId: Hello World POST
+      description: Get the hello world message
+      responses:
+        "200":
+          description: Hello world message
+          content:
+            text/html; charset=utf-8:
+              schema:
+                type: string
+                example: Hello from ttadp
+components:
+  schemas: {}

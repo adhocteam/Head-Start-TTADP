@@ -33,7 +33,7 @@ app.use(session({
 router.use('/', require('./routes/programsCenters'));
 
 authMiddleware.unless = unless;
-app.use(authMiddleware.unless({ path: [oauth2CallbackPath, '/v1/programs', '/v1/centers'] }));
+app.use(authMiddleware.unless({ path: [oauth2CallbackPath] }));
 
 router.get('/', (req, res) => {
   res.send('Hello from ttadp');
