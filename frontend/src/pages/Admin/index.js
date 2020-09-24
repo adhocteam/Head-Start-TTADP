@@ -25,6 +25,10 @@ const fetchedUsers = [
     fullName: 'Hermione Granger',
     permissions: [
       {
+        // Region 0 is used to flag permissions as being "global" (or not associated to a region)
+        // and will hopefully be changed in the future to something a little less magical. Future
+        // work will solidify the schema of both global and regional permissions which will require
+        // updates to any code that uses "region 0".
         region: 0,
         scope: 'SITE_ACCESS',
       },
