@@ -9,8 +9,8 @@ import App from '../App';
 
 describe('App', () => {
   afterEach(() => fetchMock.restore());
-  const userUrl = join(process.env.REACT_APP_API_URL, 'user');
-  const logoutUrl = join(process.env.REACT_APP_API_URL, 'logout');
+  const userUrl = join('api', 'user');
+  const logoutUrl = join('api', 'logout');
 
   describe('when authenticated', () => {
     beforeEach(() => {
