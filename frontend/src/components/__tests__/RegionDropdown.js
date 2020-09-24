@@ -18,7 +18,7 @@ describe('RegionalDropdown', () => {
 
   test('does not show central office when includeCentralOffice is not specified', () => {
     render(<RegionDropdown id="id" name="name" onChange={() => {}} />);
-    expect(screen.queryByText('Central Office')).toBeNull()
+    expect(screen.queryByText('Central Office')).toBeNull();
   });
 
   test('with prop includeCentralOffice has central office as an option', () => {
