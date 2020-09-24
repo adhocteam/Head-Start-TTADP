@@ -18,7 +18,7 @@ function RegionDropdown({
           <option key={number} value={number}>{`${number} - ${description}`}</option>
         ))}
         {includeCentralOffice
-        && <option name="central-office" value="13">Central Office</option>}
+        && <option name="central-office" value="co">Central Office</option>}
       </Dropdown>
     </>
   );
