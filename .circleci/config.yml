@@ -141,6 +141,10 @@ jobs:
       - run:
           name: Lint frontend
           command: yarn --cwd frontend run lint:ci
+      - run:  # Fail audit only for moderate and higher vulnerabilities
+          name: Perform a vulnerability audit
+          command: |
+            yarn audit; EXIT_CODE=$?; (($EXIT_CODE >= 4)) && exit $EXIT_CODE || exit 0
       - store_artifacts:
           path: reports
       - store_artifacts:
