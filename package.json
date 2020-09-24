@@ -113,6 +113,7 @@
     "memorystore": "^1.6.2",
     "pg": "^8.3.3",
     "sequelize": "^5.22.3",
+    "url-join": "^4.0.1",
     "winston": "^3.3.3"
   }
 }

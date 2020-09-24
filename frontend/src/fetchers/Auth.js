@@ -1,7 +1,5 @@
 import join from 'url-join';
 
-const { REACT_APP_API_URL } = process.env;
-
 const callApi = async (url) => {
   const res = await fetch(url, {
     credentials: 'same-origin',
@@ -13,10 +11,10 @@ const callApi = async (url) => {
 };
 
 export const fetchLogout = async () => {
-  await callApi(join(REACT_APP_API_URL, 'logout'));
+  await callApi(join('api', 'logout'));
 };
 
 export const fetchUser = async () => {
-  const res = await callApi(join(REACT_APP_API_URL, 'user'));
+  const res = await callApi(join('api', 'user'));
   return res.json();
 };

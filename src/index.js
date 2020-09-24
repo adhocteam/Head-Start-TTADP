@@ -7,6 +7,7 @@ import memorystore from 'memorystore';
 import unless from 'express-unless';
 import _ from 'lodash';
 import path from 'path';
+import join from 'url-join';
 import logger, { requestLogger } from './logger';
 
 import authMiddleware, { hsesAuth, login } from './middleware/authMiddleware';
@@ -38,7 +39,9 @@ app.use(session({
 }));
 
 authMiddleware.unless = unless;
-app.use(authMiddleware.unless({ path: ['client', oauth2CallbackPath, loginPath] }));
+// TODO: update unless to replace `oauth1CallbackPath with `join('/api', oauth2CallbackPath)`
+// once our oauth callback has been updated
+app.use(authMiddleware.unless({ path: [oauth2CallbackPath, join('/api', loginPath)] }));
 
 router.get('/', (req, res) => {
   res.send('Hello from ttadp');
@@ -56,7 +59,8 @@ router.get('/logout', (req, res) => {
 
 router.get(loginPath, login);
 
-router.get(oauth2CallbackPath, async (req, res) => {
+// TODO: change `app.get...` with `router.get...` once our oauth callback has been updated
+app.get(oauth2CallbackPath, async (req, res) => {
   try {
     const user = await hsesAuth.code.getToken(req.originalUrl);
     // user will have accessToken and refreshToken
@@ -80,7 +84,7 @@ router.get(oauth2CallbackPath, async (req, res) => {
   }
 });
 
-app.use('/', router);
+app.use('/api', router);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client')));

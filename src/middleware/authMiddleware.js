@@ -6,6 +6,8 @@ export const hsesAuth = new ClientOAuth2({
   clientSecret: process.env.AUTH_CLIENT_SECRET,
   accessTokenUri: `${process.env.AUTH_BASE}/auth/oauth/token`,
   authorizationUri: `${process.env.AUTH_BASE}/auth/oauth/authorize`,
+  // TODO: Once our oauth callback has been updated change this to:
+  // redirectUri: `${process.env.REDIRECT_URI_HOST}/api/oauth2-client/login/oauth2/code/`,
   redirectUri: `${process.env.REDIRECT_URI_HOST}/oauth2-client/login/oauth2/code/`,
   scopes: ['user_info'],
 });

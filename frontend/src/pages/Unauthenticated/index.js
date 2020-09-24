@@ -19,7 +19,7 @@ function Unauthenticated({ loggedOut }) {
       <p>
         Login via HSES to continue
       </p>
-      <Link className="usa-button" variant="unstyled" href="http://localhost:3000/api/login">
+      <Link className="usa-button" variant="unstyled" href="api/login">
         HSES Login
       </Link>
     </>
