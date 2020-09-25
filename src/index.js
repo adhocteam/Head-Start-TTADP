@@ -30,10 +30,10 @@ app.use(session({
   resave: false,
 }));
 
-router.use('/', require('./routes/programsCenters'));
+router.use('/', require('./routes/programsCenters').default);
 
 authMiddleware.unless = unless;
-app.use(authMiddleware.unless({ path: [oauth2CallbackPath] }));
+app.use(authMiddleware.unless({ path: [oauth2CallbackPath, '/v1/programs', '/v1/centers'] }));
 
 router.get('/', (req, res) => {
   res.send('Hello from ttadp');

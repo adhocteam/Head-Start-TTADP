@@ -4,18 +4,12 @@ import logger from '../logger';
 
 const router = express.Router();
 
-/**
- * API for front-end to retrieve values for programs containing grantee names.
- *
- * Programs by region: '/v1/programs?region=1'
- * Programs by type: '/v1/programs?type=1,2'
- * Other parameters include city, state, zip, county, pid, name, grantNumber, indentifier.
- * Parameters can be combined: '/v1/programs?region=1&type=1'
- */
-router.get('/v1/programs', async (req, res) => {
+const ecklcBaseUri = 'https://eclkc.ohs.acf.hhs.gov/eclkc-apis/locator/api';
+
+export async function getPrograms(req, res) {
   try {
-    const baseUrl = 'https://eclkc.ohs.acf.hhs.gov/eclkc-apis/locator/api/program';
-    const response = await axios(baseUrl, {
+    const baseUrl = `${ecklcBaseUri}/program`;
+    const response = await axios.get(baseUrl, {
       params: {
         ...req.query,
         apikey: process.env.ECLKC_API_KEY,
@@ -40,17 +34,11 @@ router.get('/v1/programs', async (req, res) => {
   } catch (error) {
     logger.error(error);
   }
-});
+}
 
-/**
- * API for front-end to retrieve values for centers.
- *
- * Centers by grant number: '0/v1/centers?grantNumber=01CH011480'
- * Other parameters (save as above programs api) are available and can be combined
- */
-router.get('/v1/centers', async (req, res) => {
+export async function getCenters(req, res) {
   try {
-    const baseUrl = 'https://eclkc.ohs.acf.hhs.gov/eclkc-apis/locator/api/center';
+    const baseUrl = `${ecklcBaseUri}/center`;
     const response = await axios(baseUrl, {
       params: {
         ...req.query,
@@ -66,6 +54,24 @@ router.get('/v1/centers', async (req, res) => {
   } catch (error) {
     logger.error(error);
   }
-});
+}
 
-module.exports = router;
+/**
+ * API for front-end to retrieve values for programs containing grantee names.
+ *
+ * Programs by region: '/v1/programs?region=1'
+ * Programs by type: '/v1/programs?type=1,2'
+ * Other parameters include city, state, zip, county, pid, name, grantNumber, indentifier.
+ * Parameters can be combined: '/v1/programs?region=1&type=1'
+ */
+router.get('/v1/programs', getPrograms);
+
+/**
+ * API for front-end to retrieve values for centers.
+ *
+ * Centers by grant number: '0/v1/centers?grantNumber=01CH011480'
+ * Other parameters (save as above programs api) are available and can be combined
+ */
+router.get('/v1/centers', getCenters);
+
+export default router;
