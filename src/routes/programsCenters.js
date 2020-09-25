@@ -5,7 +5,13 @@ import logger from '../logger';
 const router = express.Router();
 
 const ecklcBaseUri = 'https://eclkc.ohs.acf.hhs.gov/eclkc-apis/locator/api';
-
+/**
+ * Gets the program data from ECLKC
+ * Formats it for the front end
+ * @param {Object} req - request
+ * @param {Object} res - response
+ * @returns {Promise}
+ */
 export async function getPrograms(req, res) {
   try {
     const baseUrl = `${ecklcBaseUri}/program`;
@@ -35,7 +41,13 @@ export async function getPrograms(req, res) {
     logger.error(error);
   }
 }
-
+/**
+ * Gets the center data from ECLKC
+ * Formats it for the front end
+ * @param {Object} req - request
+ * @param {Object} res - response
+ * @returns {Promise}
+ */
 export async function getCenters(req, res) {
   try {
     const baseUrl = `${ecklcBaseUri}/center`;
