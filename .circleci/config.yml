@@ -130,7 +130,7 @@ jobs:
           root: .
           paths:
             - .
-  lint:
+  lint_audit:
     executor: docker-executor
     steps:
       - attach_workspace:
@@ -258,7 +258,7 @@ workflows:
   build_test_deploy:
     jobs:
       - build
-      - lint:
+      - lint_audit:
           requires:
             - build
       - test_backend:
