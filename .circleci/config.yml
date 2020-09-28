@@ -269,7 +269,7 @@ workflows:
             - build
       - deploy:
           requires:
-            - lint
+            - lint_audit
             - test_backend
             - test_frontend
           filters:
