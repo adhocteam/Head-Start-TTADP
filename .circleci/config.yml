@@ -146,7 +146,7 @@ jobs:
           command: |
             yarn audit --level low; EXIT_CODE=$?; \
               (($EXIT_CODE >= 4)) && exit $EXIT_CODE || exit 0
-       - run:  # Fail audit only for moderate and higher vulnerabilities
+      - run:  # Fail audit only for moderate and higher vulnerabilities
           name: Audit vulnerability of frontend node_modules
           command: |
             yarn --cwd frontend audit --level low; EXIT_CODE=$?; \
