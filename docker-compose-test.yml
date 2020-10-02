@@ -1,0 +1,27 @@
+version: "3.5"
+services:
+  backend:
+    build:
+      context: .
+    command: yarn start
+    user: ${CURRENT_USER:-root}
+    networks:
+      - ttadp
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOST=postgres_docker
+      - NODE_ENV=production
+    volumes:
+      - ".:/app:rw"
+  db:
+    image: postgres:12.4
+    container_name: postgres_docker
+    env_file: .env
+    ports:
+      - "6543:5432"
+networks:
+  ttadp:
+    name: ttadp
