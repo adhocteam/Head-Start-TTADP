@@ -193,12 +193,12 @@ jobs:
       - run:
           name: Start up local server
           command: |
-            docker-compose -f docker-compose-test.yml run --rm backend yarn install
-            docker-compose -f docker-compose-test.yml run --rm backend yarn --cwd frontend install
-            docker-compose -f docker-compose-test.yml run --rm backend yarn build
-            docker-compose -f docker-compose-test.yml run --rm backend yarn --cwd frontend run build
+            docker-compose -f docker-compose-test.yml run --rm server yarn install --production=false
+            docker-compose -f docker-compose-test.yml run --rm server yarn --cwd frontend install --production=false
+            docker-compose -f docker-compose-test.yml run --rm server yarn build
+            docker-compose -f docker-compose-test.yml run --rm server yarn --cwd frontend run build
             docker-compose -f docker-compose-test.yml up -d
-            docker-compose -f docker-compose-test.yml exec backend yarn db:migrate
+            docker-compose -f docker-compose-test.yml exec server yarn db:migrate
       - run:
           name: Pull OWASP ZAP docker image
           command: docker pull owasp/zap2docker-weekly
@@ -208,7 +208,7 @@ jobs:
             docker run \
               -v $(pwd)/reports:/zap/wrk:rw \
               --rm \
-              --network="head-start-ttadp_smarthub" -t owasp/zap2docker-stable zap-baseline.py -t http://backend:8080 -r zap.html
+              --network="project_smarthub" -t owasp/zap2docker-stable zap-baseline.py -t http://server:8080
 
   deploy:
     executor: docker-executor
