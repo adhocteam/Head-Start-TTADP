@@ -12,11 +12,11 @@ services:
     depends_on:
       - db
     environment:
-      - POSTGRES_HOST=postgres_docker
-      - NODE_ENV=production
-      - POSTGRES_USERNAME=postgres
-      - POSTGRES_PASSWORD=secretpass
-      - POSTGRES_DB=ttasmarthub
+      POSTGRES_HOST: postgres_docker
+      NODE_ENV: production
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: secretpass
+      POSTGRES_DB: ttasmarthub
     volumes:
       - ".:/app:rw"
   db:

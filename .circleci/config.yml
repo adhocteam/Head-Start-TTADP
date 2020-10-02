@@ -208,8 +208,10 @@ jobs:
             docker run \
               -v $(pwd)/reports:/zap/wrk:rw \
               --rm \
-              --network="project_smarthub" -t owasp/zap2docker-stable zap-baseline.py -t http://server:8080
-
+              --network="project_smarthub" \
+              -t owasp/zap2docker-stable zap-baseline.py \
+              -t http://server:8080; \
+              EXIT_CODE=$?; (($EXIT_CODE -eq 2)) && exit $EXIT_CODE || exit 0
   deploy:
     executor: docker-executor
     steps:
