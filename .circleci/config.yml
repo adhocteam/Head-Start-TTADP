@@ -208,7 +208,7 @@ jobs:
             docker run \
               -v $(pwd)/reports:/zap/wrk:rw \
               --rm \
-              --network="ttadp" -t owasp/zap2docker-stable zap-baseline.py -t http://backend:8080 -r zap.html
+              --network="head-start-ttadp_smarthub" -t owasp/zap2docker-stable zap-baseline.py -t http://backend:8080 -r zap.html
 
   deploy:
     executor: docker-executor
