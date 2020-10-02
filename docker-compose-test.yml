@@ -19,7 +19,10 @@ services:
   db:
     image: postgres:12.4
     container_name: postgres_docker
-    env_file: .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpass
+      POSTGRES_DB: ttasmarthub
     ports:
       - "6543:5432"
 networks:
