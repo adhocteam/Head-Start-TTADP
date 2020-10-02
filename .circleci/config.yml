@@ -295,7 +295,7 @@ workflows:
           requires:
             - build
       - dynamic_security_scan:
-          require:
+          requires:
             - build
       - deploy:
           requires:
