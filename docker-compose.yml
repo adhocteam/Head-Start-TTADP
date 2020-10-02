@@ -5,11 +5,13 @@ services:
       context: .
     command: yarn server
     user: ${CURRENT_USER:-root}
+    networks:
+      - ttadp
     ports:
       - "8080:8080"
     depends_on:
       - db
-    environment: 
+    environment:
       - POSTGRES_HOST=postgres_docker
     volumes:
       - ".:/app:rw"
@@ -18,6 +20,8 @@ services:
       context: .
     command: yarn start
     user: ${CURRENT_USER:-root}
+    networks:
+      - ttadp
     stdin_open: true
     ports:
       - "3000:3000"
@@ -32,3 +36,6 @@ services:
     env_file: .env
     ports:
       - "6543:5432"
+networks:
+  ttadp:
+    name: ttadp

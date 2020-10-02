@@ -13,6 +13,9 @@ executors:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: secretpass
           POSTGRES_DB: ttasmarthub
+  machine-executor:
+    machine:
+      image: circleci/classic:latest
 commands:
   create_combined_yarnlock:
     description: "Concatenate all yarn.json files into single file.
@@ -182,6 +185,30 @@ jobs:
           path: frontend/reports/
       - store_artifacts:
           path: frontend/coverage/
+  dynamic_security_scan:
+    executor: machine-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Start up local server
+          run: |
+            yarn docker:deps
+            yarn docker:db:migrate
+            yarn docker:start
+
+      - run:
+          name: Pull OWASP ZAP docker image
+          command: docker pull owasp/zap2docker-weekly
+      - run:
+          name: Run OWASP ZAP
+          command: |
+            docker run -v $(pwd):/zap/wrk/:rw \
+              owasp/zap2docker-weekly zap-baseline.py \
+              -c baseline-scan.conf \
+              -t http://$(ifconfig en0 | grep "inet " | cut -d " " -f2):3000
+                -r baseline-scan-report.html
+
   deploy:
     executor: docker-executor
     steps:
@@ -267,11 +294,15 @@ workflows:
       - test_frontend:
           requires:
             - build
+      - dynamic_security_scan:
+          require:
+            - build
       - deploy:
           requires:
             - lint_audit
             - test_backend
             - test_frontend
+            - dynamic_security_scan
           filters:
             branches:
               only:
