@@ -211,7 +211,7 @@ jobs:
               --network="project_smarthub" \
               -t owasp/zap2docker-stable zap-baseline.py \
               -t http://server:8080 \
-              -c zap.conf -I -i
+              -c $(pwd)/project/zap.conf -I -i
   deploy:
     executor: docker-executor
     steps:
