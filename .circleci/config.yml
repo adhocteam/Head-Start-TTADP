@@ -206,14 +206,12 @@ jobs:
           name: Run OWASP ZAP
           command: |
             docker run \
+              -v $(pwd)/zap.conf:/zap/wrk/zap.conf:rw \
               -v $(pwd)/reports:/zap/wrk:rw \
               --rm \
               --network="project_smarthub" \
               -t owasp/zap2docker-stable zap-baseline.py \
-              -t http://server:8080 \
-              -c zap.conf -I -i
-      - store_test_results:
-          path: reports
+              -t http://server:8080
   deploy:
     executor: docker-executor
     steps:
