@@ -206,8 +206,7 @@ jobs:
           name: Run OWASP ZAP
           command: |
             docker run \
-              -v $(pwd)/project/zap.conf:/zap/wrk/zap.conf:rw \
-              -v $(pwd)/reports:/zap/wrk:rw \
+              -v $(pwd)/zap.conf:/zap/wrk/zap.conf:rw \
               --rm \
               --network="project_smarthub" \
               -t owasp/zap2docker-stable zap-baseline.py \
