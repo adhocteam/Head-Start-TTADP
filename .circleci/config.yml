@@ -214,8 +214,8 @@ jobs:
               -t http://server:8080 \
               -c zap.conf -I -i \
               -x zap_report.xml
-      - store_artifacts:
-          path: reports/zap_report.xml
+      - store_test_results:
+          path: reports
   deploy:
     executor: docker-executor
     steps:
