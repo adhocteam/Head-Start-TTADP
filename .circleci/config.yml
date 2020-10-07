@@ -207,6 +207,7 @@ jobs:
           command: |
             docker run \
               -v $(pwd)/zap.conf:/zap/wrk/zap.conf:rw \
+              -v $(pwd)/reports:/zap/wrk:rw \
               --rm \
               --network="project_smarthub" \
               -t owasp/zap2docker-stable zap-baseline.py \
