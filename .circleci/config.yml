@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   node: circleci/node@4.0.0
-  puppeteer: threetreeslight/puppeteer@0.1.2
 executors:
   docker-executor:
     # for docker you must specify an image to use for the primary container
@@ -39,7 +38,7 @@ commands:
           libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates \
           fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
     - run:
-        name: Install puppeteer with chronium
+        name: Install puppeteer with chromium
         command: |
           npm i puppeteer
   cf_deploy:
