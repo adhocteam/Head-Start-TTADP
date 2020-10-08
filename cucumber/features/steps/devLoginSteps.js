@@ -27,5 +27,7 @@ Then('we should see "Head Start Enterprise System"', async function verifyHSESLo
 });
 
 After(async function closeBrowser() {
-  await this.driver.close();
+  if (this.driver) {
+    await this.driver.close();
+  }
 });
