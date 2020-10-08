@@ -170,6 +170,9 @@ jobs:
           path: reports/
       - store_artifacts:
           path: coverage/
+      - run:
+        name: Test via cucumber
+        command: yarn run cucumber
   test_frontend:
     executor: docker-executor
     steps:

@@ -22,6 +22,8 @@
     "lint:ci": "eslint -f eslint-formatter-multiple src",
     "lint:all": "yarn lint:ci && yarn --cwd frontend lint:ci",
     "clean": "rm -rf coverage reports frontend/coverage frontend/reports frontend/build",
+    "docs:serve": "npx redoc-cli serve -p 5000 docs/openapi/index.yaml",
+    "cucumber": "./node_modules/.bin/cucumber-js --publish ./cucumber/features/*",
     "db:migrate": "node_modules/.bin/sequelize db:migrate",
     "db:migrate:ci": "cross-env POSTGRES_USERNAME=postgres POSTGRES_DB=ttasmarthub node_modules/.bin/sequelize db:migrate",
     "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo",
@@ -101,12 +103,15 @@
     "jest-cli": "^26.4.2",
     "jest-junit": "^11.1.0",
     "nodemon": "^2.0.4",
+    "redoc-cli": "^0.9.12",
     "sequelize-cli": "^6.2.0",
     "supertest": "^4.0.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
+    "@cucumber/cucumber": "^7.0.0-rc.0",
     "axios": "^0.20.0",
+    "chromedriver": "^85.0.1",
     "client-oauth2": "^4.3.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -117,6 +122,7 @@
     "lodash": "^4.17.20",
     "memorystore": "^1.6.2",
     "pg": "^8.3.3",
+    "selenium-webdriver": "^4.0.0-alpha.7",
     "sequelize": "^5.22.3",
     "url-join": "^4.0.1",
     "winston": "^3.3.3"
