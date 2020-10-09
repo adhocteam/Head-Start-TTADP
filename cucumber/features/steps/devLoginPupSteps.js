@@ -4,7 +4,7 @@ const {
 const assertTrue = require('assert');
 const scope = require('../support/scope');
 
-Given('https://tta-smarthub-dev.app.cloud.gov', { timeout: 4 * 5000 }, async () => {
+Given('https://tta-smarthub-dev.app.cloud.gov', async () => {
   if (!scope.browser) {
     scope.browser = await scope.driver.launch();
   }
@@ -13,7 +13,7 @@ Given('https://tta-smarthub-dev.app.cloud.gov', { timeout: 4 * 5000 }, async () 
   await scope.context.currentPage.waitForSelector('a[href$="api/login"]');
 });
 
-When('pressing login', { timeout: 4 * 5000 }, async () => {
+When('pressing login', async () => {
   // Write code here that turns the phrase above into concrete actions
   await scope.context.currentPage.click('a[href$="api/login"]');
   await scope.context.currentPage.waitForSelector('.hses');
