@@ -6,7 +6,7 @@ const options = {
   output: './reports/cucumber_report.html',
   reportSuiteAsScenarios: true,
   scenarioTimestamp: true,
-  launchReport: true,
+  launchReport: false,
   metadata: {
     'App Version': '0.3.2',
     'Test Environment': 'STAGING',

@@ -182,6 +182,8 @@ jobs:
           path: reports/
       - store_artifacts:
           path: coverage/
+      - store_artifacts:
+          path: cucumber/reports
   test_frontend:
     executor: docker-executor
     steps:
