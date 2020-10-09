@@ -180,6 +180,9 @@ jobs:
           name: Run migrations ci
           command: yarn run db:migrate:ci
       - run:
+          name: Install puppeteer
+          command: install
+      - run:
           name: Test backend
           command: yarn run test:ci
       - run:
