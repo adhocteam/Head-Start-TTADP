@@ -1,12 +1,9 @@
 import request from 'supertest';
-import server from './index';
+import app from './app';
 
 describe('Root', () => {
-  test('Redirects to login if user is not logged in', async () => {
-    const response = await request(server).get('/');
-    expect(response.status).toBe(302);
-  });
-  afterAll(async () => {
-    await server.close();
+  test('Responds with a 401 (Unauthorized) if user is not logged in', async () => {
+    const response = await request(app).get('/api');
+    expect(response.status).toBe(401);
   });
 });
