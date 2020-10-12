@@ -19,6 +19,5 @@ const options = {
 
 reporter.generate(options);
 
-// more info on `metadata` is available in `options` section below.
-
-// to generate consodilated report from multi-cucumber JSON files, please use `jsonDir` option instead of `jsonFile`. More info is available in `options` section below.
+// to generate consolidated report from multi-cucumber JSON files,
+// please use `jsonDir` option instead of `jsonFile`
