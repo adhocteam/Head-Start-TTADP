@@ -36,6 +36,6 @@ We will use OWASP ZAP's baseline scan to test application security. The tool is 
 
 ## Consequences
 
-Running these code analysis and scanning tools increases the time it takes to run our CI pipeline. Prior to these additions, the CI pipeline took 3-5 minutes to run. Linting and static security audits add a negligible amount to the runtime, about 2 seconds each. The dynamic security scan takes much longer-- around 3 and half minutes to complete. However the total time to run the full CI pipeline is still quite short, around 5-7 minutes.
+Running these code analysis and scanning tools increases the time it takes to run our CI pipeline. Prior to these additions, the CI pipeline took 3-5 minutes to run. Linting and static security audits add a negligible amount to the runtime, about 2 seconds each. The dynamic security scan takes much longer, around 3 and half minutes to complete. However the total time to run the full CI pipeline is still quite short, around 5-7 minutes.
 
 Adding new tools to the development ecosystem increases the complexity of the product and requires developer time and attention.
