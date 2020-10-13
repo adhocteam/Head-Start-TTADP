@@ -188,7 +188,7 @@ jobs:
       # - store_artifacts:
       #     path: reports/
   cucumber_test:
-    executor: machine-executor
+    executor: docker-executor
     steps:
       - attach_workspace:
           at: .
