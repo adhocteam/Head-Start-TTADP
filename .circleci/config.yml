@@ -193,13 +193,19 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Start local server
+          name: Start backend server
           command: |
             yarn deps
             yarn build
             yarn start
             yarn client
             yarn cucumber
+      - run:
+          name: Start client
+          command: yarn client
+      - run:
+          name: Run cucumber
+          command: yarn cucumber
       - store_artifacts:
           path: reports/
   test_frontend:
