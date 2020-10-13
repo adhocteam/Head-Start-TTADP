@@ -23,7 +23,7 @@
     "lint:all": "yarn lint:ci && yarn --cwd frontend lint:ci",
     "clean": "rm -rf coverage reports frontend/coverage frontend/reports frontend/build",
     "docs:serve": "npx redoc-cli serve -p 5000 docs/openapi/index.yaml",
-    "cucumber": "./node_modules/.bin/cucumber-js --publish-quiet ./cucumber/features/devLoginPup* -f json:./reports/cucumber_report.json && node ./cucumber/index.js",
+    "cucumber": "./node_modules/.bin/cucumber-js --publish ./cucumber/features/devLoginPup* -f json:./cucumber_report.json && node ./cucumber/index.js",
     "db:migrate": "node_modules/.bin/sequelize db:migrate",
     "db:migrate:ci": "cross-env POSTGRES_USERNAME=postgres POSTGRES_DB=ttasmarthub node_modules/.bin/sequelize db:migrate",
     "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo",
@@ -35,7 +35,8 @@
     "docker:shell:frontend": "docker-compose run --rm frontend /bin/bash",
     "docker:shell:backend": "docker-compose run --rm backend /bin/bash",
     "docker:db:migrate": "docker-compose run --rm backend node_modules/.bin/sequelize db:migrate",
-    "docker:db:migrate:undo": "docker-compose run --rm backend node_modules/.bin/sequelize db:migrate:undo"
+    "docker:db:migrate:undo": "docker-compose run --rm backend node_modules/.bin/sequelize db:migrate:undo",
+    "docker:cucumber": "docker-compose run --rm backend yarn cucumber"
   },
   "repository": {
     "type": "git",

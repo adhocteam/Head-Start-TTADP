@@ -294,18 +294,18 @@ workflows:
   build_test_deploy:
     jobs:
       - build
-      - lint_audit:
-          requires:
-            - build
-      - test_backend:
-          requires:
-            - build
+      # - lint_audit:
+      #     requires:
+      #       - build
+      # - test_backend:
+      #     requires:
+      #       - build
       - cucumber_test:
           requires:
             - build
-      - test_frontend:
-          requires:
-            - build
+      # - test_frontend:
+      #     requires:
+      #       - build
       - deploy:
           requires:
             - lint_audit
