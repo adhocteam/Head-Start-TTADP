@@ -307,10 +307,10 @@ workflows:
       #     requires:
       #       - build
       - deploy:
-          requires:
-            - lint_audit
-            - test_backend
-            - test_frontend
+          # requires:
+          #   - lint_audit
+          #   - test_backend
+          #   - test_frontend
           filters:
             branches:
               only:
