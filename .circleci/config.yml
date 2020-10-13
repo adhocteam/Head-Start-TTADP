@@ -296,6 +296,9 @@ workflows:
       - test_backend:
           requires:
             - build
+      - cucumber_test:
+          requires:
+            - build
       - test_frontend:
           requires:
             - build
