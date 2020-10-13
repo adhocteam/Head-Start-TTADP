@@ -202,8 +202,8 @@ jobs:
           name: Start client
           command: yarn client &
       - run:
-        name: Run migrations ci
-        command: yarn run db:migrate:ci
+          name: Run migrations ci
+          command: yarn run db:migrate:ci
       - run:
           name: Install Headless Chrome dependencies
           command: |
