@@ -197,12 +197,10 @@ jobs:
           command: |
             yarn deps
             yarn build
-            yarn start
-            yarn client
-            yarn cucumber
+            yarn start &
       - run:
           name: Start client
-          command: yarn client
+          command: yarn client &
       - run:
           name: Run cucumber
           command: yarn cucumber
