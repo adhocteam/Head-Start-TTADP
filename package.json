@@ -11,6 +11,7 @@
     "deps:local": "yarn install && yarn --cwd frontend install",
     "deps": "yarn install --frozen-lockfile && yarn --cwd frontend install --frozen-lockfile",
     "start:local": "concurrently \"yarn server\" \"yarn client\"",
+    "start:ci": "concurrently \"yarn start\" \"yarn client\"",
     "start": "node ./build/server/index.js",
     "server": "nodemon src/index.js --ignore './frontend/' --exec babel-node",
     "server:debug": "nodemon src/index.js --ignore './frontend/' --exec babel-node --inspect",
