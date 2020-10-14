@@ -193,7 +193,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Start local server
+          name: Start server
           command: |
             yarn deps
             yarn build
@@ -203,9 +203,9 @@ jobs:
       #     name: Start client
       #     command: yarn client
       #     background: true
-      # - run:
-      #     name: Run migrations ci
-      #     command: yarn run db:migrate:ci
+      - run:
+          name: Run migrations ci
+          command: yarn run db:migrate:ci
       - run:
           name: Install Headless Chrome dependencies
           command: |
@@ -218,6 +218,9 @@ jobs:
       - run:
           name: Run cucumber
           command: yarn cucumber
+          environment:
+            AUTH_BASE: https://uat.hsesinfo.org
+            REDIRECT_URI_HOST: http://localhost:8080
       - store_artifacts:
           path: reports/
   test_frontend:
