@@ -193,16 +193,15 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Start backend server
+          name: Start local server
           command: |
             yarn deps
-            yarn build
-            yarn start
+            yarn start:local
           background: true
-      - run:
-          name: Start client
-          command: yarn client
-          background: true
+      # - run:
+      #     name: Start client
+      #     command: yarn client
+      #     background: true
       # - run:
       #     name: Run migrations ci
       #     command: yarn run db:migrate:ci
