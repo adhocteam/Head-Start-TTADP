@@ -197,10 +197,12 @@ jobs:
           command: |
             yarn deps
             yarn build
-            yarn start &
+            yarn start
+          background: true
       - run:
           name: Start client
-          command: yarn client &
+          command: yarn client
+          background: true
       # - run:
       #     name: Run migrations ci
       #     command: yarn run db:migrate:ci
