@@ -14,7 +14,7 @@ services:
     environment:
       POSTGRES_HOST: postgres_docker
       NODE_ENV: production
-      POSTGRES_USER: postgres
+      POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: secretpass
       POSTGRES_DB: ttasmarthub
     volumes:
