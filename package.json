@@ -36,8 +36,7 @@
     "docker:shell:frontend": "docker-compose run --rm frontend /bin/bash",
     "docker:shell:backend": "docker-compose run --rm backend /bin/bash",
     "docker:db:migrate": "docker-compose run --rm backend node_modules/.bin/sequelize db:migrate",
-    "docker:db:migrate:undo": "docker-compose run --rm backend node_modules/.bin/sequelize db:migrate:undo",
-    "docker:cucumber": "docker-compose run --rm backend yarn cucumber"
+    "docker:db:migrate:undo": "docker-compose run --rm backend node_modules/.bin/sequelize db:migrate:undo"
   },
   "repository": {
     "type": "git",
@@ -110,10 +109,8 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
     "@cucumber/cucumber": "^7.0.0-rc.0",
     "axios": "^0.20.0",
-    "chromedriver": "^85.0.1",
     "client-oauth2": "^4.3.3",
     "cucumber-html-reporter": "^5.2.0",
     "dotenv": "^8.2.0",
@@ -126,7 +123,6 @@
     "memorystore": "^1.6.2",
     "pg": "^8.3.3",
     "puppeteer": "^5.3.1",
-    "selenium-webdriver": "^4.0.0-alpha.7",
     "sequelize": "^5.22.3",
     "url-join": "^4.0.1",
     "winston": "^3.3.3"

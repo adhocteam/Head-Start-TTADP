@@ -13,9 +13,6 @@ executors:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: secretpass
           POSTGRES_DB: ttasmarthub
-  machine-executor:
-    machine:
-      image: circleci/classic:latest
 commands:
   create_combined_yarnlock:
     description: "Concatenate all yarn.json files into single file.
