@@ -198,9 +198,9 @@ jobs:
             yarn deps
             yarn build
             yarn start:ci
-          environment:
-            AUTH_BASE: https://uat.hsesinfo.org
-            REDIRECT_URI_HOST: http://localhost:8080
+          # environment:
+          #   AUTH_BASE: https://uat.hsesinfo.org
+          #   REDIRECT_URI_HOST: http://localhost:8080
           background: true
       # - run:
       #     name: Start client
