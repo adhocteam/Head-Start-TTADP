@@ -6,7 +6,7 @@ terraform {
   backend "s3" {
     bucket         = "ohs-terraform-state"
     key            = "terraform.tfstate.dev"
-    encrypt        = true
+    encrypt         = true
   }
 }
 
