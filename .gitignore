@@ -7,3 +7,4 @@ coverage
 junit.xml
 frontend/build
 build/
+**/*secrets.auto.tfvars

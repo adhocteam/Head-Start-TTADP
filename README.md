@@ -109,6 +109,13 @@ who have proper cloud.gov permissions at any time.
 - HSES authentication middleware secrets passed to the application as `AUTH_CLIENT_ID` and `AUTH_CLIENT_SECRET`.
 - The application `SESSION_SECRET`.
 
+Persistent Infrastructure
+-------------------------
+
+**What is persistent infrastructure?**
+
+The infrastructure used to run this application can be categorized into two distinct types: ephemeral and persistent. Ephemeral infrastructure is all the development assets that are recreated each time the application is deployed. Most of these infrastructure pieces are
+
 <!-- Links -->
 
 [adhoc-main]: https://github.com/adhocteam/Head-Start-TTADP/tree/main

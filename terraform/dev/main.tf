@@ -6,7 +6,6 @@ terraform {
   backend "s3" {
     bucket         = "ohs-terraform-state"
     key            = "terraform.tfstate.dev"
-    dynamodb_table = "ohs-terraform-lock"
     encrypt        = true
   }
 }
