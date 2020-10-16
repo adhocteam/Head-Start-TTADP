@@ -23,7 +23,7 @@ If you are not using your own custom pre-commit hooks, start using this hook by 
 
 ```bash
 # from repo root directory
-chmod 755 .githooks/precommit
+chmod 755 .githooks/pre-commit
 git config core.hooksPath .githooks
 ```
 
