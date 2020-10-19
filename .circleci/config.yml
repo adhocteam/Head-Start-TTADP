@@ -192,6 +192,7 @@ jobs:
           name: Run cucumber
           command: |
             mkdir reports
+            sleep 10
             yarn cucumber
       - store_artifacts:
           path: reports/
