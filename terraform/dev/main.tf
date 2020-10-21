@@ -1,5 +1,5 @@
 ###
-# State management
+# Terraform settings and backend
 ###
 
 terraform {
@@ -11,7 +11,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket  = "ohs-ttahub-iac-state"
+    bucket  = "cg-77510827-41f7-4b13-aa6b-c292afe85b25"
     key     = "terraform.tfstate.dev"
     encrypt = true
     region  = "us-gov-west-1"
@@ -32,13 +32,17 @@ provider "aws" {
 }
 
 ###
-# Cloud Foundry infrastructure
+# Target space/org
 ###
 
 data "cloudfoundry_space" "space" {
   org_name = var.cf_org_name
   name     = var.cf_space_name
 }
+
+###
+# RDS instance
+###
 
 data "cloudfoundry_service" "rds" {
   name = "aws-rds"

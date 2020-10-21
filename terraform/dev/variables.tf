@@ -2,20 +2,22 @@
 # in `secrets.auto.tfvars.` When provided via environment
 # variables, the names must be prefixed with `TF_VAR_`
 # Ex. `TF_VAR_cf_user="foobarbaz"`
-
+# For more information on generating values for these secrets
+# see terraform/README.md.
 
 variable "aws_access_key_id" {
   type        = string
-  description = "secret username like string needed for aws provider tag and access to state in S3"
+  description = "secret; access_key_id output by cloud foundry service-key command"
 }
+
 variable "aws_secret_access_key" {
   type        = string
-  description = "secret password like string needed for aws provider tag and access to state in S3"
+  description = "secret; secret_access_key output by cloud foundry service-key command"
 }
 
 variable "aws_region" {
   type        = string
-  description = "aws region needed for aws provider tag and access to state in S3"
+  description = "region output by cloud foundry service-key command"
   default     = "us-gov-west-1"
 }
 
@@ -33,7 +35,7 @@ variable "cf_org_name" {
 
 variable "cf_password" {
   type        = string
-  description = "secret cloud.gov deployer account password"
+  description = "secret; cloud.gov deployer account password"
 }
 
 variable "cf_space_name" {
@@ -44,11 +46,11 @@ variable "cf_space_name" {
 
 variable "cf_user" {
   type        = string
-  description = "secret cloud.gov deployer account user"
+  description = "secret; cloud.gov deployer account user"
 }
 
 variable "env" {
   type        = string
-  description = "deployment environment"
+  description = "deployment environment in shortened form (dev, staging, prod)"
   default     = "dev"
 }
