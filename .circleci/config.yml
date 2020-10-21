@@ -147,7 +147,9 @@ jobs:
       - run:  # Fail audit only for moderate and higher vulnerabilities
           name: Audit vulnerability of backend node_modules
           command: |
-            yarn audit --level low; EXIT_CODE=$?; \
+            cd frontend
+            ./run-yarn-audit.sh; \
+            EXIT_CODE=$?; \
               (($EXIT_CODE >= 4)) && exit $EXIT_CODE || exit 0
       - run:  # Fail audit only for moderate and higher vulnerabilities
           name: Audit vulnerability of frontend node_modules
@@ -181,7 +183,6 @@ jobs:
       - run:
           name: Start server
           command: |
-            yarn deps
             yarn build
             yarn start:ci
           background: true
