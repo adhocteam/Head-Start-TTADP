@@ -54,7 +54,7 @@ _Tip: You run terraform files from the directory in which they are stored. For e
 
     Terraform configuration files committed to the `main` branch should describe the infrastructure that is currently in use. This is described as a "clean state". Use the `plan` command to display a list of infrastructure that Terraform will need to update, delete or create to match what is in your local Terraform configuration files.
       - If state is clean, `plan` will not display any changes.
-      - If state is not clean reach out to your fellow developers for clarification and advice on how to proceed. It is very likely that changes were accidentally applied and a developer is currently working on a fix.
+      - If state is not clean and you are working on a feature branch try merging in the main branch; your local terraform files might be behind the current/applied state. If `plan` still shows an unclean state, reach out to your fellow developers for clarification and advice on how to proceed. It is very likely that changes were accidentally applied and a developer is currently working on a fix.
 
     ```bash
     terraform plan
@@ -62,13 +62,13 @@ _Tip: You run terraform files from the directory in which they are stored. For e
 
 1. Make changes and get feedback
 
-    Make any needed changes to your local Terraform configuration files.  Open a PR for those changes.  In your PR include the output from `terraform plan` so reviewers can see what resources will be updated, created and destroyed.
+    Make any needed changes to your local Terraform configuration files. Open a PR for those changes. In your PR include the output from `terraform plan` so reviewers can see what resources will be updated, created and destroyed.
 
-1. Merge and apply changes
+1. Merge and apply changes immediately
 
-    _Tip: Before you merge your PR ensure you have enough time to sit and work through any unexpected problems that could arise._
+    _Tip: Before you merge your PR ensure you have enough time to sit and work through any unexpected problems that could arise. Database changes can take upwards of ten minutes to apply._
 
-    Merge your PR into `main` and then **immediately afterwards** apply your changes. Always merge and apply in one sitting.
+    Merge your PR into `main` and then **immediately** apply your changes. Always merge and apply in one sitting.
 
     ```bash
     terraform apply
@@ -77,6 +77,6 @@ _Tip: You run terraform files from the directory in which they are stored. For e
 <!-- Links -->
 
 [cloudgov-deployer]: https://cloud.gov/docs/services/cloud-gov-service-account/
+[cloudgov-service-keys]: https://cloud.gov/docs/services/s3/#interacting-with-your-s3-bucket-from-outside-cloudgov
 [tf]: https://www.terraform.io/downloads.html
 [tf-vars]: https://www.terraform.io/docs/configuration/variables.html#variable-definitions-tfvars-files
-

@@ -3,35 +3,45 @@
 ###
 
 terraform {
+  required_providers {
+    cloudfoundry = {
+      source  = "cloudfoundry-community/cloudfoundry"
+      version = "0.12.6"
+    }
+  }
+
   backend "s3" {
-    bucket  = "ohs-terraform-state"
+    bucket  = "ohs-ttahub-iac-state"
     key     = "terraform.tfstate.dev"
     encrypt = true
+    region  = "us-gov-west-1"
   }
+}
+
+provider "cloudfoundry" {
+  api_url      = var.cf_api_url
+  user         = var.cf_user
+  password     = var.cf_password
+  app_logs_max = 30
+}
+
+provider "aws" {
+  access_key = var.aws_access_key_id
+  secret_key = var.aws_secret_access_key
+  region     = var.aws_region
 }
 
 ###
 # Cloud Foundry infrastructure
 ###
 
-# - account inputs
-
 data "cloudfoundry_space" "space" {
   org_name = var.cf_org_name
   name     = var.cf_space_name
 }
 
-data "service_account" "service_account" {
-  org_name = var.cf_org_name
-  name     = var.cf_space_name
-}
-
-# - services
-
-resource "cloudfoundry_service_instance" "service_account" {
-  name         = "ttasmarthub-deployer"
-  space        = data.cloudfoundry_space.space.id
-  service_plan = data.cloudfoundry_service.service_account.service_plans["space-deployer"]
+data "cloudfoundry_service" "rds" {
+  name = "aws-rds"
 }
 
 resource "cloudfoundry_service_instance" "database" {
