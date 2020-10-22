@@ -5,7 +5,7 @@ executors:
   docker-executor:
     # for docker you must specify an image to use for the primary container
     docker:
-      - image: circleci/node:12.18
+      - image: circleci/node:12.18-browsers
         environment:
           DATABASE_URL: postgresql://postgres@localhost/ttasmarthub
       - image: circleci/postgres:12.4-ram
@@ -13,6 +13,9 @@ executors:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: secretpass
           POSTGRES_DB: ttasmarthub
+  machine-executor:
+    machine:
+      image: circleci/classic:latest
 commands:
   create_combined_yarnlock:
     description: "Concatenate all yarn.json files into single file.
@@ -144,12 +147,17 @@ jobs:
       - run:  # Fail audit only for moderate and higher vulnerabilities
           name: Audit vulnerability of backend node_modules
           command: |
-            yarn audit --level low; EXIT_CODE=$?; \
+            chmod 744 ./run-yarn-audit.sh
+            ./run-yarn-audit.sh; \
+            EXIT_CODE=$?; \
               (($EXIT_CODE >= 4)) && exit $EXIT_CODE || exit 0
       - run:  # Fail audit only for moderate and higher vulnerabilities
           name: Audit vulnerability of frontend node_modules
           command: |
-            yarn --cwd frontend audit --level low; EXIT_CODE=$?; \
+            cd frontend
+            chmod 744 ./run-yarn-audit.sh
+            ./run-yarn-audit.sh; \
+            EXIT_CODE=$?; \
               (($EXIT_CODE >= 4)) && exit $EXIT_CODE || exit 0
       - store_artifacts:
           path: reports
@@ -178,7 +186,6 @@ jobs:
       - run:
           name: Start server
           command: |
-            yarn deps
             yarn build
             yarn start:ci
           background: true
@@ -186,18 +193,10 @@ jobs:
           name: Run migrations ci
           command: yarn run db:migrate:ci
       - run:
-          name: Install Headless Chrome dependencies
-          command: |
-            sudo apt-get install -yq \
-            gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
-            libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
-            libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 \
-            libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates \
-            fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
-      - run:
           name: Run cucumber
           command: |
             mkdir reports
+            sleep 5
             yarn cucumber
       - store_artifacts:
           path: reports/
@@ -213,6 +212,34 @@ jobs:
           path: frontend/reports/
       - store_artifacts:
           path: frontend/coverage/
+  dynamic_security_scan:
+    executor: machine-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Start up local server
+          command: |
+            docker-compose -f docker-compose-test.yml run --rm server yarn install --production=false
+            docker-compose -f docker-compose-test.yml run --rm server yarn --cwd frontend install --production=false
+            docker-compose -f docker-compose-test.yml run --rm server yarn build
+            docker-compose -f docker-compose-test.yml run --rm server yarn --cwd frontend run build
+            docker-compose -f docker-compose-test.yml up -d
+            docker-compose -f docker-compose-test.yml exec server yarn db:migrate
+      - run:
+          name: Pull OWASP ZAP docker image
+          command: docker pull owasp/zap2docker-weekly
+      - run:
+          name: Run OWASP ZAP
+          command: |
+            docker run \
+              -v $(pwd)/zap.conf:/zap/wrk/zap.conf:rw \
+              -v $(pwd)/reports:/zap/wrk:rw \
+              --rm \
+              --network="project_smarthub" \
+              -t owasp/zap2docker-stable zap-baseline.py \
+              -t http://server:8080 \
+              -c zap.conf -I -i
   deploy:
     executor: docker-executor
     steps:
@@ -301,12 +328,16 @@ workflows:
       - test_frontend:
           requires:
             - build
+      - dynamic_security_scan:
+          requires:
+            - build
       - deploy:
           requires:
             - lint_audit
             - test_backend
             - cucumber_test
             - test_frontend
+            - dynamic_security_scan
           filters:
             branches:
               only:
