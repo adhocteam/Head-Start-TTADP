@@ -8,10 +8,10 @@ These docs are verbose because this is technology with which developers will rar
 
 1. **Install terraform**
 
-    On MacOS: `brew install terraform`
-    On other platforms: [Download and install terraform][tf]
+    - On MacOS: `brew install terraform`
+    - On other platforms: [Download and install terraform][tf]
 
-2. **Use githook for formatting**
+1. **Use githook for formatting**
 
     Terraform has a specific whitespace formatting style that is difficult to maintain. Terraform includes a formatting command, `terraform fmt`, to help developers maintain the correct style. This repository contains a pre-commit hook that runs `terraform fmt` on all staged files so you don't have to remember to run this command.
 
@@ -19,8 +19,10 @@ These docs are verbose because this is technology with which developers will rar
 
     ```bash
     # start from repo root directory
+
     # make the pre-commit file executable
     chmod 755 .githooks/pre-commit
+
     # change your default hooks directory to `.githooks`.
     git config core.hooksPath .githooks
     ```
