@@ -5,16 +5,6 @@
 # For more information on generating values secret variables
 # see terraform/README.md.
 
-variable "aws_access_key_id" {
-  type        = string
-  description = "secret; access_key_id output by cloud foundry service-key command"
-}
-
-variable "aws_secret_access_key" {
-  type        = string
-  description = "secret; secret_access_key output by cloud foundry service-key command"
-}
-
 variable "aws_region" {
   type        = string
   description = "region output by cloud foundry service-key command"
