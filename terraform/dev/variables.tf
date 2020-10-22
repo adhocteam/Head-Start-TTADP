@@ -2,7 +2,7 @@
 # in `secrets.auto.tfvars.` When provided via environment
 # variables, the names must be prefixed with `TF_VAR_`
 # Ex. `TF_VAR_cf_user="foobarbaz"`
-# For more information on generating values for these secrets
+# For more information on generating values secret variables
 # see terraform/README.md.
 
 variable "aws_access_key_id" {
@@ -30,7 +30,7 @@ variable "cf_api_url" {
 variable "cf_org_name" {
   type        = string
   description = "cloud.gov organization name"
-  default     = "hhs-acf-prototyping"
+  default     = "hhs-acf-ohs-tta"
 }
 
 variable "cf_password" {
@@ -41,7 +41,7 @@ variable "cf_password" {
 variable "cf_space_name" {
   type        = string
   description = "cloud.gov space name"
-  default     = "ohstta-dev"
+  default     = "ttahub-dev"
 }
 
 variable "cf_user" {

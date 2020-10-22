@@ -49,7 +49,7 @@ data "cloudfoundry_service" "rds" {
 }
 
 resource "cloudfoundry_service_instance" "database" {
-  name         = "ttasmarthub-${var.env}"
+  name         = "ttahub-${var.env}"
   space        = data.cloudfoundry_space.space.id
   service_plan = data.cloudfoundry_service.rds.service_plans["medium-psql"]
 }

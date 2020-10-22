@@ -38,16 +38,17 @@ These docs are verbose because this is technology with which developers will rar
     ```
     # login
     cf login -a api.fr.cloud.gov --sso
-    # follow temporary authorization code prompts; select the org and space within which you want to build infrastructure
+    # follow temporary authorization code prompts
+    # select org "hhs-acf-ohs-tta", and the space (env) within which you want to build infrastructure
 
     # create a service instance that can provision service accounts
-    cf create-service cloud-gov-service-account space-deployer < YOUR-DEPLOYER-NAME >
+    cf create-service cloud-gov-service-account space-deployer < YOUR-NAME >
 
     # bind a service key to the service instance
-    cf create-service-key < YOUR-DEPLOYER-NAME > space-deployer-key
+    cf create-service-key < YOUR-NAME > space-deployer-key
 
     # return a username/password pair for the service instance
-    cf service-key < YOUR-DEPLOYER-NAME > space-deployer-key
+    cf service-key < YOUR-NAME > space-deployer-key
     ```
 
     Add the username and password output from the last command to a `secrets.auto.tfvars` file in each environment directory. Terraform automatically loads this variable definition file. You can also provide variable values via environment variables. For more on this, check out [terraform variable definitions][tf-vars].
@@ -68,7 +69,8 @@ These docs are verbose because this is technology with which developers will rar
     ```
     # login
     cf login -a api.fr.cloud.gov --sso
-    # follow temporary authorization code prompts; select org "hhs-acf-ohs-tta", space "infrastructure-config"
+    # follow temporary authorization code prompts
+    # select org "hhs-acf-ohs-tta", space "infrastructure-config"
 
     # create a service instance
     cf create-service-key ohs-ttahub-iac-state < YOUR-NAME >
