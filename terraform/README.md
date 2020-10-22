@@ -40,7 +40,7 @@ These docs are verbose because this is technology with which developers will rar
 
     You can use the same account credentials that are used to deploy applications via CircleCi or follow the steps below to generate a new set of credentials. If you need more information, check out the [service account docs][cloudgov-deployer].
 
-    ```
+    ```bash
     # login
     cf login -a api.fr.cloud.gov --sso
     # follow temporary authorization code prompts
@@ -76,7 +76,7 @@ These docs are verbose because this is technology with which developers will rar
 
     Follow these directions to create a new service account and generate credentials. If you need more information check out the [services docs][cloudgov-service-keys].
 
-    ```
+    ```bash
     # login
     cf login -a api.fr.cloud.gov --sso
     # follow temporary authorization code prompts
@@ -90,7 +90,7 @@ These docs are verbose because this is technology with which developers will rar
     cf service-key ohs-ttahub-iac-state < YOUR-NAME >
     ```
 
-    These credentials are for an S3 bucket that is shared between dev, staging, and prod. It is easiest to simply add your `access_key_id` and `secret_access_key` to a `~/.aws/credentials`. See [Configuration and Credential Files][aws-config] for more information.
+    These credentials are for an S3 bucket that is shared between dev, staging, and prod. If you're already using AWS CLI you may simply add your `access_key_id`, `secret_access_key` values to `~/.aws/credentials`, and your `region` value to `~/.aws/config`. If this is your first time using AWS CLI [install the tool][aws-install] and then follow the [Quick Configuration with aws configure guide][aws-config].
 
     Your `~/.aws/credentials` file should look something like this:
 
@@ -98,11 +98,13 @@ These docs are verbose because this is technology with which developers will rar
     [default]
     aws_access_key_id = foo
     aws_secret_access_key = bar
+    ```
 
-    [ohs]
+    Your `~/.aws/config` file should look something like this:
+
+    ```
+    [default]
     region = us-gov-west-1
-    aws_access_key_id = foo
-    aws_secret_access_key = bar
     ```
 
 ## Terraform workflow
@@ -143,7 +145,8 @@ _Tip: You run terraform files from the directory in which they are stored. For e
 
 <!-- Links -->
 
-[aws-config]: http://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html
+[aws-config]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-config
+[aws-install]: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
 [cloudgov-deployer]: https://cloud.gov/docs/services/cloud-gov-service-account/
 [cloudgov-service-keys]: https://cloud.gov/docs/services/s3/#interacting-with-your-s3-bucket-from-outside-cloudgov
 [cf-install]: https://docs.cloudfoundry.org/cf-cli/install-go-cli.html
