@@ -6,7 +6,7 @@ const assert = require('assert');
 const select = require('puppeteer-select');
 const scope = require('../support/scope');
 
-Given('the current page is the activity reports page', async () => {
+Given('I am on the activity reports page', async () => {
   const page = scope.context.currentPage;
   const selector = 'a[href$="activity-reports"]';
   await Promise.all([
@@ -15,7 +15,7 @@ Given('the current page is the activity reports page', async () => {
   ]);
 });
 
-Then('we see the Stepper', async () => {
+Then('I see the Stepper', async () => {
   const page = scope.context.currentPage;
   const selector = '[aria-label="progress"]';
 
@@ -34,7 +34,7 @@ Then('the first step is the Activity Summary', async () => {
   assert.equal(value, 'Activity Summary');
 });
 
-Then('two navigation buttons are visible', async () => {
+Then('I see two navigation buttons', async () => {
   const page = scope.context.currentPage;
 
   const buttonOne = await select(page).getElement('button:contains("Previous")');
@@ -67,7 +67,7 @@ Then('the {string} button is disabled', async (string) => {
   // assert.equal(value, 'Next');
 });
 
-When('the {string} button is clicked', async (string) => {
+When('I click the {string} button', async (string) => {
   const page = scope.context.currentPage;
   const buttonTwo = await select(page).getElement(`button:contains(${string})`);
   await buttonTwo.click();
@@ -83,7 +83,7 @@ Then('the {string} button is no longer disabled', async (string) => {
   assert.equal(value, null);
 });
 
-Then('the {string} step is no longer current', async (string) => {
+Then('I moved past the {string} step', async (string) => {
   const page = scope.context.currentPage;
   assert.equal(string, 'Activity Summary');
   const selector = `[data-testid="${string}"] > [aria-current="false"]`;
@@ -94,9 +94,9 @@ Then('the {string} step is no longer current', async (string) => {
   assertTrue(value.startsWith(string));
 });
 
-Then('the {string} step is current', async (string) => {
+Then('I am on the {string} step', async (string) => {
   const page = scope.context.currentPage;
-  assert.equal(string, 'Participants');
+  // assert.equal(string, 'Participants');
   const selector = `[data-testid="${string}"] > [aria-current="true"]`;
 
   const value = await page.$eval(selector, (el) => el.textContent);
@@ -105,13 +105,13 @@ Then('the {string} step is current', async (string) => {
   assert.equal(value, string);
 });
 
-When('the {string} button is clicked again', async (string) => {
+When('I click the {string} button again', async (string) => {
   const page = scope.context.currentPage;
   const buttonTwo = await select(page).getElement(`button:contains(${string})`);
   await buttonTwo.click();
 });
 
-Then('the {string} step is still current, but on page 2', async (string) => {
+Then('the {string} step is still current, but I am on page 2', async (string) => {
   const page = scope.context.currentPage;
   assert.equal(string, 'Participants');
   const selector = '[data-testid="form"] > h1';
@@ -122,7 +122,7 @@ Then('the {string} step is still current, but on page 2', async (string) => {
   assert.equal(value, `${string} - Page 2`);
 });
 
-Then('the {string} step is not yet reached', async (string) => {
+Then('I have not advanced to the {string} step yet', async (string) => {
   const page = scope.context.currentPage;
   assert.equal(string, 'Goals & Objectives');
   const selector = `[data-testid="${string}"] > [aria-current="false"]`;
@@ -133,7 +133,7 @@ Then('the {string} step is not yet reached', async (string) => {
   assertTrue(value.startsWith(string));
 });
 
-Then('the {string} step is still current, but on page 1', async (string) => {
+Then('the {string} step is still current, but I am on page 1', async (string) => {
   const page = scope.context.currentPage;
   assert.equal(string, 'Participants');
   const selector = '[data-testid="form"] > h1';
@@ -144,21 +144,10 @@ Then('the {string} step is still current, but on page 1', async (string) => {
   assert.equal(value, `${string} - Page 1`);
 });
 
-Then('the {string} step is not current', async (string) => {
+Then('I am no longer on the {string} step', async (string) => {
   const page = scope.context.currentPage;
   assert.equal(string, 'Participants');
   const selector = `[data-testid="${string}"] > [aria-current="false"]`;
-
-  const value = await page.$eval(selector, (el) => el.textContent);
-
-  assertTrue(value);
-  assertTrue(value.startsWith(string));
-});
-
-Then('the {string} step is now current', async (string) => {
-  const page = scope.context.currentPage;
-  assert.equal(string, 'Activity Summary');
-  const selector = `[data-testid="${string}"] > [aria-current="true"]`;
 
   const value = await page.$eval(selector, (el) => el.textContent);
 

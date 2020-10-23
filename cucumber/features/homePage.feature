@@ -1,10 +1,10 @@
 Feature: TTA Smarthub Home Page
  
     Scenario: Welcome page is displayed
-        Given a user is logged in
-        And and on the home page of tta-smarthub
-        Then we should see "Welcome to the TTA Smart Hub" message
-        And we should see "Activity Reports" link
+        Given I am logged in
+        And I am on the Smart Hub home page
+        Then I see "Welcome to the TTA Smart Hub" message
+        And I see "Activity Reports" link
     # Scenario: Login is redirected to HSES
     #     Given the home page of tta-smarthub
     #     When pressing login

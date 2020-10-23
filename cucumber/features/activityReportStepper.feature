@@ -1,28 +1,28 @@
 Feature: Activity Report Stepper
  
     Scenario: Activity Summary
-        Given a user is logged in
-        And the current page is the activity reports page
-        Then we see the Stepper
+        Given I am logged in
+        And I am on the activity reports page
+        Then I see the Stepper
         And the first step is the Activity Summary
     Scenario: Navigation buttons
-        Given a user is logged in
-        And the current page is the activity reports page
-        Then two navigation buttons are visible
+        Given I am logged in
+        And I am on the activity reports page
+        Then I see two navigation buttons
         And the "Previous" button is disabled
-        When the "Next" button is clicked
+        When I click the "Next" button
         Then the "Previous" button is no longer disabled
      Scenario: Progress
-        Given a user is logged in
-        And the current page is the activity reports page
-        When the "Next" button is clicked
-        Then the "Activity Summary" step is no longer current
-        And the "Participants" step is current
-        When the "Next" button is clicked again
-        Then the "Participants" step is still current, but on page 2
-        And the "Goals & Objectives" step is not yet reached
-        When the "Previous" button is clicked
-        Then the "Participants" step is still current, but on page 1
-        When the "Previous" button is clicked again
-        Then the "Participants" step is not current
-        And the "Activity Summary" step is now current
+        Given I am logged in
+        And I am on the activity reports page
+        When I click the "Next" button
+        Then I moved past the "Activity Summary" step
+        And I am on the "Participants" step
+        When I click the "Next" button again
+        Then the "Participants" step is still current, but I am on page 2
+        And I have not advanced to the "Goals & Objectives" step yet
+        When I click the "Previous" button
+        Then the "Participants" step is still current, but I am on page 1
+        When I click the "Previous" button again
+        Then I am no longer on the "Participants" step
+        And I am on the "Activity Summary" step

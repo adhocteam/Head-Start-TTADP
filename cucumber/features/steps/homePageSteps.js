@@ -1,3 +1,4 @@
+require('dotenv').config();
 const {
   Given, Then,
 } = require('@cucumber/cucumber');
@@ -5,20 +6,35 @@ const assertTrue = require('assert');
 const assert = require('assert');
 const scope = require('../support/scope');
 
-Given('a user is logged in', async () => {
+Given('I am logged in', async () => {
   if (!scope.browser) {
     const width = 1024;
     const height = 1600;
-    let launchOptions = { headless: false, args: ['--start-maximized'] };
 
-    scope.browser = await scope.driver.launch(launchOptions);
+    scope.browser = await scope.driver.launch({
+      defaultViewport: { width, height },
+      headless: true,
+      // slowMo: 250, // can be used in conjunction with headless: false to slow down the browser
+    });
   }
-  //   scope.browser = await scope.driver.launch({
-  //     defaultViewport: { width, height },
-  //   });
-  // }
   scope.context.currentPage = await scope.browser.newPage();
   const page = scope.context.currentPage;
+
+  const domain = process.env.TTA_SMART_HUB_URI.split('//')[1];
+
+  const cookies = [{
+    name: 'CUCUMBER_USER',
+    value: `${process.env.CUCUMBER_USER}`,
+    domain,
+    path: '/',
+    httpOnly: true,
+    secure: false,
+    session: true,
+    sameSite: 'Strict',
+  }];
+
+  await page.setCookie(...cookies);
+
   const loginLinkSelector = 'a[href$="api/login"]';
   const homeLinkSelector = 'a[href$="/"]';
 
@@ -36,18 +52,18 @@ Given('a user is logged in', async () => {
   }
 });
 
-Given('and on the home page of tta-smarthub', async () => {
+Given('I am on the Smart Hub home page', async () => {
   await scope.context.currentPage.waitForSelector('h1');
 });
 
-Then('we should see "Welcome to the TTA Smart Hub" message', async () => {
+Then('I see {string} message', async (string) => {
   const page = scope.context.currentPage;
   const value = await page.$eval('h1', (el) => el.textContent);
 
-  assertTrue(value.includes('Welcome to the TTA Smart Hub'));
+  assertTrue(value.includes(string));
 });
 
-Then('we should see {string} link', async (string) => {
+Then('I see {string} link', async (string) => {
   const page = scope.context.currentPage;
   const selector = 'a[href$="activity-reports"]';
 
