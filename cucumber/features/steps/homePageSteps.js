@@ -36,7 +36,8 @@ Given('I am logged in', async () => {
   await page.setCookie(...cookies);
 
   const loginLinkSelector = 'a[href$="api/login"]';
-  const homeLinkSelector = 'a[href$="/"]';
+  // const homeLinkSelector = 'a[href$="/"]';
+  const activityReportsSelector = 'a[href$="activity-reports"]';
 
   await page.goto(scope.uri);
   await page.waitForSelector('em'); // Page title
@@ -48,7 +49,8 @@ Given('I am logged in', async () => {
 
   if (result) {
     await page.click(loginLinkSelector);
-    await page.waitForSelector(homeLinkSelector); // Home link
+    await page.waitForSelector(activityReportsSelector); // Activity Reports link
+    await page.screenshot({ path: 'reports/givenLoggedIn.png' });
   }
 });
 

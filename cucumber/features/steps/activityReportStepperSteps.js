@@ -13,6 +13,7 @@ Given('I am on the activity reports page', async () => {
     page.waitForNavigation(),
     page.click(selector),
   ]);
+  await page.screenshot({ path: 'reports/givenOnTheActivityReports.png' });
 });
 
 Then('I see the Stepper', async () => {
@@ -131,6 +132,7 @@ Then('I have not advanced to the {string} step yet', async (string) => {
 
   assertTrue(value);
   assertTrue(value.startsWith(string));
+  await page.screenshot({ path: 'reports/notOnGoalsYet.png' });
 });
 
 Then('the {string} step is still current, but I am on page 1', async (string) => {
