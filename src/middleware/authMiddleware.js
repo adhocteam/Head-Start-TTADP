@@ -20,7 +20,6 @@ export const hsesAuth = new ClientOAuth2({
  * @param {*} res - response
  */
 export function login(req, res) {
-  console.log(req.headers.cookie);
   if (req.headers.cookie && req.headers.cookie === `CUCUMBER_USER=${process.env.CUCUMBER_USER}`) {
     req.session.userId = process.env.CUCUMBER_USER_ID;
     res.redirect(process.env.TTA_SMART_HUB_URI);
