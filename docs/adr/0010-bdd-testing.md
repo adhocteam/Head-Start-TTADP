@@ -8,11 +8,11 @@ Pending
 
 ## Context
 
-Behavior-driven development (BDD) allows for a broader team to collaborate on software development. The business stakeholders have insight into how well the software meets the requirements. Through automated tests they have a way to validate the functionality in a user friendly way. Cucumber, and it particular cucumber-js was selected as the tool of choice to accomplish this. To go along with cucumber-js, puppeteer as well as selenium webdriver were looked at to provide a full solution for BDD testing.
+Behavior-driven development (BDD) allows for a broader team to collaborate on software development. The business stakeholders have insight into how well the software meets the requirements. Through automated tests they have a way to validate the functionality in a user friendly way. Cucumber or in our case cucumber-js is a top tool to provide a friendly language for all team members. To implement cucumber-js, additional tools are needed to provide a way to run automated browser tests. Here, Puppeteer as well as selenium webdriver both of which are popular tools to enable browser automation were evalueated.
 
 ## Decision
 
-Puppeteer as well as selenium webdriver provide a way to run automated browser tests. Both of these are popular tools to enable browser automation. Puppeteer offers more control over Chromium based browsers, very fast, headless by default, run modej, and it can take screenshots of the pages, both in an image and PDF formats. Additionally, it measures rendering and load times by Chrome Performance Analysis tool and it is easier to set up than selenium webdriver. The drawback to using Puppeteer is it's lack of full cross-browser support, which is offered by the selenium webdriver, since Puppeteer is specialized for Chromium.
+To go along with cucumber-js Puppeteer was selected. Puppeteer offers more control over Chromium based browsers, very fast, headless by default, run mode, and it can take screenshots of the pages, both in an image and PDF formats. Additionally, it measures rendering and load times by Chrome Performance Analysis tool and it is easier to set up than selenium webdriver. The drawback to using Puppeteer is it's lack of full cross-browser support, which is offered by the selenium webdriver, since Puppeteer is specialized for Chromium.
 
 ## Consequences
 

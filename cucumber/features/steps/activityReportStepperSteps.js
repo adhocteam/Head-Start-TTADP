@@ -54,18 +54,13 @@ Then('I see two navigation buttons', async () => {
 Then('the {string} button is disabled', async (string) => {
   const page = scope.context.currentPage;
   const buttonOneSelector = 'button[disabled]';
-  // const buttonOne = await select(page).getElement('button:contains("Previous")');
-  // const buttonTwo = await select(page).getElement('button:contains("Next")');
+
   const buttonPrevious = await page.$(buttonOneSelector);
 
   assertTrue(buttonPrevious);
-  // assertTrue(buttonTwo);
 
   const value = await page.evaluate((el) => el.textContent, buttonPrevious);
   assert.equal(value, string);
-
-  // value = await page.evaluate((el) => el.disabled, buttonTwo);
-  // assert.equal(value, 'Next');
 });
 
 When('I click the {string} button', async (string) => {
@@ -97,7 +92,6 @@ Then('I moved past the {string} step', async (string) => {
 
 Then('I am on the {string} step', async (string) => {
   const page = scope.context.currentPage;
-  // assert.equal(string, 'Participants');
   const selector = `[data-testid="${string}"] > [aria-current="true"]`;
 
   const value = await page.$eval(selector, (el) => el.textContent);
