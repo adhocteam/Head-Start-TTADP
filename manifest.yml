@@ -12,3 +12,5 @@ applications:
     REDIRECT_URI_HOST: ((REDIRECT_URI_HOST))
     TTA_SMART_HUB_URI: ((TTA_SMART_HUB_URI))
     SESSION_SECRET: ((SESSION_SECRET))
+  services:
+   - (( RDS_INSTANCE ))
