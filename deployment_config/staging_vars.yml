@@ -8,4 +8,4 @@ NODE_ENV: production
 REDIRECT_URI_HOST: https://tta-smarthub-staging.app.cloud.gov
 TTA_SMART_HUB_URI: https://tta-smarthub-staging.app.cloud.gov
 SESSION_SECRET: ((SESSION_SECRET))
-S3_DOC_UPLOAD_BUCKET: ttahub-document-upload-staging
+s3_doc_upload_bucket: ttahub-document-upload-staging
