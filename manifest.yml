@@ -13,4 +13,5 @@ applications:
       SESSION_SECRET: ((SESSION_SECRET))
       TTA_SMART_HUB_URI: ((TTA_SMART_HUB_URI))
     services:
+      - ((rds_instance))
       - ((s3_doc_upload_bucket))
