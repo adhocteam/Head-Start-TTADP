@@ -7,7 +7,7 @@ describe('authMiddleware', () => {
   const ORIGINAL_ENV = process.env;
 
   beforeEach(() => {
-    jest.resetModules() // clear the cache
+    jest.resetModules(); // clear the cache
     process.env = { ...ORIGINAL_ENV }; // make a copy
   });
 
@@ -72,9 +72,9 @@ describe('authMiddleware', () => {
   });
 
   it('bypass authorization if variables are set for UAT or accessibility testing', async () => {
-    // auth is bypassed if non-prod NODE_ENV and BYPASS_AUTH = 'true', needed for running cucumber and axe tests
-    process.env.NODE_ENV = 'development'
-    process.env.BYPASS_AUTH = 'true'
+    // auth is bypassed if non-prod NODE_ENV and BYPASS_AUTH = 'true', needed for cucumber and axe
+    process.env.NODE_ENV = 'development';
+    process.env.BYPASS_AUTH = 'true';
     const mockNext = jest.fn();
     const mockSession = jest.fn();
     mockSession.userId = undefined;
@@ -93,8 +93,8 @@ describe('authMiddleware', () => {
 
   it('require authorization if variables are set NOT for UAT or accessibility testing', async () => {
     // set env variables to values that require authorization
-    process.env.NODE_ENV = 'production'
-    process.env.BYPASS_AUTH = 'true'
+    process.env.NODE_ENV = 'production';
+    process.env.BYPASS_AUTH = 'true';
     const mockNext = jest.fn();
     const mockSession = jest.fn();
     mockSession.userId = undefined;
