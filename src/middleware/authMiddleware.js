@@ -20,6 +20,8 @@ export const hsesAuth = new ClientOAuth2({
  * @param {*} res - response
  */
 export function login(req, res) {
+  const referrer = req.headers.referer;
+  req.session.referrerPath = referrer ? new URL(referrer).pathname : '';
   const uri = hsesAuth.code.getUri();
   res.redirect(uri);
 }
