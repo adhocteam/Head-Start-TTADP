@@ -33,6 +33,10 @@ describe('authMiddleware', () => {
   });
 
   it('should redirect to login if user data is not present', async () => {
+    // Ensure authorization is required, do not bypass authorization check
+    process.env.NODE_ENV = 'test';
+    process.env.BYPASS_AUTH = 'false';
+
     const mockNext = jest.fn();
     const mockSession = jest.fn();
     mockSession.userId = undefined;
@@ -75,6 +79,7 @@ describe('authMiddleware', () => {
     // auth is bypassed if non-prod NODE_ENV and BYPASS_AUTH = 'true', needed for cucumber and axe
     process.env.NODE_ENV = 'development';
     process.env.BYPASS_AUTH = 'true';
+
     const mockNext = jest.fn();
     const mockSession = jest.fn();
     mockSession.userId = undefined;
