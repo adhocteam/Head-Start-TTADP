@@ -2736,7 +2736,20 @@ chownr@^1.1.1:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
-chromedriver@^87.0.0, chromedriver@latest:
+chromedriver@^86.0.0:
+  version "86.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-86.0.0.tgz#4b9504d5bbbcd4c6bd6d6fd1dd8247ab8cdeca67"
+  integrity sha512-byLJWhAfuYOmzRYPDf4asJgGDbI4gJGHa+i8dnQZGuv+6WW1nW1Fg+8zbBMOfLvGn7sKL41kVdmCEVpQHn9oyg==
+  dependencies:
+    "@testim/chrome-version" "^1.0.7"
+    axios "^0.19.2"
+    del "^5.1.0"
+    extract-zip "^2.0.1"
+    https-proxy-agent "^5.0.0"
+    mkdirp "^1.0.4"
+    tcp-port-used "^1.0.1"
+
+chromedriver@latest:
   version "87.0.0"
   resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-87.0.0.tgz#e8390deed8ada791719a67ad6bf1116614f1ba2d"
   integrity sha512-PY7FnHOQKfH0oPfSdhpLx5nEy5g4dGYySf2C/WZGkAaCaldYH8/3lPPucZ8MlOCi4bCSGoKoCUTeG6+wYWavvw==
