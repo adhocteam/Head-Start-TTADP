@@ -124,7 +124,7 @@
     "@babel/runtime": "^7.12.1",
     "@cucumber/cucumber": "^7.0.0-rc.0",
     "axios": "^0.20.0",
-    "chromedriver": "^87.0.0",
+    "chromedriver": "^86.0.0",
     "client-oauth2": "^4.3.3",
     "cucumber-html-reporter": "^5.2.0",
     "dotenv": "^8.2.0",
