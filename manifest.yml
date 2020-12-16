@@ -12,6 +12,10 @@ applications:
       NEW_RELIC_APP_NAME: tta-smarthub-((env))
       NEW_RELIC_LICENSE_KEY: ((NEW_RELIC_LICENSE_KEY))
       NODE_ENV: ((NODE_ENV))
+      POSTGRES_DB: secret
+      POSTGRES_HOST: secret
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USERNAME: secret
       # Soon to be removed in favor of TTA_SMART_HUB_URI
       REDIRECT_URI_HOST: ((REDIRECT_URI_HOST))
       SESSION_SECRET: ((SESSION_SECRET))
