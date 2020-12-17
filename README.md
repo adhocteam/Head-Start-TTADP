@@ -157,7 +157,9 @@ If your env variable is secret or the value is dependent on the deployment envir
 
 1. If secret, pass your variables to the `cf_deploy` command in the circleci config.
 
-	- Under `cf_deploy`, pass your secret vars to `cf push`. You need to add the variable as a parameter, and to pass it to `cf push` with the `--var` flag. You can think of `cf_push` as a function, which uses the `parameters` as inputs.
+	Make two additions here:
+	- Add the variable under `parameters`. Give your variable a description and a type of `env_var_name`.
+	- Under `steps:`, pass your new parameter to `cf push` with the `--var` flag. You can think of `cf_push` as a function, which uses the `parameters` as inputs. Make sure to retain the `${}` syntax. This forces CircleCI to interpret your `secret_fruit` parameter as a project-based environment variable, and make the correct substitution. This will become clearer in the next step.
 
 	**config/config.yml**
 	```
