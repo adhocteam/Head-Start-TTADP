@@ -17,9 +17,9 @@ applications:
       POSTGRES_PASSWORD: ((POSTGRES_PASSWORD))
       POSTGRES_USERNAME: ((POSTGRES_USERNAME))
       # Soon to be removed in favor of TTA_SMART_HUB_URI
-      REDIRECT_URI_HOST: ((redirect_uri_host))
+      REDIRECT_URI_HOST: ((REDIRECT_URI_HOST))
       SESSION_SECRET: ((SESSION_SECRET))
-      TTA_SMART_HUB_URI: ((tta_smart_hub_uri)
+      TTA_SMART_HUB_URI: ((TTA_SMART_HUB_URI)
     services:
       - ((rds_instance))
       - ((s3_doc_upload_bucket))

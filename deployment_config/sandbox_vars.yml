@@ -1,7 +1,7 @@
 env: sandbox
 instances: 1
-# This env variable should go away soon in favor of tta_smart_hub_uri
-redirect_uri_host: https://tta-smarthub-sandbox.app.cloud.gov
+# This env variable should go away soon in favor of TTA_SMART_HUB_URI
+REDIRECT_URI_HOST: https://tta-smarthub-sandbox.app.cloud.gov
 rds_instance: ttahub-sandbox
 s3_doc_upload_bucket: ttahub-document-upload-sandbox
-tta_smart_hub_uri: https://tta-smarthub-sandbox.app.cloud.gov
+TTA_SMART_HUB_URI: https://tta-smarthub-sandbox.app.cloud.gov
