@@ -119,6 +119,7 @@ commands:
           command: |
             cf run-task << parameters.app_name >> "yarn db:seed:prod"
   setup_higher_env_database:
+    steps:
       - run:
           name: Run database migrations
           command: |
