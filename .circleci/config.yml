@@ -104,6 +104,21 @@ commands:
               --var POSTGRES_PASSWORD=${<< parameters.postgres_password >>} \
               --var POSTGRES_USERNAME=${<< parameters.postgres_username >>} \
               --var SESSION_SECRET=${<< parameters.session_secret >>}
+  setup_lower_env_database:
+    steps:
+      - run:
+          name: Drop database
+          command: |
+            cf run-task << parameters.app_name >> "yarn db:drop:prod"
+      - run:
+          name: Run database migrations
+          command: |
+            cf run-task << parameters.app_name >> "yarn db:migrate:prod"
+      - run:
+          name: Seed database
+          command: |
+            cf run-task << parameters.app_name >> "yarn db:seed:prod"
+  setup_higher_env_database:
       - run:
           name: Run database migrations
           command: |
@@ -344,6 +359,7 @@ jobs:
                 postgres_password: SANDBOX_POSTGRES_PASSWORD
                 postgres_username: SANDBOX_POSTGRES_USERNAME
                 session_secret: SANDBOX_SESSION_SECRET
+            - setup_lower_env_database
       - when:  # dev
           condition:
             and:
@@ -364,6 +380,7 @@ jobs:
                 postgres_password: DEV_POSTGRES_PASSWORD
                 postgres_username: DEV_POSTGRES_USERNAME
                 session_secret: DEV_SESSION_SECRET
+            - setup_lower_env_database
       - when:  # staging
           condition:
             and:
@@ -384,6 +401,7 @@ jobs:
                 postgres_password: STAGING_POSTGRES_PASSWORD
                 postgres_username: STAGING_POSTGRES_USERNAME
                 session_secret: STAGING_SESSION_SECRET
+            - setup_higher_env_database
       - when:  # prod
           condition:
             and:
@@ -404,6 +422,7 @@ jobs:
                 postgres_password: PROD_POSTGRES_PASSWORD
                 postgres_username: PROD_POSTGRES_USERNAME
                 session_secret: PROD_SESSION_SECRET
+            - setup_higher_env_database
 workflows:
   build_test_deploy:
     jobs:
