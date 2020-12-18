@@ -105,6 +105,11 @@ commands:
               --var POSTGRES_USERNAME=${<< parameters.postgres_username >>} \
               --var SESSION_SECRET=${<< parameters.session_secret >>}
   setup_lower_env_database:
+    parameters:
+      app_name:
+        description: "Name of Cloud Foundry cloud.gov application; must match
+          application name specified in manifest"
+        type: string
     steps:
       - run:
           name: Drop database
@@ -119,6 +124,11 @@ commands:
           command: |
             cf run-task << parameters.app_name >> "yarn db:seed:prod"
   setup_higher_env_database:
+    parameters:
+      app_name:
+        description: "Name of Cloud Foundry cloud.gov application; must match
+          application name specified in manifest"
+        type: string
     steps:
       - run:
           name: Run database migrations
@@ -360,7 +370,8 @@ jobs:
                 postgres_password: SANDBOX_POSTGRES_PASSWORD
                 postgres_username: SANDBOX_POSTGRES_USERNAME
                 session_secret: SANDBOX_SESSION_SECRET
-            - setup_lower_env_database
+            - setup_lower_env_database:
+                app_name: tta-smarthub-sandbox
       - when:  # dev
           condition:
             and:
@@ -381,7 +392,8 @@ jobs:
                 postgres_password: DEV_POSTGRES_PASSWORD
                 postgres_username: DEV_POSTGRES_USERNAME
                 session_secret: DEV_SESSION_SECRET
-            - setup_lower_env_database
+            - setup_lower_env_database:
+                app_name: tta-smarthub-dev
       - when:  # staging
           condition:
             and:
@@ -402,7 +414,8 @@ jobs:
                 postgres_password: STAGING_POSTGRES_PASSWORD
                 postgres_username: STAGING_POSTGRES_USERNAME
                 session_secret: STAGING_SESSION_SECRET
-            - setup_higher_env_database
+            - setup_higher_env_database:
+                app_name: tta-smarthub-staging
       - when:  # prod
           condition:
             and:
@@ -423,7 +436,8 @@ jobs:
                 postgres_password: PROD_POSTGRES_PASSWORD
                 postgres_username: PROD_POSTGRES_USERNAME
                 session_secret: PROD_SESSION_SECRET
-            - setup_higher_env_database
+            - setup_higher_env_database:
+                app_name: tta-smarthub-prod
 workflows:
   build_test_deploy:
     jobs:
