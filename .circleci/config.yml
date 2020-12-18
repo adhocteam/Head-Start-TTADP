@@ -168,7 +168,7 @@ parameters:
     default: "main"
     type: string
   sandbox_git_branch:  # change to feature branch to test deployment
-    default: "js-52-assign-permissions-backend"
+    default: "sj-run-seed"
     type: string
 jobs:
   build:
@@ -442,33 +442,7 @@ workflows:
   build_test_deploy:
     jobs:
       - build
-      - lint_audit:
-          requires:
-            - build
-      - test_backend:
-          requires:
-            - build
-      - test_frontend:
-          requires:
-            - build
-      - cucumber_test:
-          requires:
-            - build
-      - dynamic_security_scan:
-          requires:
-            - build
-      - accessibility_scan:
-          requires:
-            - build
       - deploy:
-          requires:
-            - build
-            - lint_audit
-            - test_backend
-            - cucumber_test
-            - test_frontend
-            - dynamic_security_scan
-            - accessibility_scan
           filters:
             branches:
               only:
