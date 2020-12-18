@@ -115,6 +115,7 @@ commands:
           name: Drop database
           command: |
             cf run-task << parameters.app_name >> "yarn db:drop:prod"
+            cf run-task << parameters.app_name >> "yarn db:create:prod"
       - run:
           name: Run database migrations
           command: |
@@ -471,6 +472,7 @@ workflows:
           filters:
             branches:
               only:
+                - << pipeline.parameters.sandbox_git_branch >>
                 - << pipeline.parameters.dev_git_branch >>
                 - << pipeline.parameters.staging_git_branch >>
                 - << pipeline.parameters.prod_git_branch >>
