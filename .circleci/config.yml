@@ -368,6 +368,8 @@ jobs:
                 postgres_password: SANDBOX_POSTGRES_PASSWORD
                 postgres_username: SANDBOX_POSTGRES_USERNAME
                 session_secret: SANDBOX_SESSION_SECRET
+            - setup_lower_env_database:
+                app_name: tta-smarthub-sandbox
       - when:  # dev
           condition:
             and:
