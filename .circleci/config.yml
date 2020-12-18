@@ -105,11 +105,11 @@ commands:
               --var POSTGRES_USERNAME=${<< parameters.postgres_username >>} \
               --var SESSION_SECRET=${<< parameters.session_secret >>}
   setup_lower_env_database:
+    description: "Migrate and seed database. Should only be used with dev and
+      sandbox environments. Attempts to return database to neutral state by
+      first undoing previous seeding and migrations before (re)running migrate
+      and seed."
     parameters:
-      description: "Migrate and seed database. Should only be used with dev and
-        sandbox environments. Attempts to return database to neutral state by
-        first undoing previous seeding and migrations before (re)running migrate
-        and seed."
       app_name:
         description: "Name of Cloud Foundry cloud.gov application; must match
           application name specified in manifest"
@@ -126,6 +126,8 @@ commands:
             cf run-task << parameters.app_name >> "yarn db:migrate:prod"
             cf run-task << parameters.app_name >> "yarn db:seed:prod"
   setup_higher_env_database:
+    description: "Run database migrations. Should only be used with staging
+      and prod environments."
     parameters:
       app_name:
         description: "Name of Cloud Foundry cloud.gov application; must match
