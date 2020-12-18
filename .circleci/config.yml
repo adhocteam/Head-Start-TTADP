@@ -114,10 +114,12 @@ commands:
       - run:
           name: Run database migrations
           command: |
+            cf run-task << parameters.app_name >> "yarn db:migrate:undo:prod"
             cf run-task << parameters.app_name >> "yarn db:migrate:prod"
       - run:
           name: Seed database
           command: |
+            cf run-task << parameters.app_name >> "yarn db:seed:undo:prod"
             cf run-task << parameters.app_name >> "yarn db:seed:prod"
   setup_higher_env_database:
     parameters:
