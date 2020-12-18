@@ -115,6 +115,9 @@ commands:
           name: Drop database
           command: |
             cf run-task << parameters.app_name >> "yarn db:drop:prod"
+      - run:
+          name: Create database
+          command: |
             cf run-task << parameters.app_name >> "yarn db:create:prod"
       - run:
           name: Run database migrations
