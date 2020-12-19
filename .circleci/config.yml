@@ -360,7 +360,7 @@ jobs:
                 command: |
                   cf run-task tta-smarthub-sandbox "yarn db:seed:undo:prod"
                   cf run-task tta-smarthub-sandbox "yarn db:migrate:undo:prod"
-            - migrate_and_seed:
+            - migrate_and_seed_db:
                 app_name: tta-smarthub-sandbox
       - when:  # dev
           condition:
@@ -386,7 +386,7 @@ jobs:
                 name: Undo database seeding
                 command: |
                   cf run-task tta-smarthub-sandbox "yarn db:seed:undo:prod"
-            - migrate_and_seed:
+            - migrate_and_seed_db:
                 app_name: tta-smarthub-sandbox
       - when:  # staging
           condition:
