@@ -7,7 +7,7 @@
     "node": "12.20.0"
   },
   "scripts": {
-    "axe:ci": "axe --exit --load-delay 1000 http://localhost:3000, http://localhost:3000/activity-reports, http://localhost:3000/admin --dir ./reports/ --chromedriver-path=\"node_modules/chromedriver/bin/chromedriver\"",
+    "axe:ci": "axe --exit --load-delay 1000 `cat axe-urls` --dir ./reports/ --chromedriver-path=\"node_modules/chromedriver/bin/chromedriver\""
     "build": "./node_modules/.bin/babel src -d ./build/server  && ./node_modules/.bin/babel config -d build/config",
     "deps:local": "yarn install && yarn --cwd frontend install",
     "deps": "yarn install --frozen-lockfile && yarn --cwd frontend install --frozen-lockfile",
@@ -27,8 +27,6 @@
     "docs:serve": "npx redoc-cli serve -p 5000 docs/openapi/index.yaml",
     "cucumber": "./node_modules/.bin/cucumber-js --publish ./cucumber/features/*.feature -f json:./reports/cucumber_report.json && node ./cucumber/index.js",
     "cucumber:ci": "cross-env TTA_SMART_HUB_URI=http://localhost:3000 CUCUMBER_USER_ID=999999 yarn cucumber",
-    "db:create:prod": "node_modules/.bin/sequelize db:create --options-path .production.sequelizerc",
-    "db:drop:prod": "node_modules/.bin/sequelize db:drop --options-path .production.sequelizerc",
     "db:migrate": "node_modules/.bin/sequelize db:migrate",
     "db:migrate:ci": "cross-env POSTGRES_USERNAME=postgres POSTGRES_DB=ttasmarthub node_modules/.bin/sequelize db:migrate",
     "db:migrate:prod": "node_modules/.bin/sequelize db:migrate --options-path .production.sequelizerc",
