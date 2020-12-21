@@ -117,8 +117,8 @@ commands:
       - run:
           name: Migrate and seed database
           command: |
-            cf run-task << parameters.app_name >> "yarn db:migrate:prod"
-            cf run-task << parameters.app_name >> "yarn db:seed:prod"
+            cf run-task << parameters.app_name >> \
+            "yarn db:migrate:prod && yarn db:seed:prod"
 parameters:
   cg_org:
     description: "Cloud Foundry cloud.gov organization name"
@@ -358,8 +358,8 @@ jobs:
             - run:
                 name: Return database to neutral
                 command: |
-                  cf run-task tta-smarthub-sandbox "yarn db:seed:undo:prod"
-                  cf run-task tta-smarthub-sandbox "yarn db:migrate:undo:prod"
+                  cf run-task tta-smarthub-sandbox \
+                  "yarn db:seed:undo:prod && yarn db:migrate:undo:prod"
             - migrate_and_seed_db:
                 app_name: tta-smarthub-sandbox
       - when:  # dev
