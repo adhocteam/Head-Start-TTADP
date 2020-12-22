@@ -104,21 +104,6 @@ commands:
               --var POSTGRES_PASSWORD=${<< parameters.postgres_password >>} \
               --var POSTGRES_USERNAME=${<< parameters.postgres_username >>} \
               --var SESSION_SECRET=${<< parameters.session_secret >>}
-  migrate_and_seed_db:
-    description: "Migrate and seed database. Should only be used with
-      sandbox and dev environments. Staging and prod should not contain
-      seed data."
-    parameters:
-      app_name:
-        description: "Name of Cloud Foundry cloud.gov application; must match
-          application name specified in manifest"
-        type: string
-    steps:
-      - run:
-          name: Migrate and seed database
-          command: |
-            cf run-task << parameters.app_name >> \
-            "yarn db:migrate:prod && yarn db:seed:prod"
 parameters:
   cg_org:
     description: "Cloud Foundry cloud.gov organization name"
@@ -359,9 +344,7 @@ jobs:
                 name: Return database to neutral
                 command: |
                   cf run-task tta-smarthub-sandbox \
-                  "yarn db:seed:undo:prod && yarn db:migrate:undo:prod"
-            - migrate_and_seed_db:
-                app_name: tta-smarthub-sandbox
+                  "yarn db:seed:undo:prod && yarn db:migrate:undo:prod && yarn db:migrate:prod && yarn db:seed:prod"
       - when:  # dev
           condition:
             and:
@@ -385,9 +368,7 @@ jobs:
             - run:
                 name: Undo database seeding
                 command: |
-                  cf run-task tta-smarthub-dev "yarn db:seed:undo:prod"
-            - migrate_and_seed_db:
-                app_name: tta-smarthub-dev
+                  cf run-task tta-smarthub-dev "yarn db:seed:undo:prod && yarn db:migrate:prod && yarn db:seed:prod"
       - when:  # staging
           condition:
             and:
