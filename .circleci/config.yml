@@ -341,7 +341,7 @@ jobs:
                 postgres_username: SANDBOX_POSTGRES_USERNAME
                 session_secret: SANDBOX_SESSION_SECRET
             - run:
-                name: Return database to neutral
+                name: Return database to neutral, then migrate and seed
                 command: |
                   cf run-task tta-smarthub-sandbox \
                   "yarn db:seed:undo:prod && yarn db:migrate:undo:prod && yarn db:migrate:prod && yarn db:seed:prod"
@@ -366,7 +366,7 @@ jobs:
                 postgres_username: DEV_POSTGRES_USERNAME
                 session_secret: DEV_SESSION_SECRET
             - run:
-                name: Undo database seeding
+                name: Undo database seeding, then migrate and seed
                 command: |
                   cf run-task tta-smarthub-dev "yarn db:seed:undo:prod && yarn db:migrate:prod && yarn db:seed:prod"
       - when:  # staging
