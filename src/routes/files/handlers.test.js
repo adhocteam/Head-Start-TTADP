@@ -16,21 +16,21 @@ const ORIGINAL_ENV = process.env;
 jest.mock('../../lib/s3Uploader');
 
 const mockUser = {
-  id: process.env.CURRENT_USER_ID,
+  id: 100,
   homeRegionId: 1,
   permissions: [
     {
-      userId: process.env.CURRENT_USER_ID,
+      userId: 100,
       regionId: 5,
       scopeId: SCOPES.READ_WRITE_REPORTS,
     },
     {
-      userId: process.env.CURRENT_USER_ID,
+      userId: 100,
       regionId: 6,
       scopeId: SCOPES.READ_WRITE_REPORTS,
     },
     {
-      userId: process.env.CURRENT_USER_ID,
+      userId: 100,
       regionId: 14,
       scopeId: SCOPES.SITE_ACCESS,
     },
@@ -63,6 +63,7 @@ describe('File Upload', () => {
       report = await ActivityReport.create(reportObject);
       process.env.NODE_ENV = 'test';
       process.env.BYPASS_AUTH = 'true';
+      process.env.CURRENT_USER_ID = 100;
     });
     afterAll(async () => {
       await File.destroy({ where: {} });
@@ -87,7 +88,7 @@ describe('File Upload', () => {
     });
     it('checks the metadata was uploaded to the database', async () => {
       const file = await File.findOne({ where: { id: fileId } });
-      const uuid = file.dataValues.key.slice(0, -4);
+      const uuid = file.dataValues.s3Key.slice(0, -4);
       expect(file.dataValues.id).toBe(fileId);
       expect(file.dataValues.status).toBe('UPLOADED');
       expect(file.dataValues.originalFileName).toBe('testfile.pdf');
@@ -104,6 +105,7 @@ describe('File Upload', () => {
       report = await ActivityReport.create(reportObject);
       process.env.NODE_ENV = 'test';
       process.env.BYPASS_AUTH = 'true';
+      process.env.CURRENT_USER_ID = 100;
     });
     afterAll(async () => {
       await File.destroy({ where: {} });

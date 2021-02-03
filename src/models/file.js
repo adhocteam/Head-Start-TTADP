@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING,
     },
-    key: {
+    s3Key: {
       type: DataTypes.STRING,
       allowNull: false,
     },

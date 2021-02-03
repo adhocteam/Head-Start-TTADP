@@ -18,7 +18,7 @@ const logContext = {
 
 export const createFileMetaData = async (
   originalFileName,
-  s3FileName,
+  s3Key,
   reportId,
   attachmentType,
   fileSize,
@@ -27,10 +27,11 @@ export const createFileMetaData = async (
     activityReportId: reportId,
     originalFileName,
     attachmentType,
-    key: s3FileName,
+    s3Key,
     status: 'UPLOADING',
     fileSize,
   };
+  console.log(`newFile = ${JSON.stringify(newFile)}`)
   let file;
   try {
     file = await File.create(newFile);
@@ -89,10 +90,10 @@ export default async function uploadHandler(req, res) {
         res.status(400).send('Could not determine file type');
         return;
       }
-      fileName = `${uuidv4()}.${type.ext}`;
+      const s3Key = `${uuidv4()}.${type.ext}`;
       metadata = await createFileMetaData(
         originalFilename,
-        fileName,
+        s3Key,
         reportId,
         attachmentType[0],
         size,
