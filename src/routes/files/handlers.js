@@ -31,7 +31,6 @@ export const createFileMetaData = async (
     status: 'UPLOADING',
     fileSize,
   };
-  console.log(`newFile = ${JSON.stringify(newFile)}`)
   let file;
   try {
     file = await File.create(newFile);
