@@ -7,7 +7,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-
       activityReportId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -17,7 +16,6 @@ module.exports = {
           },
         },
       },
-
       userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
@@ -28,15 +26,21 @@ module.exports = {
           key: 'id',
         },
       },
-
       note: {
         allowNull: false,
         type: Sequelize.TEXT,
       },
-
       noteType: {
         allowNull: false,
         type: Sequelize.ENUM('SPECIALIST', 'GRANTEE'),
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
     });
   },

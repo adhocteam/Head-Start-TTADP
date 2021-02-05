@@ -1,6 +1,6 @@
 import { Model } from 'sequelize';
 
-export default (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   class NextStep extends Model {
     static associate(models) {
       NextStep.belongsTo(models.ActivityReport, { foreignKey: 'activityReportId' });

@@ -1,5 +1,5 @@
 import db, {
-  ActivityReport, ActivityRecipient, User, Grantee, NonGrantee, Grant,
+  ActivityReport, ActivityRecipient, User, Grantee, NonGrantee, Grant, NextStep,
 } from '../models';
 import {
   createOrUpdate, activityReportById,
@@ -38,6 +38,7 @@ describe('Activity Reports DB service', () => {
     await NonGrantee.destroy({ where: { id: 100 } });
     await Grant.destroy({ where: { id: 100 } });
     await Grantee.destroy({ where: { id: 100 } });
+    await NextStep.destroy({ where: {} });
     db.sequelize.close();
   });
 
@@ -72,6 +73,119 @@ describe('Activity Reports DB service', () => {
       const report = await createOrUpdate({ ...reportObject, collaborators: [{ id: 100 }] });
       expect(report.collaborators.length).toBe(1);
       expect(report.collaborators[0].name).toBe('user');
+    });
+
+    it('handles notes being created', async () => {
+      // Given an report with some notes
+      const reportObjectWithNotes = {
+        ...reportObject,
+        specialistNotes: ['i am groot', 'harry'],
+        granteeNotes: ['One Piece', 'Toy Story'],
+      };
+      // When that report is created
+      const report = await createOrUpdate(reportObjectWithNotes);
+
+      // Then we see that it was saved correctly
+      expect(report.specialistNotes.length).toBe(2);
+      expect(report.granteeNotes.length).toBe(2);
+      expect(report.specialistNotes.map((n) => n.note)).toEqual(expect.arrayContaining(['i am groot', 'harry']));
+      expect(report.granteeNotes.map((n) => n.note)).toEqual(expect.arrayContaining(['One Piece', 'Toy Story']));
+    });
+
+    it('handles specialist notes being created', async () => {
+      // Given a report with specliasts notes
+      // And no grantee notes
+      const reportWithNotes = {
+        ...reportObject,
+        specialistNotes: ['i am groot', 'harry'],
+        granteeNotes: [],
+      };
+
+      // When that report is created
+      const report = await createOrUpdate(reportWithNotes);
+
+      // Then we see that it was saved correctly
+      expect(report.granteeNotes.length).toBe(0);
+      expect(report.specialistNotes.length).toBe(2);
+      expect(report.specialistNotes.map((n) => n.note)).toEqual(expect.arrayContaining(['i am groot', 'harry']));
+    });
+
+    it('handles grantee notes being created', async () => {
+      // Given a report with grantee notes
+      // And not specialist notes
+      const reportWithNotes = {
+        ...reportObject,
+        specialistNotes: [],
+        granteeNotes: ['One Piece', 'Toy Story'],
+      };
+
+      // When that report is created
+      const report = await createOrUpdate(reportWithNotes);
+
+      // Then we see that it was saved correctly
+      expect(report.specialistNotes.length).toBe(0);
+      expect(report.granteeNotes.length).toBe(2);
+      expect(report.granteeNotes.map((n) => n.note)).toEqual(expect.arrayContaining(['One Piece', 'Toy Story']));
+    });
+
+    it('handles specialist notes being updated', async () => {
+      // Given a report with some notes
+      const reportWithNotes = {
+        ...reportObject,
+        specialistNotes: ['i am groot', 'harry'],
+        granteeNotes: ['One Piece', 'Toy Story'],
+      };
+      const report = await ActivityReport.create(reportWithNotes);
+
+      // When the report is updated with new set of specialist notes
+      const notes = { specialistNotes: ['harry', 'spongebob'] };
+      const updatedReport = await createOrUpdate(notes, report);
+
+      // Then we see it was updated correctly
+      expect(updatedReport.id).toBe(report.id);
+      expect(updatedReport.specialistNotes.map((n) => n.note))
+        .toEqual(expect.arrayContaining(['harry', 'spongebob']));
+    });
+
+    it('handles grantee notes being updated', async () => {
+      // Given a report with some notes
+      const reportWithNotes = {
+        ...reportObject,
+        specialistNotes: ['i am groot', 'harry'],
+        granteeNotes: ['One Piece', 'Toy Story'],
+      };
+      const report = await ActivityReport.create(reportWithNotes);
+
+      // When the report is updated with new set of grantee notes
+      const notes = { granteeNotes: ['One Piece', 'spongebob'] };
+      const updatedReport = await createOrUpdate(notes, report);
+
+      // Then we see it was updated correctly
+      expect(updatedReport.id).toBe(report.id);
+      expect(updatedReport.granteeNotes.map((n) => n.note))
+        .toEqual(expect.arrayContaining(['One Piece', 'spongebob']));
+    });
+
+    it('handles notes being updated to empty', async () => {
+      // Given a report with some notes
+      const reportWithNotes = {
+        ...reportObject,
+        specialistNotes: ['i am groot', 'harry'],
+        granteeNotes: ['One Piece', 'Toy Story'],
+      };
+      const report = await ActivityReport.create(reportWithNotes);
+
+      // When the report is updated with empty notes
+      const notes = {
+        granteeNotes: [],
+        specialistNotes: [],
+      };
+      const updatedReport = await createOrUpdate(notes, report);
+
+      // Then we see the report was updated correctly
+      expect(updatedReport.id).toBe(report.id);
+      expect(updatedReport.granteeNotes.length).toBe(0);
+      expect(updatedReport.specialistNotes.length).toBe(0);
     });
   });
 

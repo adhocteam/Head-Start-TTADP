@@ -12,6 +12,7 @@ import {
   NonGrantee,
   Goal,
   User,
+  NextStep,
 } from '../models';
 
 async function saveReportCollaborators(activityReportId, collaborators, transaction) {
@@ -95,6 +96,29 @@ async function saveReportRecipients(
 
   await ActivityRecipient.bulkCreate(newRecipients, { transaction, ignoreDuplicates: true });
   await ActivityRecipient.destroy({ where }, { transaction });
+}
+
+async function saveNotes(activityReportId, userId, notes, isGranteeNotes, transaction) {
+  const noteType = isGranteeNotes ? 'GRANTEE' : 'SPECIALIST';
+  const where = {
+    userId,
+    activityReportId,
+    noteType,
+    note: {
+      [Op.notIn]: notes,
+    },
+  };
+  await NextStep.destroy({ where }, { transaction });
+
+  if (notes.length > 0) {
+    const dbNotes = notes.map((note) => ({
+      userId,
+      activityReportId,
+      noteType,
+      note,
+    }));
+    await NextStep.bulkCreate(dbNotes, { transaction, ignoreDuplicates: true });
+  }
 }
 
 async function update(newReport, report, transaction) {
@@ -184,6 +208,28 @@ export function activityReportById(activityReportId) {
         as: 'otherResources',
         required: false,
       },
+      {
+        model: NextStep,
+        where: {
+          noteType: {
+            [Op.eq]: 'SPECIALIST',
+          },
+        },
+        attributes: ['note'],
+        as: 'specialistNotes',
+        required: false,
+      },
+      {
+        model: NextStep,
+        where: {
+          noteType: {
+            [Op.eq]: 'GRANTEE',
+          },
+        },
+        attributes: ['note'],
+        as: 'granteeNotes',
+        required: false,
+      },
     ],
   });
 }
@@ -196,6 +242,8 @@ export async function createOrUpdate(newActivityReport, report) {
     activityRecipients,
     attachments,
     otherResources,
+    granteeNotes,
+    specialistNotes,
     ...updatedFields
   } = newActivityReport;
   await sequelize.transaction(async (transaction) => {
@@ -219,6 +267,16 @@ export async function createOrUpdate(newActivityReport, report) {
         (g) => g.activityRecipientId,
       );
       await saveReportRecipients(id, activityRecipientIds, activityRecipientType, transaction);
+    }
+
+    if (granteeNotes) {
+      const { id, userId } = savedReport;
+      await saveNotes(id, userId, granteeNotes, true, transaction);
+    }
+
+    if (specialistNotes) {
+      const { id, userId } = savedReport;
+      await saveNotes(id, userId, specialistNotes, false, transaction);
     }
   });
   return activityReportById(savedReport.id);

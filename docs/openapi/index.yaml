@@ -107,6 +107,12 @@ components:
           description: The type of the activity, Training or Technical Assistance (or both)
           items:
             type: string
+        specialistNotes:
+          description: List of notes that a specliasts enters
+          $ref: '#/components/schema/nextStepNotes'
+        granteeNotes:
+          description: List of notes that a grantee enters
+          $ref: '#/components/schema/nextStepNotes'
     selectableUser:
       type: object
       description: >
@@ -180,3 +186,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/permission'
+    nextStepNotes:
+      type: array
+      description: List of notes a grantee/specialist enters
+      items: string
