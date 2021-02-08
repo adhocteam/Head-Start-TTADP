@@ -38,13 +38,17 @@ const fakeGoals = [
 ];
 
 const defaultValues = {
-  deliveryMethod: [],
   activityType: [],
+  additionalNotes: null,
+  approvingManagerId: null,
   attachments: [],
-  context: '',
   collaborators: [],
+  context: '',
+  deliveryMethod: [],
   duration: '',
   endDate: null,
+  goals: fakeGoals,
+  granteeNotes: [],
   grantees: [],
   numberOfParticipants: '',
   participantCategory: '',
@@ -53,12 +57,10 @@ const defaultValues = {
   reason: [],
   requester: '',
   resourcesUsed: '',
+  specialistNotes: [],
   startDate: null,
   targetPopulations: [],
   topics: [],
-  approvingManagerId: null,
-  additionalNotes: null,
-  goals: fakeGoals,
 };
 
 // FIXME: default region until we have a way of changing on the frontend
