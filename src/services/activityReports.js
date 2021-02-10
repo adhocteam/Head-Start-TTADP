@@ -100,24 +100,29 @@ async function saveReportRecipients(
 
 async function saveNotes(activityReportId, userId, notes, isGranteeNotes, transaction) {
   const noteType = isGranteeNotes ? 'GRANTEE' : 'SPECIALIST';
+  const ids = notes.map(n => n.id).filter(id => !!id)
   const where = {
     userId,
     activityReportId,
     noteType,
-    note: {
-      [Op.notIn]: notes,
-    },
+    id: {
+      [Op.notIn]: ids
+    }
   };
+  // Remove any notes that are no longer relevant
   await NextStep.destroy({ where }, { transaction });
 
   if (notes.length > 0) {
-    const dbNotes = notes.map((note) => ({
+    // Update the existing note if it has changed by its id (if it has an id)
+    // If no id, then assume its a new entry
+    const newNotes = notes.map((note) => ({
+      id: note.id? parseInt(note.id): undefined,
+      note: note.note,
       userId,
       activityReportId,
       noteType,
-      note,
     }));
-    await NextStep.bulkCreate(dbNotes, { transaction, ignoreDuplicates: true });
+    await NextStep.bulkCreate(newNotes, { transaction, updateOnDuplicate: ['note', 'updatedAt'] });
   }
 }
 
@@ -215,7 +220,7 @@ export function activityReportById(activityReportId) {
             [Op.eq]: 'SPECIALIST',
           },
         },
-        attributes: ['note'],
+        attributes: ['note', 'id'],
         as: 'specialistNotes',
         required: false,
       },
@@ -226,7 +231,7 @@ export function activityReportById(activityReportId) {
             [Op.eq]: 'GRANTEE',
           },
         },
-        attributes: ['note'],
+        attributes: ['note', 'id'],
         as: 'granteeNotes',
         required: false,
       },
@@ -271,14 +276,12 @@ export async function createOrUpdate(newActivityReport, report) {
 
     if (granteeNotes) {
       const { id, userId } = savedReport;
-      const gNotes = granteeNotes.map((note) => note.note);
-      await saveNotes(id, userId, gNotes, true, transaction);
+      await saveNotes(id, userId, granteeNotes, true, transaction);
     }
 
     if (specialistNotes) {
       const { id, userId } = savedReport;
-      const sNotes = specialistNotes.map((note) => note.note);
-      await saveNotes(id, userId, sNotes, false, transaction);
+      await saveNotes(id, userId, specialistNotes, false, transaction);
     }
   });
   return activityReportById(savedReport.id);
