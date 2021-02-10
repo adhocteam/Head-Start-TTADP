@@ -79,8 +79,8 @@ describe('Activity Reports DB service', () => {
       // Given an report with some notes
       const reportObjectWithNotes = {
         ...reportObject,
-        specialistNotes: ['i am groot', 'harry'],
-        granteeNotes: ['One Piece', 'Toy Story'],
+        specialistNotes: [{ note: 'i am groot' }, { note: 'harry' }],
+        granteeNotes: [{ note: 'One Piece' }, { note: 'Toy Story' }],
       };
       // When that report is created
       const report = await createOrUpdate(reportObjectWithNotes);
@@ -97,7 +97,7 @@ describe('Activity Reports DB service', () => {
       // And no grantee notes
       const reportWithNotes = {
         ...reportObject,
-        specialistNotes: ['i am groot', 'harry'],
+        specialistNotes: [{ note: 'i am groot' }, { note: 'harry' }],
         granteeNotes: [],
       };
 
@@ -116,7 +116,7 @@ describe('Activity Reports DB service', () => {
       const reportWithNotes = {
         ...reportObject,
         specialistNotes: [],
-        granteeNotes: ['One Piece', 'Toy Story'],
+        granteeNotes: [{ note: 'One Piece' }, { note: 'Toy Story' }],
       };
 
       // When that report is created
@@ -132,13 +132,13 @@ describe('Activity Reports DB service', () => {
       // Given a report with some notes
       const reportWithNotes = {
         ...reportObject,
-        specialistNotes: ['i am groot', 'harry'],
-        granteeNotes: ['One Piece', 'Toy Story'],
+        specialistNotes: [{ note: 'i am groot' }, { note: 'harry' }],
+        granteeNotes: [{ note: 'One Piece' }, { note: 'Toy Story' }],
       };
       const report = await ActivityReport.create(reportWithNotes);
 
       // When the report is updated with new set of specialist notes
-      const notes = { specialistNotes: ['harry', 'spongebob'] };
+      const notes = { specialistNotes: [{ note: 'harry' }, { note: 'spongebob' }] };
       const updatedReport = await createOrUpdate(notes, report);
 
       // Then we see it was updated correctly
@@ -151,13 +151,13 @@ describe('Activity Reports DB service', () => {
       // Given a report with some notes
       const reportWithNotes = {
         ...reportObject,
-        specialistNotes: ['i am groot', 'harry'],
-        granteeNotes: ['One Piece', 'Toy Story'],
+        specialistNotes: [{ note: 'i am groot' }, { note: 'harry' }],
+        granteeNotes: [{ note: 'One Piece' }, { note: 'Toy Story' }],
       };
       const report = await ActivityReport.create(reportWithNotes);
 
       // When the report is updated with new set of grantee notes
-      const notes = { granteeNotes: ['One Piece', 'spongebob'] };
+      const notes = { granteeNotes: [{ note: 'One Piece' }, { note: 'spongebob' }] };
       const updatedReport = await createOrUpdate(notes, report);
 
       // Then we see it was updated correctly
@@ -170,8 +170,8 @@ describe('Activity Reports DB service', () => {
       // Given a report with some notes
       const reportWithNotes = {
         ...reportObject,
-        specialistNotes: ['i am groot', 'harry'],
-        granteeNotes: ['One Piece', 'Toy Story'],
+        specialistNotes: [{ note: 'i am groot' }, { note: 'harry' }],
+        granteeNotes: [{ note: 'One Piece' }, { note: 'Toy Story' }],
       };
       const report = await ActivityReport.create(reportWithNotes);
 
@@ -186,6 +186,28 @@ describe('Activity Reports DB service', () => {
       expect(updatedReport.id).toBe(report.id);
       expect(updatedReport.granteeNotes.length).toBe(0);
       expect(updatedReport.specialistNotes.length).toBe(0);
+    });
+
+    it('handles notes being the same', async () => {
+      // Given a report with some notes
+      const reportWithNotes = {
+        ...reportObject,
+        specialistNotes: [{ note: 'i am groot' }, { note: 'harry' }],
+        granteeNotes: [{ note: 'One Piece' }, { note: 'Toy Story' }],
+      };
+      const report = await ActivityReport.create(reportWithNotes);
+
+      // When the report is updated with same notes
+      const notes = {
+        specialistNotes: [{ note: 'i am groot' }, { note: 'harry' }],
+        granteeNotes: [{ note: 'One Piece' }, { note: 'Toy Story' }],
+      };
+      const updatedReport = await createOrUpdate(notes, report);
+
+      // Then we see nothing changes
+      expect(updatedReport.id).toBe(report.id);
+      expect(updatedReport.granteeNotes.map((n) => n.note)).toEqual(expect.arrayContaining(['One Piece', 'Toy Story']));
+      expect(updatedReport.specialistNotes.map((n) => n.note)).toEqual(expect.arrayContaining(['i am groot', 'harry']));
     });
   });
 

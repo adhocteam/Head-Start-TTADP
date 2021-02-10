@@ -271,12 +271,14 @@ export async function createOrUpdate(newActivityReport, report) {
 
     if (granteeNotes) {
       const { id, userId } = savedReport;
-      await saveNotes(id, userId, granteeNotes, true, transaction);
+      const gNotes = granteeNotes.map((note) => note.note);
+      await saveNotes(id, userId, gNotes, true, transaction);
     }
 
     if (specialistNotes) {
       const { id, userId } = savedReport;
-      await saveNotes(id, userId, specialistNotes, false, transaction);
+      const sNotes = specialistNotes.map((note) => note.note);
+      await saveNotes(id, userId, sNotes, false, transaction);
     }
   });
   return activityReportById(savedReport.id);
