@@ -137,7 +137,7 @@ components:
         attachmentType:
           type: string
           description: "Type of attachment. Acceptable values are ATTACHMENT or RESOURCE"
-        reportId: 
+        reportId:
           type: number
           description: "id of the Activity report the file is associated with"
         file:
@@ -182,6 +182,8 @@ components:
           type: number
         title:
           type: string
+        lastLogin:
+          type: string
         permissions:
           type: array
           items:
@@ -190,3 +192,22 @@ components:
       type: array
       description: List of notes a grantee/specialist enters
       items: string
+    goal:
+      type: object
+      description: A long term desire for a grant
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+          description: The aim or purpose of the goal
+        status:
+          type: string
+          description: The state of the goal. Currently unused
+        timeframe:
+          type: string
+          description: >
+            The expected completion date of the goal. These are pulled in from HSES and are not currently used
+        isFromSmartsheetTtaPlan:
+          type: boolean
+          description: Flag indicating the origin of the goal, smartsheet or smarthub
