@@ -100,14 +100,14 @@ async function saveReportRecipients(
 
 async function saveNotes(activityReportId, userId, notes, isGranteeNotes, transaction) {
   const noteType = isGranteeNotes ? 'GRANTEE' : 'SPECIALIST';
-  const ids = notes.map(n => n.id).filter(id => !!id)
+  const ids = notes.map((n) => n.id).filter((id) => !!id);
   const where = {
     userId,
     activityReportId,
     noteType,
     id: {
-      [Op.notIn]: ids
-    }
+      [Op.notIn]: ids,
+    },
   };
   // Remove any notes that are no longer relevant
   await NextStep.destroy({ where }, { transaction });
@@ -116,7 +116,7 @@ async function saveNotes(activityReportId, userId, notes, isGranteeNotes, transa
     // Update the existing note if it has changed by its id (if it has an id)
     // If no id, then assume its a new entry
     const newNotes = notes.map((note) => ({
-      id: note.id? parseInt(note.id): undefined,
+      id: note.id ? parseInt(note.id, 10) : undefined,
       note: note.note,
       userId,
       activityReportId,
