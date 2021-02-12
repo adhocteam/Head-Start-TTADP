@@ -1,114 +1,130 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { useFieldArray, useWatch, Controller } from 'react-hook-form';
+import { useFieldArray } from 'react-hook-form';
 import {
   Fieldset, Label, TextInput, Button, Link,
 } from '@trussworks/react-uswds';
 
 const NoteEntry = ({
-  onEntry, onCancel, name, register, humanName, control, index, isRequired = false, defaultValue = '',
+  onEntry, onCancel, humanName, isRequired = false, defaultValue = '',
 }) => {
-  const fieldName = `${name}[${index}].value`
-  const input = useWatch({control, name: fieldName})
-  console.log(fieldName)
+  const [input, updateInput] = useState(defaultValue);
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    updateInput('');
+    onEntry(input.trim());
+  };
+
+  const onEntryCancel = (event) => {
+    event.preventDefault();
+    onCancel();
+  };
+
   return (
     <Fieldset className="smart-hub--report-legend smart-hub--form-section" legend={`${humanName} Next Steps`}>
       <div className="smart-hub--form-section">
-        <Label htmlFor={fieldName}>
+        <Label htmlFor="entry">
           What have you agreed to do next?
+          {' '}
           {isRequired
-             && <span style={{ color: '#d42240' }}>(Required)</span>}
+           && <span style={{ color: '#d42240' }}>(Required)</span>}
         </Label>
 
-        <TextInput name={fieldName} inputRef={register()} defaultValue={defaultValue} />
-        <Button outline disabled={!input?.trim()} onClick={() => onEntry(input.trim())}>Save Next Step</Button>
+        <TextInput name="entry" value={input} onChange={(e) => updateInput(e.target.value)} />
+        <Button outline disabled={!(input && input.trim())} onClick={onSubmit}>Save Next Step</Button>
 
-        {!isRequired && <Button secondary onClick={() => onCancel()}>Cancel</Button>}
+        {!isRequired && <Button secondary onClick={onEntryCancel}>Cancel</Button>}
       </div>
     </Fieldset>
   );
 };
 
-const NoteEntries = ({ control, register, name, humanName }) => {
-  const { fields, append, remove } = useFieldArray({ name, control});
+const NoteEntries = ({
+  control, name, humanName, register,
+}) => {
+  const { fields, insert, remove } = useFieldArray({ name, control, keyName: 'arrayId'});
+  const [showPrompt, updateShowPrompt] = useState(false);
+  // Used whenever we want a specific index to be edited
   const [noteIndex, updateNoteIndex] = useState(-1);
 
-  const onUpdateEntry = (value) => {
-    console.log('on update', value)
-    fields[noteIndex].value = value.trim();
+  /* Function to be used when updated/adding a new entry
+   */
+  const onEntry = (note, index, noteId) => {
+    insert(index, { note, id: noteId });
+    remove(index + 1);
+    updateShowPrompt(false);
     updateNoteIndex(-1);
   };
 
-  const onNewEntry = (value) => {
-    console.log('on new', value)
-    append({ value: value.trim() });
-    updateNoteIndex(-1);
+  const onEdit = (index) => {
+    updateNoteIndex(index);
+    updateShowPrompt(true);
   };
 
   const onCancel = () => {
-    console.log('on cancel')
-    updateNoteIndex(-1);
+    updateShowPrompt(false);
   };
 
   if (fields.length === 0) {
-    return <NoteEntry
-             index={0}
-             onEntry={onNewEntry}
-             isRequired={true}
-             onCancel={onCancel}
-             name={name}
-             register={register}
-             humanName={humanName}
-             control={control} />;
+    return (
+      <NoteEntry
+        onEntry={(value) => onEntry(value, 0)}
+        isRequired
+        onCancel={onCancel}
+        humanName={humanName}
+      />
+    );
   }
+
+  // Are we editing a specific index? Otherwise make insert at end of array
+  const targetIndex = noteIndex === -1 ? fields.length : noteIndex;
+  const targetId = fields[targetIndex]?.id;
+  // Is there a value already defined at this index?
+  const defaultValue = fields[targetIndex] ? fields[targetIndex].note : undefined;
 
   return (
     <>
-      <ul>
+      <ul style={{listStyle: 'none'}}>
         {fields.map((item, index) => (
-          <li key={item.id}>
-            {item.value}
-            <Button outline onClick={(e) => e.preventDefault() || updateNoteIndex(index)}>Edit</Button>
+          <li key={item.arrayId}>
+            {item.note}
+            <Button outline onClick={(e) => e.preventDefault() || onEdit(index)}>Edit</Button>
             <Button outline onClick={(e) => e.preventDefault() || remove(index)}>Delete</Button>
+            <input name={`${name}[${index}].note`} type="hidden" value={item.note} ref={register()} disabled />
+            <input name={`${name}[${index}].id`} type="hidden" value={item.id} ref={register()} disabled />
           </li>
         ))}
       </ul>
 
-      {(noteIndex >= 0)
-       ? (
-         <NoteEntry
-           index={fields.length}
-           onEntry={fields[noteIndex] ? onUpdateEntry : onNewEntry}
-           name={name}
-           register={register}
-           humanName={humanName}
-           control={control}
-           isRequired={false}
-           onCancel={onCancel}
-           defaultValue={fields[noteIndex] ? fields[noteIndex].value : undefined}
-         />
-       )
-       : <Link onClick={() => updateNoteIndex(fields.length)}>Add New Follow Up</Link>}
-      <Button outline onClick={(e) => e.preventDefault() || append({value: 'mcdonalds'})}>Append</Button>
+      {showPrompt ? (
+        <NoteEntry
+          onEntry={(value) => onEntry(value, targetIndex, targetId)}
+          isRequired={false}
+          onCancel={onCancel}
+          humanName={humanName}
+          defaultValue={defaultValue}
+        />
+      )
+        : <Link onClick={() => updateShowPrompt(true)}>Add New Follow Up</Link>}
     </>
   );
 };
 
-const NextSteps = ({ register, control }) => (
+const NextSteps = ({ control, register }) => (
   <>
     <Helmet>
       <title>Next steps</title>
     </Helmet>
-    <NoteEntries register={register} control={control} name={"specialistNotes"} humanName={'Specialist'} />
-    {/* <NoteEntries register={register} control={control} name={"GranteeNotes"} humanName={'Grantee'} /> */}
+    <NoteEntries register={register} control={control} name="specialistNotes" humanName="Specialist" />
+    <NoteEntries register={register} control={control} name="granteeNotes" humanName='Grantee' />
   </>
 );
 
 NextSteps.propTypes = {
-  register: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
-  control: PropTypes.object.isRequired
+  control: PropTypes.object.isRequired,
 };
 
 const sections = [
@@ -128,7 +144,7 @@ export default {
   review: false,
   sections,
   render: (hookForm) => {
-    const { register, getValues, control } = hookForm;
-    return <NextSteps register={register} getValues={getValues} control={control} />;
+    const { control, register } = hookForm;
+    return <NextSteps control={control} register={register} />;
   },
 };
