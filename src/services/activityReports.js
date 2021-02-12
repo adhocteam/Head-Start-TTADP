@@ -235,6 +235,11 @@ export function activityReportById(activityReportId) {
         as: 'granteeNotes',
         required: false,
       },
+      {
+        model: User,
+        as: 'approvingManager',
+        required: false,
+      },
     ],
   });
 }
@@ -249,6 +254,7 @@ export async function createOrUpdate(newActivityReport, report) {
     otherResources,
     granteeNotes,
     specialistNotes,
+    approvingManager,
     ...updatedFields
   } = newActivityReport;
   await sequelize.transaction(async (transaction) => {

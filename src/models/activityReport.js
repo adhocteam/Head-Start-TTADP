@@ -1,5 +1,6 @@
 import { Model } from 'sequelize';
 import moment from 'moment';
+import { REPORT_STATUSES } from '../constants';
 
 function formatDate(fieldName) {
   const raw = this.getDataValue(fieldName);
@@ -110,7 +111,7 @@ export default (sequelize, DataTypes) => {
     },
     status: {
       allowNull: false,
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM(Object.keys(REPORT_STATUSES).map((k) => REPORT_STATUSES[k])),
       validate: {
         checkRequiredForSubmission() {
           const requiredForSubmission = [
@@ -130,7 +131,7 @@ export default (sequelize, DataTypes) => {
             this.topics,
             this.ttaType,
           ];
-          if (this.status !== 'draft') {
+          if (this.status !== REPORT_STATUSES.DRAFT) {
             if (requiredForSubmission.includes(null)) {
               throw new Error('Missing required field(s)');
             }
