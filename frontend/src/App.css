@@ -105,6 +105,10 @@ body {
     width: 100%;
   }
 
+  .smart-hub-review-section {
+    page-break-inside: avoid;
+  }
+
   .print\:grid-col-6 {
     flex: 0 1 auto;
     width: 50%;
@@ -202,7 +206,6 @@ body {
     break-before: avoid-page;
     break-after: auto;
     display: block;
-    margin-bottom: 0.5in;
     padding: 0;
   }
 

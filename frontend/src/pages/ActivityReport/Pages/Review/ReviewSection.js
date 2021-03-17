@@ -9,7 +9,7 @@ const Section = ({
     'smart-hub-review-section',
     'margin-top-2 desktop:margin-top-0',
     hidePrint ? 'smart-hub-review-section--empty no-print' : '',
-    'margin-bottom-3',
+    'padding-bottom-3',
   ].filter((x) => x).join(' ');
 
   return (
