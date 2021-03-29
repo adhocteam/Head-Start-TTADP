@@ -213,7 +213,7 @@ export function activityReportById(activityReportId) {
             include: [{
               model: Grantee,
               as: 'grantee',
-              attributes: ['name'],
+              attributes: ['name', 'id'],
             }],
           },
           {

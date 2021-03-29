@@ -44,6 +44,7 @@ const ActivitySummary = ({
     options: grantee.grants.map((grant) => ({
       value: grant.activityRecipientId,
       label: grant.name,
+      grant,
     })),
   }));
 
