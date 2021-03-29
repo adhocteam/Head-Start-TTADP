@@ -24,10 +24,11 @@ const GoalsObjectives = () => {
 
   const [availableGoals, updateAvailableGoals] = useState([]);
   const hasGrants = grantIds.length > 0;
+  const singleGrant = grantIds.length === 1;
 
   useDeepCompareEffect(() => {
     const fetch = async () => {
-      if (recipientGrantee && hasGrants) {
+      if (recipientGrantee && hasGrants && singleGrant) {
         const fetchedGoals = await getGoals(grantIds);
         updateAvailableGoals(fetchedGoals);
       }
