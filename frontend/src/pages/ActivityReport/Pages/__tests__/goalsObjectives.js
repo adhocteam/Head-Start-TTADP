@@ -17,7 +17,8 @@ const RenderGoalsObjectives = ({
   grantIds, activityRecipientType,
 }) => {
   // eslint-disable-next-line react/prop-types
-  const activityRecipients = grantIds.map((activityRecipientId) => ({ activityRecipientId }));
+  const activityRecipients = grantIds.map((activityRecipientId) => (
+    { activityRecipientId, grant: { grantee: { id: 1 } } }));
   const data = { activityRecipientType, activityRecipients };
   const hookForm = useForm({
     mode: 'onChange',
