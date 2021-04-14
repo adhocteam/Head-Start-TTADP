@@ -706,3 +706,24 @@ export async function getDownloadableActivityReports(readRegions, {
   );
   return result;
 }
+
+// export async function determineApprovalStatus(reportId) {
+//   const managerStatuses = Approvals.findAll({
+//     where: {
+//       activityReportId: reportId
+//     }, 
+//     attributes: ['status']
+//   });
+
+//   // Probably something to clean up response into array
+
+//   let newStatus
+//   if (managerStatuses.includes(REPORT_STATUSES.NEEDS_ACTION)) {
+//     newStatus = REPORT_STATUSES.NEEDS_ACTION
+//   } else if (managerStatuses.every(status => status === REPORT_STATUSES.APPROVED)) {
+//     newStatus = REPORT_STATUSES.APPROVED
+//   } else {
+//     newStatus = REPORT_STATUSES.SUBMITTED
+//   }
+
+// }
