@@ -3,7 +3,7 @@ import unless from 'express-unless';
 import join from 'url-join';
 
 import authMiddleware, { login } from '../middleware/authMiddleware';
-import adminUsersRouter from './user';
+import adminUsersRouter from './admin/user';
 import filesRouter from './files';
 import activityReportsRouter from './activityReports';
 import usersRouter from './users';
