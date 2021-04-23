@@ -1,11 +1,11 @@
-import handleErrors from '../../lib/apiErrorHandler';
+// import handleErrors from '../../lib/apiErrorHandler';
 import { requestErrors } from '../../services/requestErrors';
 
 const namespace = 'SERVICE:REQUEST_ERRORS';
 
-const logContext = {
-  namespace,
-};
+// const logContext = {
+//   namespace,
+// };
 
 /**
  * Retrieve activity reports
@@ -14,11 +14,11 @@ const logContext = {
  * @param {*} res - response
  */
 export default async function getRequestErrors(req, res) {
-  // const readRegions = await getUserReadRegions(req.session.userId);
-  const errors = await requestErrors();
-  if (!errors) {
+  const requestErrorsWithCount = await requestErrors();
+  if (!requestErrorsWithCount) {
     res.sendStatus(404);
   } else {
-    res.json(errors);
+    res.header('Content-Range', `requestErrors */${requestErrorsWithCount.count}`);
+    res.json(requestErrorsWithCount.rows);
   }
 }

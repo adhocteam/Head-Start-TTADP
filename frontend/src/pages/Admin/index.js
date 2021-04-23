@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import User from './users';
 import Cdi from './cdi';
+import RequestErrors from './requestErrors';
 
 function Admin() {
   return (
@@ -16,6 +17,9 @@ function Admin() {
         <Link className="usa-button" to="/admin/users">
           Users
         </Link>
+        <Link className="usa-button" to="/admin/requestErrors">
+          Errors
+        </Link>
       </div>
       <Switch>
         <Route
@@ -25,6 +29,10 @@ function Admin() {
         <Route
           path="/admin/users/:userId?"
           render={({ match }) => <User match={match} />}
+        />
+        <Route
+          path="/admin/requestErrors/"
+          render={({ match }) => <RequestErrors match={match} />}
         />
       </Switch>
     </>

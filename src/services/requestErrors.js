@@ -20,5 +20,5 @@ export default async function createRequestError({
 }
 
 export async function requestErrors() {
-  return models.RequestErrors.findAll();
+  return models.RequestErrors.findAndCountAll();
 }
