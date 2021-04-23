@@ -18,3 +18,7 @@ export default async function createRequestError({
     throw new Error('Error creating RequestError entry');
   }
 }
+
+export async function requestErrors() {
+  return models.RequestErrors.findAll();
+}
