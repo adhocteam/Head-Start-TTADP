@@ -154,7 +154,7 @@ class ActivityReport {
   startDate : date
   activityRecipientType : string
   requester : string
-  * status : string
+  * overviewStatus : string
   programTypes : array<string>
   targetPopulations : array<string>
   reason : array<string>
@@ -163,7 +163,6 @@ class ActivityReport {
   ttaType : array<string>
   context : string
   pageState : json
-  managerNotes : string
   * userId : integer(32) REFERENCES public.Users.id
   * lastUpdatedById : integer(32) REFERENCES public.Users.id
   * regionId : integer(32) REFERENCES public.Region.id
@@ -194,6 +193,14 @@ class ActivityReportCollaborator {
   * id : integer <<generated>>
   * activityReportId : integer(32) REFERENCES public.ActivityReport.id
   * userId : integer(32) REFERENCES public.User.id
+}
+
+class ActivityReportApprover {
+  * id : integer <<generated>>
+  * activityReportId : integer(32) REFERENCES public.ActivityReport.id
+  * userId : integer(32) REFERENCES public.User.id
+  * status: string
+  notes : string
 }
 
 class ActivityReportGoal {
@@ -238,6 +245,7 @@ User ||-o{ ActivityReport
 ActivityReport ||-o{ ActivityParticipant
 Grant ||-{ ActivityParticipant
 NonGrantee ||-{ ActivityParticipant
+ActivityReport --|{ ActivityReportApprover
 @enduml
 ```
 
