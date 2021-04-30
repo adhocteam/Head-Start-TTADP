@@ -21,7 +21,7 @@ function Unauthenticated({ loggedOut, timedOut }) {
   return (
     <>
       <div className="smart-hub-dimmer position-fixed top-0 right-0 bottom-0 left-0 z-auto bg-ink opacity-50" />
-      <div role="dialog" aria-labelledby="welcome-message" aria-describedby="login-description" className="position-relative smart-hub-maxw-placard margin-x-auto margin-top-7 z-top bg-white border-top-2 smart-hub-border-blue-primary">
+      <div role="dialog" aria-labelledby="welcome-message" aria-describedby="login-description" className="position-relative smart-hub-maxw-placard margin-x-auto margin-top-7 z-500 bg-white border-top-2 smart-hub-border-blue-primary">
         <div className="maxw-mobile margin-x-auto padding-y-7">
           <img src={logo1x} srcSet={`${logo2x} 2x`} width="78" height="78" alt="ECLKC Blocks Logo" className="smart-hub-logo display-block margin-x-auto" />
           <h1 id="welcome-message" className="font-serif-xl text-center margin-4">

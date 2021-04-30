@@ -4,7 +4,7 @@ function RequestPermissions() {
   return (
     <>
       <div className="smart-hub-dimmer position-fixed top-0 right-0 bottom-0 left-0 z-auto bg-ink opacity-50" />
-      <div role="dialog" aria-labelledby="permissions-message" aria-describedby="permissions-description" className="position-relative smart-hub-maxw-placard margin-x-auto margin-top-7 z-top bg-white">
+      <div role="dialog" aria-labelledby="permissions-message" aria-describedby="permissions-description" className="position-relative smart-hub-maxw-placard margin-x-auto margin-top-7 z-500 bg-white">
         <div className="maxw-mobile-lg margin-x-auto padding-y-7">
           <h1 id="permissions-message" className="font-serif-xl text-center margin-y-4 margin-x-2">
             You need permission to access the TTA Smart Hub.

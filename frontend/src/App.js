@@ -131,7 +131,7 @@ function App() {
       </Helmet>
       <BrowserRouter>
         {authenticated && (
-          <a className="usa-skipnav" href="#main-content">
+          <a className="usa-skipnav z-top" href="#main-content">
             Skip to main content
           </a>
         )}
