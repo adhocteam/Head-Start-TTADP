@@ -124,8 +124,11 @@ components:
           description: Topics covered during the TTA
           items:
             type: string
-        approvingManager:
-          $ref: '#/components/schemas/user'
+        approvers:
+          type: array
+          description: Manager reviews of this report
+          items:
+            $ref: '#/components/schemas/approver'
         pageState:
           type: object
           enum: ['Not Started', 'In progress', 'Completed']
@@ -141,12 +144,10 @@ components:
               type: string
         status:
           type: string
-          enum:
-            - draft
-            - submitted
-            - approved
-            - needs_action
-          description: The current state of the report
+          enum: ['approved', 'draft', 'submitted', 'needs_action']
+          description: |
+            Current state of the report calculated from manager
+            reviews and submissions
         ttaType:
           type: array
           description: The type of the activity, Training or Technical Assistance (or both)
@@ -190,8 +191,10 @@ components:
             type: object
         status:
           type: string
-          enum: ['approved', 'draft', 'submitted']
-          description: The current state of the report
+          enum: ['approved', 'draft', 'submitted', 'needs_action']
+          description: |
+            Current state of the report calculated from manager
+            reviews and submissions
     selectableUser:
       type: object
       description: >
@@ -296,6 +299,19 @@ components:
         isFromSmartsheetTtaPlan:
           type: boolean
           description: Flag indicating the origin of the goal, smartsheet or smarthub
+    approver:
+      type: object
+      description: A
+      properties:
+        id:
+          type: number
+        user:
+          $ref: '#/components/schemas/user'
+        status:
+          type: string
+          enum: ['approved', 'needs_action', null]
+        note:
+          type: string
   parameters:
     reportId.in:
       in: query
