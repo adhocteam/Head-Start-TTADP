@@ -1,12 +1,12 @@
-const { Model } = require('sequelize');
 import { APPROVER_STATUSES } from '../constants';
 
+const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class ActivityReportApprover extends Model {
     static associate(models) {
-      ActivityReportObjective.belongsTo(models.ActivityReport, { foreignKey: 'activityReportId', as: 'activityReport' });
-      ActivityReportObjective.belongsTo(models.User, { foreignKey: 'userId'});
+      ActivityReportApprover.belongsTo(models.ActivityReport, { foreignKey: 'activityReportId', as: 'activityReport' });
+      ActivityReportApprover.belongsTo(models.User, { foreignKey: 'userId' });
     }
   }
   ActivityReportApprover.init({
