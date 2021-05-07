@@ -1,7 +1,6 @@
 const approverStatuses = [
   'needs_action',
   'approved',
-  'deleted',
 ];
 
 module.exports = {
