@@ -150,7 +150,7 @@ components:
             Field formerly called "status".
         calculatedStatus:
           type: string
-          enum: ['draft', 'submitted', 'approved', 'needs_action', 'approved']
+          enum: ['draft', 'submitted', 'deleted', 'needs_action', 'approved']
           description: |
             Current state of the report calculated from submissionStatus
             and manager reviews. Virtual field- only returned as API response,
@@ -198,10 +198,11 @@ components:
             type: object
         calculatedStatus:
           type: string
-          enum: ['approved', 'draft', 'submitted', 'needs_action']
+          enum: ['draft', 'submitted', 'deleted', 'needs_action', 'approved']
           description: |
-            Current state of the report calculated from manager
-            reviews and submissions
+            Current state of the report calculated from submissionStatus
+            and manager reviews. Virtual field- only returned as API response,
+            not a valid request field.
     selectableUser:
       type: object
       description: >

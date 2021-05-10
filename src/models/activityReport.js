@@ -174,6 +174,41 @@ export default (sequelize, DataTypes) => {
         },
       },
     },
+    calculatedStatus: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        if (this.submissionStatus == REPORT_STATUSES.SUBMITTED) {
+          // Calculate status based on all approvals
+          let approvalStatuses = []
+
+          // Approver assigned by old "single approver" method 
+          // but report was not reviewed yet
+          if (this.approvingManagerId) {
+            approvalStatuses.append(null)
+          }
+
+          // Approver assigned by new "multiple approver" method
+          if (this.hasOwnProperty(ActivityReportApprover)) {
+            this.ActivityReportApprover.forEach(approval => {
+              approvalStatuses.append(approval.status)
+            })
+          }
+
+          const approved = (status) => status === REPORT_STATUSES.APPROVED
+          if (approvalStatuses.every(approved)) {
+            return REPORT_STATUSES.APPROVED
+          }
+          const needs_review = (status) => status === REPORT_STATUSES.NEEDS_REVIEW
+          if (approvalStatuses.some(needs_review)) {
+            return REPORT_STATUSES.NEEDS_REVIEW
+          }
+        }
+        // AR was given status of deleted, draft, approved or needs_review 
+        // by old "single approver" method, or AR is still awaiting review(s).
+        // In all these cases calculatedStatus and submissionStatus match.
+        return this.submissionStatus
+      }
+    },
     ttaType: {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },

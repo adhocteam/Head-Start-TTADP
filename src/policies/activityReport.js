@@ -32,12 +32,12 @@ export default class ActivityReport {
 
   canReset() {
     return (this.isAuthor() || this.isCollaborator())
-      && this.activityReport.status === REPORT_STATUSES.SUBMITTED;
+      && this.activityReport.submissionStatus === REPORT_STATUSES.SUBMITTED;
   }
 
   canDelete() {
     return (this.isAdmin() || this.isAuthor())
-      && this.activityReport.status !== REPORT_STATUSES.APPROVED;
+      && this.activityReport.calculatedStatus !== REPORT_STATUSES.APPROVED;
   }
 
   canViewLegacy() {
@@ -45,14 +45,14 @@ export default class ActivityReport {
   }
 
   canGet() {
-    const { status } = this.activityReport;
+    const { calculatedStatus } = this.activityReport;
     const canReadUnapproved = this.isAuthor() || this.isCollaborator() || this.isApprovingManager();
 
     if (canReadUnapproved) {
       return canReadUnapproved;
     }
 
-    if (status === REPORT_STATUSES.APPROVED) {
+    if (calculatedStatus === REPORT_STATUSES.APPROVED) {
       return this.canReadInRegion();
     }
 
@@ -93,11 +93,16 @@ export default class ActivityReport {
   }
 
   isApprovingManager() {
-    return this.activityReport.approvingManagerId === this.user.id;
+    this.activityReport.activityReportApprovals.forEach(approval => {
+      if (approval.userId === this.user.id) {
+        return true
+      }
+    })
+    return false;
   }
 
   reportHasEditableStatus() {
-    return this.activityReport.status === REPORT_STATUSES.DRAFT
-      || this.activityReport.status === REPORT_STATUSES.NEEDS_ACTION;
+    return this.activityReport.submissionStatus === REPORT_STATUSES.DRAFT
+      || this.activityReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION;
   }
 }
