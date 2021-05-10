@@ -142,7 +142,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    status: {
+    submissionStatus: {
       allowNull: false,
       type: DataTypes.ENUM(Object.keys(REPORT_STATUSES).map((k) => REPORT_STATUSES[k])),
       validate: {
@@ -165,7 +165,7 @@ export default (sequelize, DataTypes) => {
             this.ttaType,
           ];
           const draftStatuses = [REPORT_STATUSES.DRAFT, REPORT_STATUSES.DELETED];
-          if (!draftStatuses.includes(this.status)) {
+          if (!draftStatuses.includes(this.submissionStatus)) {
             // Require fields when report is not a draft
             if (requiredForSubmission.includes(null)) {
               throw new Error('Missing required field(s)');
@@ -233,7 +233,7 @@ export default (sequelize, DataTypes) => {
   }, {
     defaultScope: {
       where: {
-        status: {
+        submissionStatus: {
           [Op.ne]: 'deleted',
         },
       },

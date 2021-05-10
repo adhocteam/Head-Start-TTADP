@@ -142,12 +142,19 @@ components:
               type: string
             4:
               type: string
-        status:
+        submissionStatus:
           type: string
-          enum: ['approved', 'draft', 'submitted', 'needs_action']
+          enum: ['draft', 'submitted', 'deleted']
           description: |
-            Current state of the report calculated from manager
-            reviews and submissions
+            Submission status of the report.
+            Field formerly called "status".
+        calculatedStatus:
+          type: string
+          enum: ['draft', 'submitted', 'approved', 'needs_action', 'approved']
+          description: |
+            Current state of the report calculated from submissionStatus
+            and manager reviews. Virtual field- only returned as API response,
+            not a valid request field.
         ttaType:
           type: array
           description: The type of the activity, Training or Technical Assistance (or both)
@@ -189,7 +196,7 @@ components:
           description: Collaborating user names
           items:
             type: object
-        status:
+        calculatedStatus:
           type: string
           enum: ['approved', 'draft', 'submitted', 'needs_action']
           description: |
@@ -393,17 +400,17 @@ components:
       collectionFormat: multi
       items:
         type: string
-    status.in:
+    cacluatedStatus.in:
       in: query
-      name: status.in
+      name: cacluatedStatus.in
       type: array
       description: Include reports with a status that partial match value
       collectionFormat: multi
       items:
         type: string
-    status.nin:
+    cacluatedStatus.nin:
       in: query
-      name: status.nin
+      name: cacluatedStatus.nin
       type: array
       description: Include reports with a status that does not partial match value
       collectionFormat: multi
