@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import User from './users';
 import Cdi from './cdi';
-import RequestErrors from './requestErrors';
+import Diag from './diag';
 
 function Admin() {
   return (
@@ -17,8 +17,8 @@ function Admin() {
         <Link className="usa-button" to="/admin/users">
           Users
         </Link>
-        <Link className="usa-button" to="/admin/requestErrors">
-          Errors
+        <Link className="usa-button" to="/admin/diag">
+          Diag
         </Link>
       </div>
       <Switch>
@@ -31,8 +31,8 @@ function Admin() {
           render={({ match }) => <User match={match} />}
         />
         <Route
-          path="/admin/requestErrors/"
-          render={({ match }) => <RequestErrors match={match} />}
+          path="/admin/diag/"
+          render={({ match }) => <Diag match={match} />}
         />
       </Switch>
     </>

@@ -19,6 +19,42 @@ export default async function createRequestError({
   }
 }
 
-export async function requestErrors() {
-  return models.RequestErrors.findAndCountAll();
+export async function requestErrors({ filter = '{}', range = '[0,9]', sort = '["createdAt","DESC"]' } = {}) {
+  const offset = JSON.parse(range)[0];
+  const limit = JSON.parse(range)[1];
+  const order = JSON.parse(sort);
+  const where = JSON.parse(filter);
+
+  return models.RequestErrors.findAndCountAll({
+    where,
+    order: [order],
+    offset,
+    limit: limit + 1,
+  });
+}
+
+export async function requestErrorById(id) {
+  return models.RequestErrors.findOne({
+    where: { id },
+  });
+}
+
+export async function requestErrorsByIds({ filter = '{}' } = {}) {
+  return models.RequestErrors.findAll({
+    where: JSON.parse(filter),
+    attributes: ['id'],
+  });
+}
+
+export async function something({ filter = '{}' } = {}) {
+  return models.RequestErrors.findAll({
+    where: JSON.parse(filter),
+    attributes: ['id'],
+  });
+}
+
+export async function delRequestErrors({ filter = '{}' } = {}) {
+  return models.RequestErrors.destroy({
+    where: JSON.parse(filter),
+  });
 }

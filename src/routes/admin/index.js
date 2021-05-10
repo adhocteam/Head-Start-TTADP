@@ -1,5 +1,5 @@
 import express from 'express';
-import getRequestErrors from './handlers';
+import getRequestErrors, { getRequestError, deleteRequestErrors } from './handlers';
 
 import userRouter from './user';
 import granteeRouter from './grantee';
@@ -9,6 +9,8 @@ import userAdminAccessMiddleware from '../../middleware/userAdminAccessMiddlewar
 const router = express.Router();
 
 router.get('/requestErrors', getRequestErrors);
+router.get('/requestErrors/:id', getRequestError);
+router.delete('/requestErrors', deleteRequestErrors);
 
 // const router = express.Router();
 

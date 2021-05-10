@@ -1,113 +1,73 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
-import { Admin, Resource, ListGuesser } from 'react-admin';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import simpleRestProvider from 'ra-data-simple-rest';
-import jsonServerProvider from 'ra-data-json-server';
+/* eslint-disable react/jsx-props-no-spreading */
+import * as React from 'react';
 import {
-  Grid, SideNav, Alert, Checkbox, Label, TextInput,
-} from '@trussworks/react-uswds';
-import dp from './dataProvider';
+  List,
+  Datagrid,
+  TextField,
+  DateField,
+  Show,
+  SimpleShowLayout,
+  Edit,
+  TextInput,
+  SimpleForm,
+  DateInput,
+  TopToolbar,
+  ListButton,
+} from 'react-admin';
 
-// import ReactRouterPropTypes from 'react-router-prop-types';
+// eslint-disable-next-line react/prop-types
+const RequestErrorShowActions = ({ basePath }) => (
+  <TopToolbar>
+    <ListButton basePath={basePath} />
+  </TopToolbar>
+);
 
-import NavLink from '../../components/NavLink';
-import Container from '../../components/Container';
-import { DECIMAL_BASE } from '../../Constants';
+const RequestErrorList = (props) => (
+  <List {...props}>
+    <Datagrid rowClick="edit">
+      <TextField source="id" />
+      <TextField source="operation" />
+      <TextField source="uri" />
+      <TextField source="method" />
+      <TextField source="requestBody" />
+      <TextField source="responseBody" />
+      <TextField source="responseCode" />
+      <DateField source="createdAt" />
+      <DateField source="updatedAt" />
+    </Datagrid>
+  </List>
+);
 
-// import Grant from './components/Grant';
+export const RequestErrorEdit = (props) => (
+  <Edit {...props}>
+    <SimpleForm>
+      <TextInput source="id" />
+      <TextInput source="operation" />
+      <TextInput source="uri" />
+      <TextInput source="method" />
+      <TextInput source="requestBody.foo" />
+      <TextInput source="responseBody.error.foo" />
+      <DateInput source="responseCode" />
+      <DateInput source="createdAt" />
+      <DateInput source="updatedAt" />
+    </SimpleForm>
+  </Edit>
+);
 
-const dataProvider = simpleRestProvider('http://localhost:8080/api/admin');
-// const dataProvider = jsonServerProvider('http://localhost:8080/api/admin');
+export const RequestErrorShow = (props) => (
+  <Show actions={<RequestErrorShowActions />} {...props}>
+    <SimpleShowLayout>
+      <TextField source="id" />
+      <TextField source="operation" />
+      <TextField source="uri" />
+      <TextField source="method" />
+      <TextField source="requestBody" />
+      <TextField source="responseBody" />
+      <TextField source="responseCode" />
+      <DateField source="createdAt" />
+      <DateField source="updatedAt" />
+    </SimpleShowLayout>
+  </Show>
+);
 
-function RequestErrors() {
-  // const [selectedGrant, updateSelectedGrant] = useState();
-  // const [grantees, updateGrantees] = useState([]);
-  // const [requestRequestErrors, updateRequestRequestErrors] = useState([]);
-  const [loaded, updateLoaded] = useState(true);
-  // const [error, updateError] = useState(false);
-  // const [unassigned, updateUnassigned] = useState(false);
-  // const [grantSearch, updateGrantSearch] = useState('');
-  // const [active, updateActive] = useState(true);
-
-  // useEffect(() => {
-  //   async function fetchGrants() {
-  //     updateLoaded(false);
-  //     try {
-  //       const [fetchedGrants, fetchedGrantees] = await Promise.all([
-  //         getCDIGrants(unassigned, active),
-  //         getGrantees(),
-  //       ]);
-  //       const [requestRequestErrors, updateRequestRequestErrors] = useState([]);
-
-  //       updateGrants(fetchedGrants);
-  //       updateGrantees(fetchedGrantees);
-  //     } catch (e) {
-  //       // eslint-disable-next-line no-console
-  //       console.log(e);
-  //       updateError('Unable to fetch grants or grantees');
-  //     }
-  //     updateLoaded(true);
-  //   }
-  //   fetchGrants();
-  // }, [unassigned, active]);
-
-  // useEffect(() => {
-  //   if (grantId) {
-  //     updateSelectedGrant(grants.find((g) => (
-  //       g.id === parseInt(grantId, DECIMAL_BASE)
-  //     )));
-  //   }
-  // }, [grantId, grants]);
-
-  // const onGrantSearchChange = (e) => {
-  //   updateGrantSearch(e.target.value);
-  // };
-
-  // const filteredGrants = grants.filter((g) => g.number.toLowerCase().includes(
-  //   grantSearch.toLowerCase(),
-  // ));
-
-  // const renderGrants = () => filteredGrants.map(({ id, number }) => (
-  //   <NavLink to={`/admin/cdi/${id}`}>{`${number} - ${id}`}</NavLink>
-  // ));
-
-  // const onAssignCDIGrant = async (selectedGrantId, regionId, granteeId) => {
-  //   const grant = await assignCDIGrant(selectedGrantId, regionId, granteeId);
-  //   const newGrants = [...grants];
-  //   const newGrantIndex = newGrants.findIndex((g) => g.id === grant.id);
-  //   newGrants[newGrantIndex] = grant;
-  //   updateGrants(newGrants);
-  // };
-
-  if (!loaded) {
-    return (
-      <div>
-        loading...
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <Container>
-        <Grid row gap>
-          <Grid col={4}>
-            <h2>Request Errors</h2>
-          </Grid>
-          <Grid col={12}>
-            <Admin dataProvider={dp}>
-              <Resource name="requestErrors" list={ListGuesser} />
-            </Admin>
-          </Grid>
-        </Grid>
-      </Container>
-    </>
-  );
-}
-
-RequestErrors.propTypes = {
-  // match: ReactRouterPropTypes.match.isRequired,
-};
-
-export default RequestErrors;
+export default RequestErrorList;
