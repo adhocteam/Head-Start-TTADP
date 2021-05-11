@@ -177,40 +177,41 @@ export default (sequelize, DataTypes) => {
     calculatedStatus: {
       type: DataTypes.VIRTUAL,
       get() {
-        if (this.submissionStatus == REPORT_STATUSES.SUBMITTED) {
+        if (this.submissionStatus === REPORT_STATUSES.SUBMITTED) {
           // Calculate status based on all approvals
-          let approvalStatuses = []
+          const approvalStatuses = {};
 
+          // For approvals assigned by old "single approver" method,
+          // capture pending review in case manager hasn't reviewed yet.
+          if (this.approvingManagerId) {
+            approvalStatuses[this.approvingManagerId] = null;
+          }
 
-          // // Approver assigned by old "single approver" method 
-          // // but report was not reviewed yet
-          // if (this.approvingManagerId) {
-          //   approvalStatuses.append(null)
-          // } <<<< put review will create new record. so this single reviewer, not yet reviewed will get submited,
-          // and when new reviw is added it will be captured by the if statement below
+          // For approvals assigned by new "multiple approver" method
+          if (this.ActivityReportApprover) {
+            // Get all reviews. If manager was assigned by old method and reviewed by
+            // new method, then overwrite pending approval (null value added above)
+            // with new approval record.
+            this.ActivityReportApprover.forEach((approval) => {
+              approvalStatuses[approval.approvingManagerId] = approval.status;
+            });
 
-          // Approver assigned by new "multiple approver" method
-          if (this.hasOwnProperty(ActivityReportApprover)) {
-            this.ActivityReportApprover.forEach(approval => {
-              approvalStatuses.append(approval.status)
-            })
-
-            const approved = (status) => status === REPORT_STATUSES.APPROVED
-            if (approvalStatuses.every(approved)) {
-              return REPORT_STATUSES.APPROVED
+            const approved = (status) => status === REPORT_STATUSES.APPROVED;
+            if (Object.values(approvalStatuses).every(approved)) {
+              return REPORT_STATUSES.APPROVED;
             }
 
-            const needs_review = (status) => status === REPORT_STATUSES.NEEDS_REVIEW
-            if (approvalStatuses.some(needs_review)) {
-              return REPORT_STATUSES.NEEDS_REVIEW
+            const needsReview = (status) => status === REPORT_STATUSES.NEEDS_REVIEW;
+            if (Object.values(approvalStatuses).some(needsReview)) {
+              return REPORT_STATUSES.NEEDS_REVIEW;
             }
           }
         }
-        // AR was given status of deleted, draft, approved or needs_review 
-        // by old "single approver" method, or AR is still awaiting review(s).
-        // In all these cases calculatedStatus and submissionStatus match.
-        return this.submissionStatus
-      }
+        // AR was given status of deleted, draft, approved or needs_review
+        // by old "single approver" method, or AR is still awaiting review(s)
+        // by either method. In all these cases calculatedStatus and submissionStatus match.
+        return this.submissionStatus;
+      },
     },
     ttaType: {
       type: DataTypes.ARRAY(DataTypes.STRING),

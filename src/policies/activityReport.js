@@ -32,7 +32,7 @@ export default class ActivityReport {
 
   canReset() {
     return (this.isAuthor() || this.isCollaborator())
-      && this.activityReport.submissionStatus === REPORT_STATUSES.SUBMITTED;
+      && this.activityReport.calculatedStatus === REPORT_STATUSES.SUBMITTED;
   }
 
   canDelete() {
@@ -93,16 +93,19 @@ export default class ActivityReport {
   }
 
   isApprovingManager() {
-    this.activityReport.activityReportApprovals.forEach(approval => {
-      if (approval.userId === this.user.id) {
-        return true
-      }
-    })
-    return false;
+    if (this.activityReport.activityReportApprovals) {
+      this.activityReport.activityReportApprovals.forEach((approval) => {
+        if (approval.userId === this.user.id) {
+          return true;
+        }
+      });
+    }
+
+    return this.activityReport.approvingManagerId === this.user.id;
   }
 
   reportHasEditableStatus() {
-    return this.activityReport.submissionStatus === REPORT_STATUSES.DRAFT
+    return this.activityReport.calculatedStatus === REPORT_STATUSES.DRAFT
       || this.activityReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION;
   }
 }

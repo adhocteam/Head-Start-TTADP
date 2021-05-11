@@ -1,11 +1,9 @@
-'use strict';
-
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.renameColumn('ActivityReports', 'status', 'submissionStatus', { transaction: t });
+  up: async (queryInterface) => {
+    await queryInterface.renameColumn('ActivityReports', 'status', 'submissionStatus');
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.renameColumn('ActivityReports', 'submissionStatus', 'status', { transaction: t });
-  }
+  down: async (queryInterface) => {
+    await queryInterface.renameColumn('ActivityReports', 'submissionStatus', 'status');
+  },
 };
