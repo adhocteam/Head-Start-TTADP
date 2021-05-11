@@ -9,7 +9,9 @@ import {
   legacyReportById,
   getReports,
   getReportAlerts,
+  deleteReport,
 } from '../activityReports';
+import { REPORTS_PER_PAGE } from '../../Constants';
 
 describe('activityReports fetcher', () => {
   afterEach(() => fetchMock.restore());
@@ -21,10 +23,25 @@ describe('activityReports fetcher', () => {
         sortDir: 'desc',
         offset: 0,
         limit: 10,
+        filters: 'filters',
       };
 
       fetchMock.get(join('api', 'activity-reports'), [], { query });
-      await getReports();
+      await getReports(undefined, undefined, undefined, undefined, 'filters=filters');
+      expect(fetchMock.called()).toBeTruthy();
+    });
+
+    it('can be filtered', async () => {
+      const query = {
+        sortBy: 'updatedAt',
+        sortDir: 'desc',
+        offset: 0,
+        limit: 10,
+        filters: 'filters',
+      };
+
+      fetchMock.get(join('api', 'activity-reports'), [], { query });
+      await getReports('updatedAt', 'desc', 0, REPORTS_PER_PAGE, 'filters=filters');
       expect(fetchMock.called()).toBeTruthy();
     });
   });
@@ -36,10 +53,25 @@ describe('activityReports fetcher', () => {
         sortDir: 'asc',
         offset: 0,
         limit: 10,
+        filters: 'filters',
       };
 
       fetchMock.get(join('api', 'activity-reports', 'alerts'), [], { query });
-      await getReportAlerts();
+      await getReportAlerts(undefined, undefined, undefined, undefined, 'filters=filters');
+      expect(fetchMock.called()).toBeTruthy();
+    });
+
+    it('can be filtered', async () => {
+      const query = {
+        sortBy: 'updatedAt',
+        sortDir: 'desc',
+        offset: 0,
+        limit: 10,
+        filters: 'filters',
+      };
+
+      fetchMock.get(join('api', 'activity-reports', 'alerts'), [], { query });
+      await getReportAlerts('updatedAt', 'desc', 0, REPORTS_PER_PAGE, 'filters=filters');
       expect(fetchMock.called()).toBeTruthy();
     });
   });
@@ -86,6 +118,15 @@ describe('activityReports fetcher', () => {
       fetchMock.put(join('api', 'activity-reports', '1', 'review'), report);
       const savedReport = await reviewReport(1, report);
       expect(savedReport).toEqual(report);
+    });
+  });
+
+  describe('deleteReport', () => {
+    it('deletes the report', async () => {
+      const status = { status: 200 };
+      fetchMock.delete(join('api', 'activity-reports', '1'), status);
+      await deleteReport(1);
+      expect(fetchMock.called()).toBeTruthy();
     });
   });
 });

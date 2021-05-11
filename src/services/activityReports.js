@@ -23,6 +23,8 @@ import {
   saveGoalsForReport, copyGoalsToGrants,
 } from './goals';
 
+import { saveObjectivesForReport } from './objectives';
+
 async function saveReportCollaborators(activityReportId, collaborators, transaction) {
   const newCollaborators = collaborators.map((collaborator) => ({
     activityReportId,
@@ -226,11 +228,15 @@ export function activityReportById(activityReportId) {
       },
       {
         model: Objective,
-        as: 'objectives',
+        as: 'objectivesWithGoals',
         include: [{
           model: Goal,
           as: 'goal',
         }],
+      },
+      {
+        model: Objective,
+        as: 'objectivesWithoutGoals',
       },
       {
         model: User,
@@ -278,6 +284,9 @@ export function activityReportById(activityReportId) {
         required: false,
       },
     ],
+    order: [
+      [{ model: Objective, as: 'objectivesWithGoals' }, 'id', 'ASC'],
+    ],
   });
 }
 
@@ -292,19 +301,29 @@ export function activityReportById(activityReportId) {
  * @param {*} limit - size of the slice
  * @returns {Promise<any>} - returns a promise with total reports count and the reports slice
  */
-export function activityReports(readRegions, {
-  sortBy = 'updatedAt', sortDir = 'desc', offset = 0, limit = REPORTS_PER_PAGE, ...filters
-}) {
+export function activityReports(
+  readRegions,
+  {
+    sortBy = 'updatedAt', sortDir = 'desc', offset = 0, limit = REPORTS_PER_PAGE, ...filters
+  },
+  excludeLegacy = false,
+) {
   const regions = readRegions || [];
   const scopes = filtersToScopes(filters);
 
+  const where = {
+    regionId: regions,
+    status: REPORT_STATUSES.APPROVED,
+    [Op.and]: scopes,
+  };
+
+  if (excludeLegacy) {
+    where.legacyId = { [Op.eq]: null };
+  }
+
   return ActivityReport.findAndCountAll(
     {
-      where: {
-        regionId: regions,
-        status: REPORT_STATUSES.APPROVED,
-        [Op.and]: scopes,
-      },
+      where,
       attributes: [
         'id',
         'displayId',
@@ -496,7 +515,8 @@ export async function createOrUpdate(newActivityReport, report) {
   let savedReport;
   const {
     goals,
-    objectives,
+    objectivesWithGoals,
+    objectivesWithoutGoals,
     collaborators,
     activityRecipients,
     attachments,
@@ -553,7 +573,9 @@ export async function createOrUpdate(newActivityReport, report) {
       await saveNotes(id, specialistNextSteps, false, transaction);
     }
 
-    if (goals) {
+    if (allFields.activityRecipientType === 'non-grantee' && objectivesWithoutGoals) {
+      await saveObjectivesForReport(objectivesWithoutGoals, savedReport, transaction);
+    } else if (allFields.activityRecipientType === 'grantee' && goals) {
       await saveGoalsForReport(goals, savedReport, transaction);
     }
   });
@@ -602,23 +624,10 @@ export async function possibleRecipients(regionId) {
   return { grants, nonGrantees };
 }
 
-/**
- * Fetches ActivityReports for downloading
- *
- * @param {Array<int>} report - array of report ids
- * @returns {Promise<any>} - returns a promise with total reports count and the reports slice
- */
-export async function getDownloadableActivityReports(readRegions, {
-  report = [],
-}) {
-  const regions = readRegions || [];
-  // Create a Set to ensure unique ordered values
-  const reportSet = Array.isArray(report) ? new Set(report) : new Set([report]);
-  const reportIds = [...reportSet].filter((i) => /\d+/.test(i));
-
-  const result = await ActivityReport.findAndCountAll(
+async function getDownloadableActivityReports(where) {
+  return ActivityReport.findAndCountAll(
     {
-      where: { regionId: regions, imported: null, id: { [Op.in]: reportIds } },
+      where,
       attributes: { include: ['displayId'], exclude: ['imported', 'legacyId'] },
       include: [
         {
@@ -646,18 +655,6 @@ export async function getDownloadableActivityReports(readRegions, {
               required: false,
             },
           ],
-        },
-        {
-          model: Objective,
-          as: 'objectives',
-          include: [{
-            model: Goal,
-            as: 'goal',
-            include: [{
-              model: Objective,
-              as: 'objectives',
-            }],
-          }],
         },
         {
           model: File,
@@ -707,5 +704,69 @@ export async function getDownloadableActivityReports(readRegions, {
       order: [['id', 'DESC']],
     },
   );
-  return result;
+}
+
+export async function getAllDownloadableActivityReports(readRegions, filters) {
+  const regions = readRegions || [];
+  const scopes = filtersToScopes(filters);
+
+  const where = {
+    regionId: regions,
+    status: REPORT_STATUSES.APPROVED,
+    imported: null,
+    [Op.and]: scopes,
+  };
+
+  return getDownloadableActivityReports(where);
+}
+
+export async function getAllDownloadableActivityReportAlerts(userId, filters) {
+  const scopes = filtersToScopes(filters);
+  const where = {
+    [Op.and]: scopes,
+    [Op.or]: [
+      {
+        [Op.or]: [
+          { status: REPORT_STATUSES.SUBMITTED },
+          { status: REPORT_STATUSES.NEEDS_ACTION },
+        ],
+        approvingManagerId: userId,
+      },
+      {
+        [Op.and]: [
+          {
+            [Op.and]: [
+              {
+                status: { [Op.ne]: REPORT_STATUSES.APPROVED },
+              },
+            ],
+          },
+          {
+            [Op.or]: [{ userId }, { '$collaborators.id$': userId }],
+          },
+        ],
+      },
+    ],
+    legacyId: null,
+  };
+
+  return getDownloadableActivityReports(where);
+}
+
+/**
+ * Fetches ActivityReports for downloading
+ *
+ * @param {Array<int>} report - array of report ids
+ * @returns {Promise<any>} - returns a promise with total reports count and the reports slice
+ */
+export async function getDownloadableActivityReportsByIds(readRegions, {
+  report = [],
+}) {
+  const regions = readRegions || [];
+  // Create a Set to ensure unique ordered values
+  const reportSet = Array.isArray(report) ? new Set(report) : new Set([report]);
+  const reportIds = [...reportSet].filter((i) => /\d+/.test(i));
+  const where = { regionId: regions, imported: null, id: { [Op.in]: reportIds } };
+
+  return getDownloadableActivityReports(where);
 }

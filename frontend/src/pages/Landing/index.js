@@ -11,9 +11,10 @@ import { Link, useHistory } from 'react-router-dom';
 import Pagination from 'react-js-pagination';
 
 import UserContext from '../../UserContext';
+import ContextMenu from '../../components/ContextMenu';
 import Container from '../../components/Container';
 import { getReports, getReportAlerts } from '../../fetchers/activityReports';
-import { getReportsDownloadURL } from '../../fetchers/helpers';
+import { getReportsDownloadURL, getAllReportsDownloadURL, getAllAlertsDownloadURL } from '../../fetchers/helpers';
 import NewReport from './NewReport';
 import 'uswds/dist/css/uswds.css';
 import '@trussworks/react-uswds/lib/index.css';
@@ -21,8 +22,8 @@ import './index.css';
 import MyAlerts from './MyAlerts';
 import { hasReadWrite } from '../../permissions';
 import { REPORTS_PER_PAGE, ALERTS_PER_PAGE } from '../../Constants';
-import ContextMenu from '../../components/ContextMenu';
 import Filter, { filtersToQueryString } from './Filter';
+import ReportMenu from './ReportMenu';
 
 function renderReports(reports, history, reportCheckboxes, handleReportSelect) {
   const emptyReport = {
@@ -39,7 +40,7 @@ function renderReports(reports, history, reportCheckboxes, handleReportSelect) {
 
   const displayReports = reports.length ? reports : [emptyReport];
 
-  return displayReports.map((report) => {
+  return displayReports.map((report, index, { length }) => {
     const {
       id,
       displayId,
@@ -98,6 +99,7 @@ function renderReports(reports, history, reportCheckboxes, handleReportSelect) {
     ));
 
     const linkTarget = legacyId ? `/activity-reports/legacy/${legacyId}` : `/activity-reports/${id}`;
+
     const menuItems = [
       {
         label: 'View',
@@ -163,7 +165,7 @@ function renderReports(reports, history, reportCheckboxes, handleReportSelect) {
           </Tag>
         </td>
         <td>
-          <ContextMenu label={contextMenuLabel} menuItems={menuItems} />
+          <ContextMenu label={contextMenuLabel} menuItems={menuItems} up={index + 1 === length} />
         </td>
       </tr>
     );
@@ -290,7 +292,7 @@ function Landing() {
   }, [sortConfig, offset, perPage, filters]);
 
   useEffect(() => {
-    async function fetchReports() {
+    async function fetchAlertReports() {
       const filterQuery = filtersToQueryString(alertFilters);
       try {
         const { alertsCount, alerts } = await getReportAlerts(
@@ -312,7 +314,7 @@ function Landing() {
       }
       setIsLoaded(true);
     }
-    fetchReports();
+    fetchAlertReports();
   }, [alertsSortConfig, alertsOffset, alertsPerPage, alertFilters]);
 
   // When reports are updated, make sure all checkboxes are unchecked
@@ -327,7 +329,7 @@ function Landing() {
     } else if (allReportsChecked === true) {
       setAllReportsChecked(false);
     }
-  }, [reportCheckboxes]);
+  }, [reportCheckboxes, allReportsChecked]);
 
   const handleDownloadClick = () => {
     const toDownloadableReportIds = (accumulator, entry) => {
@@ -345,7 +347,20 @@ function Landing() {
     }
   };
 
+  const handleDownloadAllReports = () => {
+    const filterQuery = filtersToQueryString(filters);
+    const downloadURL = getAllReportsDownloadURL(filterQuery);
+    window.location.assign(downloadURL);
+  };
+
+  const handleDownloadAllAlerts = () => {
+    const filterQuery = filtersToQueryString(alertFilters);
+    const downloadURL = getAllAlertsDownloadURL(filterQuery);
+    window.location.assign(downloadURL);
+  };
+
   const getClassNamesFor = (name) => (sortConfig.sortBy === name ? sortConfig.direction : '');
+  const numberOfSelectedReports = Object.values(reportCheckboxes).filter((c) => c).length;
 
   const renderColumnHeader = (displayName, name) => {
     const sortClassName = getClassNamesFor(name);
@@ -412,10 +427,6 @@ function Landing() {
     );
   }
 
-  const headerMenuItems = [
-    { label: 'Download Selected Reports', onClick: () => handleDownloadClick() },
-  ];
-
   return (
     <>
       <Helmet>
@@ -473,10 +484,40 @@ function Landing() {
               sortHandler={requestAlertsSort}
               updateReportFilters={setAlertFilters}
               hasFilters={alertFilters.length > 0}
+              updateReportAlerts={updateReportAlerts}
+              setAlertReportsCount={setAlertReportsCount}
+              handleDownloadAllAlerts={handleDownloadAllAlerts}
             />
+
             <Container className="landing inline-size maxw-full" padding={0}>
+              <span className="smart-hub--table-controls">
+                {numberOfSelectedReports > 0
+                  && (
+                  <span className="smart-hub--selected-tag margin-right-1">
+                    {numberOfSelectedReports}
+                    {' '}
+                    selected
+                    {' '}
+                    <Button
+                      className="smart-hub--select-tag__button"
+                      unstyled
+                      aria-label="deselect all reports"
+                      onClick={() => {
+                        toggleSelectAll({ target: { checked: false } });
+                      }}
+                    >
+                      <FontAwesomeIcon color="blue" inverse icon={faTimesCircle} />
+                    </Button>
+                  </span>
+                  )}
+                <Filter applyFilters={setFilters} />
+                <ReportMenu
+                  hasSelectedReports={numberOfSelectedReports > 0}
+                  onExportAll={handleDownloadAllReports}
+                  onExportSelected={handleDownloadClick}
+                />
+              </span>
               <span className="smart-hub--table-nav">
-                <Filter className="float-left" applyFilters={setFilters} />
                 <span aria-label="Pagination for activity reports">
                   <span
                     className="smart-hub--total-count"
@@ -523,9 +564,7 @@ function Landing() {
                       {renderColumnHeader('Collaborator(s)', 'collaborators')}
                       {renderColumnHeader('Last saved', 'updatedAt')}
                       {renderColumnHeader('Status', 'status')}
-                      <th scope="col">
-                        <ContextMenu label="Actions for selected reports" menuItems={headerMenuItems} />
-                      </th>
+                      <th scope="col" aria-label="context menu" />
                     </tr>
                   </thead>
                   <tbody>

@@ -6,10 +6,11 @@ import {
 import { MemoryRouter } from 'react-router';
 import fetchMock from 'fetch-mock';
 
+import userEvent from '@testing-library/user-event';
 import UserContext from '../../../UserContext';
 import Landing from '../index';
 import activityReports, { activityReportsSorted, generateXFakeReports } from '../mocks';
-import { getReportsDownloadURL } from '../../../fetchers/helpers';
+import { getReportsDownloadURL, getAllReportsDownloadURL, getAllAlertsDownloadURL } from '../../../fetchers/helpers';
 
 jest.mock('../../../fetchers/helpers');
 
@@ -596,17 +597,8 @@ describe('Landing page table menus & selections', () => {
     });
   });
 
-  describe('Tablewide Context Menu', () => {
-    beforeAll(() => {
-      delete global.window.location;
-
-      global.window.location = {
-        ...oldWindowLocation,
-        assign: jest.fn(),
-      };
-    });
-
-    beforeEach(async () => {
+  describe('Selected count badge', () => {
+    it('can de-select all reports', async () => {
       fetchMock.reset();
       fetchMock.get('/api/activity-reports/alerts?sortBy=startDate&sortDir=desc&offset=0&limit=10',
         { alertsCount: 0, alerts: [] });
@@ -625,73 +617,85 @@ describe('Landing page table menus & selections', () => {
       };
 
       renderLanding(user);
-      await screen.findByText('Activity Reports');
-    });
-
-    afterEach(() => {
-      window.location.assign.mockReset();
-      getReportsDownloadURL.mockClear();
-      fetchMock.restore();
-    });
-
-    afterAll(() => {
-      window.location = oldWindowLocation;
-    });
-
-    it('Download a single selected report', async () => {
-      const reportCheckboxes = await screen.findAllByRole('checkbox', { name: /select /i });
-
-      // Element 0 is 'Select all', so we want 1 or later
-      const singleReportCheck = reportCheckboxes[1];
-      expect(singleReportCheck.value).toEqual('1');
-
-      fireEvent.click(singleReportCheck);
-
-      const contextMenu = await screen.findByLabelText(/actions for selected reports/i);
-
-      fireEvent.click(contextMenu);
-
-      const downloadButton = await screen.findByRole('button', { name: 'Download Selected Reports' });
-
-      fireEvent.click(downloadButton);
-
-      await waitFor(() => {
-        expect(getReportsDownloadURL).toHaveBeenCalledWith(['1']);
-        expect(window.location.assign).toHaveBeenCalled();
-      });
-    });
-
-    it('Can trigger the download of multiple reports', async () => {
-      // Try selecting all reports first
       const selectAllCheckbox = await screen.findByLabelText(/select or de-select all reports/i);
-
-      fireEvent.click(selectAllCheckbox);
-
-      const contextMenu = await screen.findByLabelText(/actions for selected reports/i);
-
-      fireEvent.click(contextMenu);
-
-      const downloadButton = await screen.findByRole('button', { name: 'Download Selected Reports' });
-
-      fireEvent.click(downloadButton);
-
+      userEvent.click(selectAllCheckbox);
       await waitFor(() => {
-        expect(getReportsDownloadURL).toHaveBeenCalled();
-        expect(window.location.assign).toHaveBeenCalled();
+        const checkboxes = screen.getAllByRole('checkbox');
+        expect(checkboxes).toHaveLength(11); // 1 selectAllCheckbox + 10 report checkboxes
+        checkboxes.forEach((c) => expect(c).toBeChecked());
+      });
+
+      const deselect = await screen.findByRole('button', { name: 'deselect all reports' });
+      fireEvent.click(deselect);
+      await waitFor(() => {
+        const checkboxes = screen.getAllByRole('checkbox');
+        expect(checkboxes).toHaveLength(11); // 1 selectAllCheckbox + 10 report checkboxes
+        checkboxes.forEach((c) => expect(c).not.toBeChecked());
       });
     });
+  });
 
-    it('Does not trigger download when no reports are selected', async () => {
-      const contextMenu = await screen.findByLabelText(/actions for selected reports/i);
-      fireEvent.click(contextMenu);
-
-      const downloadButton = await screen.findByRole('button', { name: 'Download Selected Reports' });
-      fireEvent.click(downloadButton);
-
-      await waitFor(() => {
-        expect(getReportsDownloadURL).not.toHaveBeenCalled();
-        expect(window.location.assign).not.toHaveBeenCalled();
+  describe('download all alerts button', () => {
+    describe('downloads all alerts', () => {
+      afterAll(() => {
+        getAllAlertsDownloadURL.mockClear();
       });
+
+      beforeAll(async () => {
+        fetchMock.reset();
+        fetchMock.get(
+          '/api/activity-reports/alerts?sortBy=startDate&sortDir=desc&offset=0&limit=10',
+          { count: 10, alerts: generateXFakeReports(10) },
+        );
+        fetchMock.get(
+          '/api/activity-reports?sortBy=updatedAt&sortDir=desc&offset=0&limit=10',
+          { count: 10, rows: [] },
+        );
+      });
+
+      it('downloads all reports', async () => {
+        const user = {
+          name: 'test@test.com',
+          permissions: [
+            {
+              scopeId: 3,
+              regionId: 1,
+            },
+          ],
+        };
+
+        renderLanding(user);
+        const reportMenu = await screen.findByRole('button', { name: 'Open alerts report menu' });
+        userEvent.click(reportMenu);
+        const downloadButton = await screen.findByRole('button', { name: 'Export Table Data...' });
+        userEvent.click(downloadButton);
+        expect(getAllAlertsDownloadURL).toHaveBeenCalledWith('');
+      });
+    });
+  });
+
+  describe('download all reports button', () => {
+    afterAll(() => {
+      getAllReportsDownloadURL.mockClear();
+    });
+
+    it('downloads all reports', async () => {
+      const user = {
+        name: 'test@test.com',
+        permissions: [
+          {
+            scopeId: 3,
+            regionId: 1,
+          },
+        ],
+      };
+
+      renderLanding(user);
+      const reportMenu = await screen.findByRole('button', { name: 'Open report menu' });
+      userEvent.click(reportMenu);
+      const downloadButton = await screen.findByRole('button', { name: 'Export Table Data...' });
+      userEvent.click(downloadButton);
+      expect(getAllReportsDownloadURL).toHaveBeenCalledWith('');
     });
   });
 });
@@ -700,6 +704,7 @@ describe('My alerts sorting', () => {
   afterEach(() => fetchMock.restore());
 
   beforeEach(async () => {
+    fetchMock.reset();
     fetchMock.get('/api/activity-reports/alerts?sortBy=startDate&sortDir=desc&offset=0&limit=10',
       { alertsCount: 2, alerts: activityReports });
     fetchMock.get('/api/activity-reports?sortBy=updatedAt&sortDir=desc&offset=0&limit=10',
@@ -732,14 +737,14 @@ describe('My alerts sorting', () => {
 
     fireEvent.click(statusColumnHeaders[0]);
     await waitFor(() => expect(screen.getAllByRole('cell')[5]).toHaveTextContent(/draft/i));
-    await waitFor(() => expect(screen.getAllByRole('cell')[11]).toHaveTextContent(/needs action/i));
+    await waitFor(() => expect(screen.getAllByRole('cell')[12]).toHaveTextContent(/needs action/i));
 
     fetchMock.get('/api/activity-reports/alerts?sortBy=status&sortDir=desc&offset=0&limit=10',
       { alertsCount: 2, alerts: activityReportsSorted });
 
     fireEvent.click(statusColumnHeaders[0]);
     await waitFor(() => expect(screen.getAllByRole('cell')[5]).toHaveTextContent(/needs action/i));
-    await waitFor(() => expect(screen.getAllByRole('cell')[11]).toHaveTextContent(/draft/i));
+    await waitFor(() => expect(screen.getAllByRole('cell')[12]).toHaveTextContent(/draft/i));
   });
 
   it('is enabled for Report ID', async () => {
@@ -756,7 +761,7 @@ describe('My alerts sorting', () => {
 
     fireEvent.click(columnHeaders[0]);
     await waitFor(() => expect(screen.getAllByRole('cell')[0]).toHaveTextContent(/r14-ar-1/i));
-    await waitFor(() => expect(screen.getAllByRole('cell')[6]).toHaveTextContent(/r14-ar-2/i));
+    await waitFor(() => expect(screen.getAllByRole('cell')[7]).toHaveTextContent(/r14-ar-2/i));
   });
 
   it('is enabled for Grantee', async () => {
@@ -775,7 +780,7 @@ describe('My alerts sorting', () => {
     fireEvent.click(columnHeaders[0]);
 
     await waitFor(() => expect(screen.getAllByRole('cell')[1]).toHaveTextContent(/Johnston-RomagueraJohnston-RomagueraGrantee Name/i));
-    await waitFor(() => expect(screen.getAllByRole('cell')[7]).toHaveTextContent(/qris system/i));
+    await waitFor(() => expect(screen.getAllByRole('cell')[8]).toHaveTextContent(/qris system/i));
   });
 
   it('is enabled for Start date', async () => {
@@ -793,7 +798,7 @@ describe('My alerts sorting', () => {
     fireEvent.click(columnHeaders[0]);
 
     await waitFor(() => expect(screen.getAllByRole('cell')[2]).toHaveTextContent(/02\/01\/2021/i));
-    await waitFor(() => expect(screen.getAllByRole('cell')[8]).toHaveTextContent(/02\/08\/2021/i));
+    await waitFor(() => expect(screen.getAllByRole('cell')[9]).toHaveTextContent(/02\/08\/2021/i));
   });
 
   it('is enabled for Creator', async () => {
@@ -811,7 +816,7 @@ describe('My alerts sorting', () => {
     fireEvent.click(columnHeaders[0]);
 
     await waitFor(() => expect(screen.getAllByRole('cell')[3]).toHaveTextContent(/kiwi, gs/i));
-    await waitFor(() => expect(screen.getAllByRole('cell')[9]).toHaveTextContent(/kiwi, ttac/i));
+    await waitFor(() => expect(screen.getAllByRole('cell')[10]).toHaveTextContent(/kiwi, ttac/i));
   });
 
   it('is enabled for Collaborator(s)', async () => {
@@ -828,7 +833,7 @@ describe('My alerts sorting', () => {
     fireEvent.click(columnHeaders[0]);
 
     await waitFor(() => expect(screen.getAllByRole('cell')[4]).toHaveTextContent(/cucumber user, gshermione granger, ss/i));
-    await waitFor(() => expect(screen.getAllByRole('cell')[10]).toHaveTextContent(/orange, gshermione granger, ss/i));
+    await waitFor(() => expect(screen.getAllByRole('cell')[11]).toHaveTextContent(/orange, gshermione granger, ss/i));
   });
 });
 
