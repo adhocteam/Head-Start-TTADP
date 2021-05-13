@@ -46,13 +46,6 @@ export async function requestErrorsByIds({ filter = '{}' } = {}) {
   });
 }
 
-export async function something({ filter = '{}' } = {}) {
-  return models.RequestErrors.findAll({
-    where: JSON.parse(filter),
-    attributes: ['id'],
-  });
-}
-
 export async function delRequestErrors({ filter = '{}' } = {}) {
   return models.RequestErrors.destroy({
     where: JSON.parse(filter),
