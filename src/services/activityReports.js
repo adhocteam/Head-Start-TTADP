@@ -19,9 +19,7 @@ import {
   Objective,
 } from '../models';
 
-import {
-  saveGoalsForReport, copyGoalsToGrants,
-} from './goals';
+import { saveGoalsForReport } from './goals';
 
 import { saveObjectivesForReport } from './objectives';
 
@@ -145,32 +143,6 @@ async function update(newReport, report, transaction) {
 
 async function create(report, transaction) {
   return ActivityReport.create(report, { transaction });
-}
-
-export async function review(report, status, managerNotes) {
-  let updatedReport;
-  await sequelize.transaction(async (transaction) => {
-    updatedReport = await report.update({
-      status,
-      managerNotes,
-    },
-    {
-      fields: ['status', 'managerNotes'],
-      transaction,
-    });
-
-    if (status === REPORT_STATUSES.APPROVED) {
-      if (report.activityRecipientType === 'grantee') {
-        await copyGoalsToGrants(
-          report.goals,
-          report.activityRecipients.map((recipient) => recipient.activityRecipientId),
-          transaction,
-        );
-      }
-    }
-  });
-
-  return updatedReport;
 }
 
 export function activityReportByLegacyId(legacyId) {
@@ -712,7 +684,7 @@ export async function getAllDownloadableActivityReports(readRegions, filters) {
 
   const where = {
     regionId: regions,
-    status: REPORT_STATUSES.APPROVED,
+    calculatedStatus: REPORT_STATUSES.APPROVED,
     imported: null,
     [Op.and]: scopes,
   };

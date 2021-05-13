@@ -16,7 +16,7 @@ export default (sequelize, DataTypes) => {
     static associate(models) {
       ActivityReport.belongsTo(models.User, { foreignKey: 'userId', as: 'author' });
       ActivityReport.belongsTo(models.User, { foreignKey: 'lastUpdatedById', as: 'lastUpdatedBy' });
-      ActivityReport.belongsTo(models.User, { foreignKey: 'approvingManagerId', as: 'approvingManager' });
+      ActivityReport.belongsTo(models.User, { foreignKey: 'oldApprovingManagerId', as: 'oldApprovingManager' });
       ActivityReport.hasMany(models.ActivityRecipient, { foreignKey: 'activityReportId', as: 'activityRecipients' });
       ActivityReport.belongsToMany(models.User, {
         through: models.ActivityReportCollaborator,
@@ -74,7 +74,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    approvingManagerId: {
+    oldApprovingManagerId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
@@ -138,7 +138,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    managerNotes: {
+    oldManagerNotes: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
@@ -148,7 +148,6 @@ export default (sequelize, DataTypes) => {
       validate: {
         checkRequiredForSubmission() {
           const requiredForSubmission = [
-            this.approvingManagerId,
             this.resourcesUsed,
             this.numberOfParticipants,
             this.deliveryMethod,
@@ -183,8 +182,8 @@ export default (sequelize, DataTypes) => {
 
           // For approvals assigned by old "single approver" method,
           // capture pending review in case manager hasn't reviewed yet.
-          if (this.approvingManagerId) {
-            approvalStatuses[this.approvingManagerId] = null;
+          if (this.oldApprovingManagerId) {
+            approvalStatuses[this.oldApprovingManagerId] = null;
           }
 
           // For approvals assigned by new "multiple approver" method
@@ -193,7 +192,7 @@ export default (sequelize, DataTypes) => {
             // new method, then overwrite pending approval (null value added above)
             // with new approval record.
             this.ActivityReportApprover.forEach((approval) => {
-              approvalStatuses[approval.approvingManagerId] = approval.status;
+              approvalStatuses[approval.userId] = approval.status;
             });
 
             const approved = (status) => status === REPORT_STATUSES.APPROVED;

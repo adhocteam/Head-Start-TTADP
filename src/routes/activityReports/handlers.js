@@ -7,7 +7,6 @@ import {
   possibleRecipients,
   activityReportById,
   createOrUpdate,
-  review,
   activityReports,
   setStatus,
   activityReportAlerts,
@@ -16,7 +15,8 @@ import {
   getAllDownloadableActivityReportAlerts,
   getAllDownloadableActivityReports,
 } from '../../services/activityReports';
-import { goalsForGrants } from '../../services/goals';
+import { upsertApprover } from '../../services/activityReportApprovers';
+import { goalsForGrants, copyGoalsToGrants } from '../../services/goals';
 import { userById, usersWithPermissions } from '../../services/users';
 import { REPORT_STATUSES, DECIMAL_BASE } from '../../constants';
 import { getUserReadRegions } from '../../services/accessValidation';
@@ -142,9 +142,11 @@ export async function getApprovers(req, res) {
 export async function reviewReport(req, res) {
   try {
     const { activityReportId } = req.params;
-    const { status, managerNotes } = req.body;
+    const { status, note } = req.body;
 
     const user = await userById(req.session.userId);
+    // Need activity report to check if authorization to review
+    // was granted by old 'single approver' method
     const report = await activityReportById(activityReportId);
     const authorization = new ActivityReport(user, report);
 
@@ -152,14 +154,27 @@ export async function reviewReport(req, res) {
       res.sendStatus(403);
       return;
     }
-    const savedReport = await review(report, status, managerNotes);
-    if (status === REPORT_STATUSES.NEEDS_ACTION) {
+
+    const savedApprover = await upsertApprover({ status, note }, { activityReportId });
+    const savedReport = await activityReportById(activityReportId);
+
+    if (savedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
+      if (savedReport.activityRecipientType === 'grantee') {
+        await copyGoalsToGrants(
+          savedReport.goals,
+          savedReport.activityRecipients.map((recipient) => recipient.activityRecipientId),
+          transaction,
+        );
+      }
+    }
+
+    if (savedReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION) {
       changesRequestedNotification(savedReport);
     }
-    if (status === REPORT_STATUSES.APPROVED) {
+    if (savedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
       reportApprovedNotification(savedReport);
     }
-    res.json(savedReport);
+    res.json(savedApprover);
   } catch (error) {
     await handleErrors(req, res, error, logContext);
   }

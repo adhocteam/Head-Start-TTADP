@@ -94,6 +94,7 @@ export default class ActivityReport {
 
   isApprovingManager() {
     if (this.activityReport.activityReportApprovals) {
+      // eslint-disable-next-line consistent-return
       this.activityReport.activityReportApprovals.forEach((approval) => {
         if (approval.userId === this.user.id) {
           return true;
@@ -101,7 +102,7 @@ export default class ActivityReport {
       });
     }
 
-    return this.activityReport.approvingManagerId === this.user.id;
+    return this.activityReport.oldApprovingManagerId === this.user.id;
   }
 
   reportHasEditableStatus() {
