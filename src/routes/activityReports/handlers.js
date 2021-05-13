@@ -162,8 +162,7 @@ export async function reviewReport(req, res) {
       if (savedReport.activityRecipientType === 'grantee') {
         await copyGoalsToGrants(
           savedReport.goals,
-          savedReport.activityRecipients.map((recipient) => recipient.activityRecipientId),
-          transaction,
+          savedReport.activityRecipients.map((recipient) => recipient.activityRecipientId)
         );
       }
     }

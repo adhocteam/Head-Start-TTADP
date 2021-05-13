@@ -141,7 +141,7 @@ export async function saveGoalsForReport(goals, report, transaction) {
   }));
 }
 
-export async function copyGoalsToGrants(goals, grantIds, transaction) {
+export async function copyGoalsToGrants(goals, grantIds) {
   const grants = await Grant.findAll({
     where: {
       id: grantIds,
@@ -161,6 +161,5 @@ export async function copyGoalsToGrants(goals, grantIds, transaction) {
 
   await GrantGoal.bulkCreate(grantGoals, {
     ignoreDuplicates: true,
-    transaction,
   });
 }
