@@ -186,7 +186,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.VIRTUAL,
       get() {
         if (this.submissionStatus === REPORT_STATUSES.SUBMITTED) {
-          // Calculate status based on all approvals
+          // Calculate status based on all approvals.
           const approvalStatuses = {};
 
           // For approvals assigned by old "single approver" method,
@@ -195,7 +195,7 @@ export default (sequelize, DataTypes) => {
             approvalStatuses[this.oldApprovingManagerId] = null;
           }
 
-          // Capture approvals assigned by new "multiple approver" method
+          // Capture approvals assigned by new "multiple approver" method.
           if (this.approvers) {
             // If manager was assigned by old method and reviewed by
             // new method, then overwrite pending review (null value added above)

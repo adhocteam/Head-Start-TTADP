@@ -12,13 +12,7 @@ import {
   getAllDownloadableActivityReports,
   getAllDownloadableActivityReportAlerts,
 } from './activityReports';
-import { upsertApprover } from './activityReportApprovers';
-import { copyGoalsToGrants } from './goals';
 import { REPORT_STATUSES } from '../constants';
-
-jest.mock('./goals', () => ({
-  copyGoalsToGrants: jest.fn(),
-}));
 
 const GRANTEE_ID = 30;
 const GRANTEE_ID_SORTING = 31;
@@ -49,7 +43,7 @@ const mockUserThree = {
 
 const reportObject = {
   activityRecipientType: 'grantee',
-  status: REPORT_STATUSES.DRAFT,
+  submissionStatus: REPORT_STATUSES.DRAFT,
   userId: mockUser.id,
   regionId: 1,
   lastUpdatedById: mockUser.id,
@@ -60,8 +54,8 @@ const reportObject = {
 const submittedReport = {
   ...reportObject,
   activityRecipients: [{ grantId: 1 }],
-  status: REPORT_STATUSES.SUBMITTED,
-  approvingManagerId: 1,
+  submissionStatus: REPORT_STATUSES.SUBMITTED,
+  oldApprovingManagerId: 1,
   numberOfParticipants: 1,
   deliveryMethod: 'method',
   duration: 0,
@@ -104,48 +98,6 @@ describe('Activity Reports DB service', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('upsertApprover', () => {
-    it('can set the report as needs action', async () => {
-      const report = await ActivityReport.create(submittedReport);
-      const approver = await upsertApprover({
-        status: REPORT_STATUSES.NEEDS_ACTION, note: 'notes',
-      }, {
-        activityReportId: report.id,
-      });
-      const updatedReport = await ActivityReport.findByPk(report.id);
-      expect(approver.status).toEqual(REPORT_STATUSES.NEEDS_ACTION);
-      expect(updatedReport.status).toEqual(REPORT_STATUSES.NEEDS_ACTION);
-    });
-
-    describe('when setting the report to approved', () => {
-      it('does not copy goals if the report is for non-grantees', async () => {
-        const report = await ActivityReport.create({ ...submittedReport, activityRecipientType: 'non-grantee' });
-        const approver = await upsertApprover({
-          status: REPORT_STATUSES.APPROVED, note: 'notes',
-        }, {
-          activityReportId: report.id,
-        });
-        const updatedReport = await ActivityReport.findByPk(report.id);
-        expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
-        expect(updatedReport.status).toEqual(REPORT_STATUSES.APPROVED);
-        expect(copyGoalsToGrants).not.toHaveBeenCalled();
-      });
-
-      it('copies goals if the report is for grantees', async () => {
-        const report = await ActivityReport.create(submittedReport, { include: [{ model: ActivityRecipient, as: 'activityRecipients' }] });
-        const approver = await upsertApprover({
-          status: REPORT_STATUSES.APPROVED, note: 'notes',
-        }, {
-          activityReportId: report.id,
-        });
-        const updatedReport = await ActivityReport.findByPk(report.id);
-        expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
-        expect(updatedReport.status).toEqual(REPORT_STATUSES.APPROVED);
-        expect(copyGoalsToGrants).toHaveBeenCalled();
-      });
-    });
   });
 
   describe('createOrUpdate', () => {
@@ -357,24 +309,24 @@ describe('Activity Reports DB service', () => {
       });
       await ActivityReport.create({
         ...submittedReport,
-        status: REPORT_STATUSES.APPROVED,
+        submissionStatus: REPORT_STATUSES.APPROVED,
         userId: mockUserTwo.id,
         topics: topicsOne,
       });
       await createOrUpdate({
         ...submittedReport,
-        status: REPORT_STATUSES.APPROVED,
+        submissionStatus: REPORT_STATUSES.APPROVED,
         collaborators: [{ id: mockUser.id }],
       });
       await ActivityReport.create({
         ...submittedReport,
-        status: REPORT_STATUSES.APPROVED,
+        submissionStatus: REPORT_STATUSES.APPROVED,
         regionId: 2,
       });
       const report = await ActivityReport.create({
         ...submittedReport,
         activityRecipients: [{ grantId: firstGrant.id }],
-        status: REPORT_STATUSES.APPROVED,
+        submissionStatus: REPORT_STATUSES.APPROVED,
         topics: topicsTwo,
       });
       await ActivityRecipient.create({
@@ -383,7 +335,7 @@ describe('Activity Reports DB service', () => {
       });
       latestReport = await ActivityReport.create({
         ...submittedReport,
-        status: REPORT_STATUSES.APPROVED,
+        submissionStatus: REPORT_STATUSES.APPROVED,
         updatedAt: '1900-01-01T12:00:00Z',
       });
     });
@@ -505,18 +457,18 @@ describe('Activity Reports DB service', () => {
         imported: { foo: 'bar' },
         legacyId: 'R14-AR-123456',
         regionId: 14,
-        status: REPORT_STATUSES.APPROVED,
+        submissionStatus: REPORT_STATUSES.APPROVED,
       };
       const mockReport = {
         ...submittedReport,
         regionId: 14,
-        status: REPORT_STATUSES.APPROVED,
+        submissionStatus: REPORT_STATUSES.APPROVED,
       };
       report = await ActivityReport.create(mockReport);
       await ActivityReport.create(mockReport);
       legacyReport = await ActivityReport.create(mockLegacyReport);
       approvedReport = await ActivityReport.create({
-        ...mockReport, status: REPORT_STATUSES.SUBMITTED,
+        ...mockReport, submissionStatus: REPORT_STATUSES.SUBMITTED,
       });
     });
 
