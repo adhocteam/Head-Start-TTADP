@@ -143,8 +143,9 @@ export async function reviewReport(req, res) {
   try {
     const { activityReportId } = req.params;
     const { status, note } = req.body;
+    const { userId } = req.session;
 
-    const user = await userById(req.session.userId);
+    const user = await userById(userId);
     // Need activity report to check if authorization to review
     // was granted by old 'single approver' method
     const report = await activityReportById(activityReportId);
@@ -155,14 +156,20 @@ export async function reviewReport(req, res) {
       return;
     }
 
-    const savedApprover = await upsertApprover({ status, note }, { activityReportId });
+    const savedApprover = await upsertApprover({
+      status,
+      note,
+    }, {
+      activityReportId,
+      userId,
+    });
     const savedReport = await activityReportById(activityReportId);
 
     if (savedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
       if (savedReport.activityRecipientType === 'grantee') {
         await copyGoalsToGrants(
           savedReport.goals,
-          savedReport.activityRecipients.map((recipient) => recipient.activityRecipientId)
+          savedReport.activityRecipients.map((recipient) => recipient.activityRecipientId),
         );
       }
     }

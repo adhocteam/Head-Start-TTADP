@@ -31,6 +31,7 @@ export default (sequelize, DataTypes) => {
       ActivityReport.hasMany(models.File, { foreignKey: 'activityReportId', as: 'attachments' });
       ActivityReport.hasMany(models.NextStep, { foreignKey: 'activityReportId', as: 'specialistNextSteps' });
       ActivityReport.hasMany(models.NextStep, { foreignKey: 'activityReportId', as: 'granteeNextSteps' });
+      ActivityReport.hasMany(models.ActivityReportApprover, { foreignKey: 'activityReportId', as: 'approvers' });
       ActivityReport.belongsToMany(models.Objective, {
         scope: {
           goalId: { [Op.is]: null },
@@ -48,6 +49,14 @@ export default (sequelize, DataTypes) => {
         foreignKey: 'activityReportId',
         otherKey: 'objectiveId',
         as: 'objectivesWithGoals',
+      });
+      ActivityReport.addScope('defaultScope', {
+        where: {
+          submissionStatus: {
+            [Op.ne]: 'deleted',
+          },
+        },
+        include: [{ model: models.ActivityReportApprover, as: 'approvers' }],
       });
     }
   }
@@ -181,34 +190,37 @@ export default (sequelize, DataTypes) => {
           const approvalStatuses = {};
 
           // For approvals assigned by old "single approver" method,
-          // capture pending review in case manager hasn't reviewed yet.
+          // capture pending review.
           if (this.oldApprovingManagerId) {
             approvalStatuses[this.oldApprovingManagerId] = null;
           }
 
-          // For approvals assigned by new "multiple approver" method
-          if (this.ActivityReportApprover) {
-            // Get all reviews. If manager was assigned by old method and reviewed by
-            // new method, then overwrite pending approval (null value added above)
-            // with new approval record.
-            this.ActivityReportApprover.forEach((approval) => {
+          // Capture approvals assigned by new "multiple approver" method
+          if (this.approvers) {
+            // If manager was assigned by old method and reviewed by
+            // new method, then overwrite pending review (null value added above)
+            // with new approver.
+            this.approvers.forEach((approval) => {
               approvalStatuses[approval.userId] = approval.status;
             });
-
-            const approved = (status) => status === REPORT_STATUSES.APPROVED;
-            if (Object.values(approvalStatuses).every(approved)) {
-              return REPORT_STATUSES.APPROVED;
-            }
-
-            const needsReview = (status) => status === REPORT_STATUSES.NEEDS_REVIEW;
-            if (Object.values(approvalStatuses).some(needsReview)) {
-              return REPORT_STATUSES.NEEDS_REVIEW;
-            }
           }
+
+          const approved = (status) => status === REPORT_STATUSES.APPROVED;
+          if (Object.values(approvalStatuses).every(approved)) {
+            return REPORT_STATUSES.APPROVED;
+          }
+
+          const needsAction = (status) => status === REPORT_STATUSES.NEEDS_ACTION;
+          if (Object.values(approvalStatuses).some(needsAction)) {
+            return REPORT_STATUSES.NEEDS_ACTION;
+          }
+
+          // Awaiting review(s)
+          return REPORT_STATUSES.SUBMITTED;
         }
-        // AR was given status of deleted, draft, approved or needs_review
-        // by old "single approver" method, or AR is still awaiting review(s)
-        // by either method. In all these cases calculatedStatus and submissionStatus match.
+        // AR was given status of deleted, draft, approved or needs_action
+        // by old "single approver" method. In all these cases calculatedStatus
+        // and submissionStatus match.
         return this.submissionStatus;
       },
     },
@@ -269,13 +281,6 @@ export default (sequelize, DataTypes) => {
       },
     },
   }, {
-    defaultScope: {
-      where: {
-        submissionStatus: {
-          [Op.ne]: 'deleted',
-        },
-      },
-    },
     sequelize,
     modelName: 'ActivityReport',
   });
