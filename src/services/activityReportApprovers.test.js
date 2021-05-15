@@ -1,17 +1,6 @@
 import db, {
   ActivityReport, ActivityRecipient, User, Grantee, NonGrantee, Grant, NextStep, Region,
 } from '../models';
-import {
-  createOrUpdate,
-  activityReportById,
-  possibleRecipients,
-  activityReports,
-  activityReportAlerts,
-  activityReportByLegacyId,
-  getDownloadableActivityReportsByIds,
-  getAllDownloadableActivityReports,
-  getAllDownloadableActivityReportAlerts,
-} from './activityReports';
 import { upsertApprover } from './activityReportApprovers';
 import { REPORT_STATUSES } from '../constants';
 
@@ -43,7 +32,6 @@ const draftReport = {
   participants: ['participants'],
   topics: ['topics'],
   ttaType: ['type'],
-  activityRecipientType: 'something',
 };
 
 const singleApproverSubmittedReport = {
