@@ -12,7 +12,6 @@ put:
     content:
       application/json:
         schema:
-          type: object
           properties:
             status:
               type: string
@@ -22,7 +21,7 @@ put:
                 - needs_action
             note:
               type: string
-              description: Any notes the manager needs to relay to the author/collaborators of the report
+              description: Manager feedback relating to the approval
   parameters:
     - in: path
       name: activityReportId
@@ -35,12 +34,4 @@ put:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                  - approved
-                  - needs_action
-              note:
-                type: string
+            $ref: '../../index.yaml#/components/schemas/approver'

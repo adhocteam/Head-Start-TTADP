@@ -81,7 +81,7 @@ export const reportApproved = (job, transport = defaultTransport) => {
   // Set these inside the function to allow easier testing
   const { FROM_EMAIL_ADDRESS, SEND_NOTIFICATIONS } = process.env;
   if (SEND_NOTIFICATIONS === 'true') {
-    logger.info(`MAILER: ${report.approvingManager.name} approved report ${report.displayId}}`);
+    logger.info(`MAILER: All managers approved report ${report.displayId}}`);
     const {
       id,
       author,
@@ -107,7 +107,6 @@ export const reportApproved = (job, transport = defaultTransport) => {
         to: [author.email, ...collaboratorEmailAddresses],
       },
       locals: {
-        manager: approvingManager.name,
         reportPath,
         displayId,
       },
@@ -118,10 +117,10 @@ export const reportApproved = (job, transport = defaultTransport) => {
 
 export const managerApprovalRequested = (job, transport = defaultTransport) => {
 // Set these inside the function to allow easier testing
-  const { report } = job.data;
+  const { report, savedApprover } = job.data;
   const { FROM_EMAIL_ADDRESS, SEND_NOTIFICATIONS } = process.env;
   if (SEND_NOTIFICATIONS === 'true') {
-    logger.info(`MAILER: Notifying ${report.approvingManager.email} that they were requested to approve report ${report.displayId}`);
+    logger.info(`MAILER: Notifying ${savedApprover.user.email} that they were requested to approve report ${report.displayId}`);
     const {
       id,
       author,
@@ -230,6 +229,7 @@ export const changesRequestedNotification = (report) => {
     const data = {
       report,
     };
+    // TODO: Should this be 'changesRequestedByManager'?
     notificationQueue.add('changesRequested', data);
   } catch (err) {
     auditLogger.error(err);

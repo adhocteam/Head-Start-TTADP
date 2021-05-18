@@ -231,17 +231,14 @@ export async function softDeleteReport(req, res) {
 }
 
 /**
- * Flags a report as submitted for approval
- * TODO: Change to approvers array as req.body, response
+ * Submit a report to managers for approval
  * @param {*} req - request
  * @param {*} res - response
  */
 export async function submitReport(req, res) {
   try {
     const { activityReportId } = req.params;
-    const { approvingManagerId, additionalNotes } = req.body;
-    const newReport = { approvingManagerId, additionalNotes };
-    newReport.status = REPORT_STATUSES.SUBMITTED;
+    const { approvers, additionalNotes } = req.body;
 
     const user = await userById(req.session.userId);
     const report = await activityReportById(activityReportId);
@@ -252,9 +249,31 @@ export async function submitReport(req, res) {
       return;
     }
 
-    const savedReport = await createOrUpdate(newReport, report);
+    // Update Activity Report notes and submissionStatus
+    const savedReport = await createOrUpdate({
+      additionalNotes: additionalNotes,
+      submissionStatus: REPORT_STATUSES.SUBMITTED
+    }, report);
+
+    // Update Approvers and notify
+    const savedApprovers = []
+    approvers.forEach(approverId => {
+      savedApprover = await upsertApprover({}, {
+        activityReportId: activityReportId,
+        userId: approverId,
+      });
+      savedApprovers.push(savedApprover)
+      console.log(savedApprover)
+      // TODO: this is where I am
+      managerApprovalNotification({report: savedReport, approver: savedApprover})
+    })
+
+
+
+
+
     managerApprovalNotification(savedReport);
-    res.json(savedReport);
+    res.json(savedApprovers);
   } catch (error) {
     await handleErrors(req, res, error, logContext);
   }

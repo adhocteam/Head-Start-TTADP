@@ -556,7 +556,7 @@ export async function createOrUpdate(newActivityReport, report) {
 
 export async function setStatus(report, status) {
   const updatedReport = await report.update({ status }, {
-    fields: ['status'],
+    fields: ['submissionStatus'],
   });
   return updatedReport;
 }
