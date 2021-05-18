@@ -172,13 +172,11 @@ export async function reviewReport(req, res) {
           savedReport.activityRecipients.map((recipient) => recipient.activityRecipientId),
         );
       }
+      reportApprovedNotification(savedReport);
     }
 
     if (savedReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION) {
       changesRequestedNotification(savedReport);
-    }
-    if (savedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
-      reportApprovedNotification(savedReport);
     }
     res.json(savedApprover);
   } catch (error) {
@@ -234,7 +232,7 @@ export async function softDeleteReport(req, res) {
 
 /**
  * Flags a report as submitted for approval
- *
+ * TODO: Change to approvers array as req.body, response
  * @param {*} req - request
  * @param {*} res - response
  */
