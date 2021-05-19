@@ -75,7 +75,7 @@ function ActivityReport({
   const [loading, updateLoading] = useState(true);
   const [formData, updateFormData] = useState();
   const [initialAdditionalData, updateAdditionalData] = useState({});
-  const [approvingManager, updateApprovingManager] = useState(false);
+  const [isApprover, updateIsApprover] = useState(false);
   const [editable, updateEditable] = useState(false);
   const [lastSaveTime, updateLastSaveTime] = useState();
   const [showValidationErrors, updateShowValidationErrors] = useState(false);
@@ -140,7 +140,7 @@ function ActivityReport({
 
         updateAdditionalData({ recipients, collaborators, approvers });
         updateFormData(report);
-        updateApprovingManager(report.approvingManagerId === user.id);
+        updateIsApprover(report.approvingManagerId === user.id);
         updateEditable(canWriteReport);
 
         if (showLastUpdatedTime) {
@@ -277,7 +277,7 @@ function ActivityReport({
         onFormSubmit={onFormSubmit}
         onSave={onSave}
         onResetToDraft={onResetToDraft}
-        approvingManager={approvingManager}
+        isApprover={isApprover}
         onReview={onReview}
         errorMessage={errorMessage}
         updateErrorMessage={updateErrorMessage}

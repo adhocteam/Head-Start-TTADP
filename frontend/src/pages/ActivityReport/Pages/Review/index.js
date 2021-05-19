@@ -15,8 +15,9 @@ const ReviewSubmit = ({
   onSubmit,
   onReview,
   reviewItems,
+  // NOTE: approvers here are people who can be asked to approve
   approvers,
-  approvingManager,
+  isApprover,
   reportCreator,
   formData,
   onResetToDraft,
@@ -74,7 +75,7 @@ const ReviewSubmit = ({
         <title>Review and submit</title>
       </Helmet>
       <PrintSummary reportCreator={reportCreator} />
-      {!approvingManager
+      {!isApprover
         && (
         <Submitter
           status={status}
@@ -89,7 +90,7 @@ const ReviewSubmit = ({
           <Accordion bordered={false} items={items} />
         </Submitter>
         )}
-      {approvingManager
+      {isApprover
         && (
         <Approver
           status={status}
@@ -118,7 +119,7 @@ ReviewSubmit.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onReview: PropTypes.func.isRequired,
   onResetToDraft: PropTypes.func.isRequired,
-  approvingManager: PropTypes.bool.isRequired,
+  isApprover: PropTypes.bool.isRequired,
   formData: PropTypes.shape({
     additionalNotes: PropTypes.string,
     status: PropTypes.string,
