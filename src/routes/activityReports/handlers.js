@@ -22,7 +22,7 @@ import { REPORT_STATUSES, DECIMAL_BASE } from '../../constants';
 import { getUserReadRegions } from '../../services/accessValidation';
 import { logger } from '../../logger';
 import {
-  managerApprovalNotification,
+  approverAssignedNotification,
   changesRequestedNotification,
   reportApprovedNotification,
   collaboratorAddedNotification,
@@ -176,7 +176,7 @@ export async function reviewReport(req, res) {
     }
 
     if (savedReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION) {
-      changesRequestedNotification(savedReport);
+      changesRequestedNotification({report: savedReport, approver: savedApprover);
     }
     res.json(savedApprover);
   } catch (error) {
@@ -255,7 +255,7 @@ export async function submitReport(req, res) {
       submissionStatus: REPORT_STATUSES.SUBMITTED
     }, report);
 
-    // Update Approvers and notify
+    // Save Approvers and notify
     const savedApprovers = []
     approvers.forEach(approverId => {
       savedApprover = await upsertApprover({}, {
@@ -263,16 +263,10 @@ export async function submitReport(req, res) {
         userId: approverId,
       });
       savedApprovers.push(savedApprover)
-      console.log(savedApprover)
-      // TODO: this is where I am
-      managerApprovalNotification({report: savedReport, approver: savedApprover})
+
+      approverAssignedNotification({report: savedReport, approver: savedApprover})
     })
 
-
-
-
-
-    managerApprovalNotification(savedReport);
     res.json(savedApprovers);
   } catch (error) {
     await handleErrors(req, res, error, logContext);

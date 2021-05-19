@@ -33,7 +33,7 @@ function start() {
   });
   scanQueue.process(maxJobsPerWorker, (job) => processFile(job.data.key));
 
-  // Legacy report Reconcilliation
+  // Legacy report Reconciliation
   reconciliationQueue.on('failed', (job, error) => auditLogger
     .error(`${job.data.key}: Legacy report reconciliation failed with error ${error}`));
   reconciliationQueue.on('completed', () => logger
@@ -53,8 +53,9 @@ function start() {
       logger.info(`Did not send ${job.name} notification for ${job.data.report.displayId} because SEND_NOTIFICATIONS is not set`);
     }
   });
-  notificationQueue.process('changesRequested', changesRequestedByManager);
-  notificationQueue.process('managerApproval', managerApprovalRequested);
+
+  notificationQueue.process('changesRequested', notifyUserChangesRequested);
+  notificationQueue.process('approverAssigned', notifyApprover);
   notificationQueue.process('reportApproved', reportApproved);
   notificationQueue.process('collaboratorAdded', notifyCollaborator);
 }
