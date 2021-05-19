@@ -38,7 +38,7 @@ function Navigator({
   additionalData,
   onSave,
   autoSaveInterval,
-  approvingManager,
+  isApprover,
   reportId,
   updatePage,
   reportCreator,
@@ -177,7 +177,7 @@ function Navigator({
               onFormSubmit,
               additionalData,
               onReview,
-              approvingManager,
+              isApprover,
               onResetToDraft,
               onSaveForm,
               navigatorPages,
@@ -247,7 +247,7 @@ Navigator.propTypes = {
   onFormSubmit: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   onReview: PropTypes.func.isRequired,
-  approvingManager: PropTypes.bool.isRequired,
+  isApprover: PropTypes.bool.isRequired,
   updatePage: PropTypes.func.isRequired,
   pages: PropTypes.arrayOf(
     PropTypes.shape({
