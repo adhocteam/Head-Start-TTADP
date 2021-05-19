@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Editor } from 'react-draft-wysiwyg';
 import { getEditorState } from '../../../../../utils';
 
+// FIXME: managerNotes -> approverNotes?
 const Approved = ({
   additionalNotes,
   managerNotes,

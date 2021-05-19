@@ -13,6 +13,7 @@ import FormItem from '../../../../../components/FormItem';
 import HookFormRichEditor from '../../../../../components/HookFormRichEditor';
 
 const Draft = ({
+  // FIXME: approvers -> possibleApprovers?
   approvers,
   onFormSubmit,
   onSaveForm,
@@ -54,6 +55,7 @@ const Draft = ({
     status: 'submitted',
   };
 
+  // FIXME: <option> -> <MultiSelect> for selecting multiple approvers
   return (
     <>
       { justSubmitted && <Redirect to={{ pathname: '/activity-reports', state: { message } }} />}

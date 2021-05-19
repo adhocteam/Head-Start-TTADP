@@ -140,6 +140,7 @@ function ActivityReport({
 
         updateAdditionalData({ recipients, collaborators, approvers });
         updateFormData(report);
+        // FIXME: We will need to lookup approver id's from the report.approvers, and compare to user.id
         updateIsApprover(report.approvingManagerId === user.id);
         updateEditable(canWriteReport);
 

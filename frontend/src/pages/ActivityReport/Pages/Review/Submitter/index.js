@@ -10,6 +10,8 @@ import Approved from './Approved';
 import Submitted from './Submitted';
 
 const Submitter = ({
+  // FIXME: approvers -> possibleApprovers
+  // This is used by Draft.js, which displays the form for selecting who should approve the AR
   approvers,
   onFormSubmit,
   formData,
@@ -27,8 +29,11 @@ const Submitter = ({
     id,
     displayId,
   } = formData;
+  // FIXME: These statuses will come from `submissionStatus`
   const draft = status === REPORT_STATUSES.DRAFT;
   const submitted = status === REPORT_STATUSES.SUBMITTED;
+  // FIXME: The statuses below will come from a different field, presumably `calculatedStatus`
+  // We may need to look at the AR's approvers array to find out which approver(s) requested changes
   const needsAction = status === REPORT_STATUSES.NEEDS_ACTION;
   const approved = status === REPORT_STATUSES.APPROVED;
 

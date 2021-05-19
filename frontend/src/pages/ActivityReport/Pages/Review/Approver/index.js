@@ -16,6 +16,9 @@ const Approver = ({
   children,
   error,
 }) => {
+  // FIXME: Handle approver's status and the overall approval status to determine reviewability
+  // I think we need approver.status and report.calculatedStatus here
+  // An ActivityReport's `status` becomes `submissionStatus` (draft|submitted|deleted)
   const { managerNotes, additionalNotes, status } = formData;
   const review = status === REPORT_STATUSES.SUBMITTED || status === REPORT_STATUSES.NEEDS_ACTION;
   const approved = status === REPORT_STATUSES.APPROVED;
@@ -100,6 +103,7 @@ Approver.propTypes = {
   children: PropTypes.node.isRequired,
   error: PropTypes.string,
   formData: PropTypes.shape({
+    // FIXME: approvingManager is now an approver.
     approvingManager: PropTypes.shape({
       name: PropTypes.string,
     }),
