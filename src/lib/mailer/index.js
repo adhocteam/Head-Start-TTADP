@@ -33,12 +33,11 @@ const send = NODE_ENV === 'production' || SEND_NON_PRODUCTION_NOTIFICATIONS === 
 
 const emailTemplatePath = path.join(process.cwd(), 'src', 'email_templates');
 
-//
-// Process functions: in the worker these functions are assigned to run every time a
-// specific named job is added to the notification queue
-//
-
-export const notifyUserChangesRequested = (job, transport = defaultTransport) => {
+/**
+ * Process function for changesRequested jobs added to notification queue
+ * Sends group email to report author and collaborators about a single approver's requested changes
+ */
+export const notifyChangesRequested = (job, transport = defaultTransport) => {
   const { report, approver } = job.data;
   // Set these inside the function to allow easier testing
   const { FROM_EMAIL_ADDRESS, SEND_NOTIFICATIONS } = process.env;
@@ -49,10 +48,10 @@ export const notifyUserChangesRequested = (job, transport = defaultTransport) =>
       displayId,
       collaborators,
     } = report;
-    const approverEmail = approver.user.email
-    const approverName = approver.user.name
-    const approverNote = approver.note
-    logger.info(`MAILER: ${approverName} requested changes on report ${displayId}`);
+    const approverEmail = approver.user.email;
+    const approverName = approver.user.name;
+    const approverNote = approver.note;
+    logger.info(`MAILER: Notifying users that ${approverEmail} requested changes on report ${displayId}`);
     const collabArray = collaborators.map((c) => c.email);
     const reportPath = path.join(process.env.TTA_SMART_HUB_URI, 'activity-reports', String(id));
     const email = new Email({
@@ -74,7 +73,7 @@ export const notifyUserChangesRequested = (job, transport = defaultTransport) =>
         managerName: approverName,
         reportPath,
         displayId,
-        comments: approverNoteß,
+        comments: approverNote,
       },
     });
   }
@@ -82,19 +81,22 @@ export const notifyUserChangesRequested = (job, transport = defaultTransport) =>
   return Promise.resolve(null);
 };
 
-export const reportApproved = (job, transport = defaultTransport) => {
+/**
+ * Process function for reportApproved jobs added to notification queue
+ * Sends group email to report author and collaborators about approved status
+ */
+export const notifyReportApproved = (job, transport = defaultTransport) => {
   const { report } = job.data;
   // Set these inside the function to allow easier testing
   const { FROM_EMAIL_ADDRESS, SEND_NOTIFICATIONS } = process.env;
   if (SEND_NOTIFICATIONS === 'true') {
-    logger.info(`MAILER: All managers approved report ${report.displayId}}`);
     const {
       id,
       author,
       displayId,
-      approvingManager,
       collaborators,
     } = report;
+    logger.info(`MAILER: Notifying users that report ${displayId}} was approved.`);
     const collaboratorEmailAddresses = collaborators.map((c) => c.email);
     const reportPath = path.join(process.env.TTA_SMART_HUB_URI, 'activity-reports', String(id));
     const email = new Email({
@@ -121,17 +123,20 @@ export const reportApproved = (job, transport = defaultTransport) => {
   return Promise.resolve(null);
 };
 
-export const notifyApprover = (job, transport = defaultTransport) => {
+/**
+ * Process function for approverAssigned jobs added to notification queue
+ * Sends email to user about new ability to approve a report
+ */
+export const notifyApproverAssigned = (job, transport = defaultTransport) => {
 // Set these inside the function to allow easier testing
-  const { report, approver } = job.data;
+  const { report, newApprover } = job.data;
   const { FROM_EMAIL_ADDRESS, SEND_NOTIFICATIONS } = process.env;
   if (SEND_NOTIFICATIONS === 'true') {
     const {
       id,
-      author,
       displayId,
     } = report;
-    const approverEmail = approver.user.email
+    const approverEmail = newApprover.user.email;
     logger.info(`MAILER: Notifying ${approverEmail} that they were requested to approve report ${displayId}`);
     const reportPath = path.join(process.env.TTA_SMART_HUB_URI, 'activity-reports', String(id));
     const email = new Email({
@@ -150,7 +155,6 @@ export const notifyApprover = (job, transport = defaultTransport) => {
         to: [approverEmail],
       },
       locals: {
-        author: author.name,
         reportPath,
         displayId,
       },
@@ -159,7 +163,11 @@ export const notifyApprover = (job, transport = defaultTransport) => {
   return Promise.resolve(null);
 };
 
-export const notifyCollaborator = (job, transport = defaultTransport) => {
+/**
+ * Process function for collaboratorAssigned jobs added to notification queue
+ * Sends email to user about new ability to edit a report
+ */
+export const notifyCollaboratorAssigned = (job, transport = defaultTransport) => {
   const { report, newCollaborator } = job.data;
   // Set these inside the function to allow easier testing
   const { FROM_EMAIL_ADDRESS, SEND_NOTIFICATIONS } = process.env;
@@ -194,42 +202,38 @@ export const notifyCollaborator = (job, transport = defaultTransport) => {
   return Promise.resolve(null);
 };
 
-//
-// Job producers: add named jobs to notification queue
-//
-
-export const collaboratorAddedNotification = (report, newCollaborators) => {
+export const collaboratorAssignedNotification = (report, newCollaborators) => {
+  // Each collaborator will get an individual notification
   newCollaborators.forEach((collaborator) => {
     try {
       const data = {
         report,
         newCollaborator: collaborator,
       };
-      notificationQueue.add('collaboratorAdded', data);
+      notificationQueue.add('collaboratorAssigned', data);
     } catch (err) {
       auditLogger.error(err);
     }
   });
 };
 
-/**
- * Add 'approverAssigned' job to notification queue with data
- *
- * @param {*} data - object with properties report and approver
- */
-export const approverAssignedNotification = (data) => {
-  try {
-    // data was data.report
-    if (data.hasOwnProperty('report') || data.hasOwnProperty('approver'))
-      throw('Notification job data is missing report or approver properties')
-    // job name was 'managerApproval'
-    notificationQueue.add('approverAssigned', data);
-  } catch (err) {
-    auditLogger.error(err);
-  }
+export const approverAssignedNotification = (report, newApprovers) => {
+  // Each approver will get an individual notification
+  newApprovers.forEach((approver) => {
+    try {
+      const data = {
+        report,
+        newApprover: approver,
+      };
+      notificationQueue.add('approverAssigned', data);
+    } catch (err) {
+      auditLogger.error(err);
+    }
+  });
 };
 
 export const reportApprovedNotification = (report) => {
+  // Send group notification to author and collaborators
   try {
     const data = {
       report,
@@ -240,10 +244,13 @@ export const reportApprovedNotification = (report) => {
   }
 };
 
-export const changesRequestedNotification = (report) => {
+export const changesRequestedNotification = (report, approver) => {
+  // Send group notification to author and collaborators
   try {
-    if (data.hasOwnProperty('report') || data.hasOwnProperty('approver'))
-      throw('Notification job data is missing report or approver properties')
+    const data = {
+      report,
+      approver,
+    };
     notificationQueue.add('changesRequested', data);
   } catch (err) {
     auditLogger.error(err);

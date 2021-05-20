@@ -1,8 +1,8 @@
 import { ActivityReportApprover } from '../models';
 
 // eslint-disable-next-line import/prefer-default-export
-export async function upsertApprover(values, conditions) {
-  const [isUpdated, updatedApprover] = await ActivityReportApprover.update(values, {
+export function upsertApprover(values, conditions) {
+  const [isUpdated, updatedApprover] = ActivityReportApprover.update(values, {
     returning: true,
     where: conditions,
   });

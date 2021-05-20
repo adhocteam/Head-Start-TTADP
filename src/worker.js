@@ -8,11 +8,11 @@ import reconcileLegacyReports, { reconciliationQueue } from './services/legacyre
 import { scanQueue } from './services/scanQueue';
 import processFile from './workers/files';
 import {
-  managerApprovalRequested,
-  changesRequestedByManager,
-  reportApproved,
+  notifyApproverAssigned,
+  notifyChangesRequested,
+  notifyReportApproved,
   notificationQueue,
-  notifyCollaborator,
+  notifyCollaboratorAssigned,
 } from './lib/mailer';
 
 // Number of workers to spawn
@@ -54,10 +54,10 @@ function start() {
     }
   });
 
-  notificationQueue.process('changesRequested', notifyUserChangesRequested);
-  notificationQueue.process('approverAssigned', notifyApprover);
-  notificationQueue.process('reportApproved', reportApproved);
-  notificationQueue.process('collaboratorAdded', notifyCollaborator);
+  notificationQueue.process('changesRequested', notifyChangesRequested);
+  notificationQueue.process('approverAssigned', notifyApproverAssigned);
+  notificationQueue.process('reportApproved', notifyReportApproved);
+  notificationQueue.process('collaboratorAssigned', notifyCollaboratorAssigned);
 }
 
 // spawn workers and start them

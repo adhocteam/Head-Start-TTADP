@@ -25,7 +25,7 @@ import {
   approverAssignedNotification,
   changesRequestedNotification,
   reportApprovedNotification,
-  collaboratorAddedNotification,
+  collaboratorAssignedNotification,
 } from '../../lib/mailer';
 import { activityReportToCsvRecord } from '../../lib/transform';
 
@@ -156,7 +156,7 @@ export async function reviewReport(req, res) {
       return;
     }
 
-    const savedApprover = await upsertApprover({
+    const savedApprover = upsertApprover({
       status,
       note,
     }, {
@@ -176,7 +176,7 @@ export async function reviewReport(req, res) {
     }
 
     if (savedReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION) {
-      changesRequestedNotification({report: savedReport, approver: savedApprover);
+      changesRequestedNotification(savedReport, savedApprover);
     }
     res.json(savedApprover);
   } catch (error) {
@@ -251,21 +251,20 @@ export async function submitReport(req, res) {
 
     // Update Activity Report notes and submissionStatus
     const savedReport = await createOrUpdate({
-      additionalNotes: additionalNotes,
-      submissionStatus: REPORT_STATUSES.SUBMITTED
+      additionalNotes,
+      submissionStatus: REPORT_STATUSES.SUBMITTED,
     }, report);
 
     // Save Approvers and notify
-    const savedApprovers = []
-    approvers.forEach(approverId => {
-      savedApprover = await upsertApprover({}, {
-        activityReportId: activityReportId,
+    const savedApprovers = [];
+    approvers.forEach((approverId) => {
+      const savedApprover = upsertApprover({}, {
+        activityReportId,
         userId: approverId,
       });
-      savedApprovers.push(savedApprover)
-
-      approverAssignedNotification({report: savedReport, approver: savedApprover})
-    })
+      savedApprovers.push(savedApprover);
+    });
+    approverAssignedNotification(savedReport, savedApprovers);
 
     res.json(savedApprovers);
   } catch (error) {
@@ -374,7 +373,7 @@ export async function saveReport(req, res) {
         const oldCollaborators = report.collaborators.map((x) => x.email);
         return !oldCollaborators.includes(c.email);
       });
-      collaboratorAddedNotification(savedReport, newCollaborators);
+      collaboratorAssignedNotification(savedReport, newCollaborators);
     }
 
     res.json(savedReport);
@@ -409,7 +408,7 @@ export async function createReport(req, res) {
 
     const report = await createOrUpdate(newReport);
     if (report.collaborators) {
-      collaboratorAddedNotification(report, report.collaborators);
+      collaboratorAssignedNotification(report, report.collaborators);
     }
     res.json(report);
   } catch (error) {
