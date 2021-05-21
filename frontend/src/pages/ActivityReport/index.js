@@ -37,7 +37,7 @@ const defaultValues = {
   activityRecipients: [],
   activityType: [],
   additionalNotes: null,
-  approvingManagerId: null,
+  oldApprovingManagerId: null,
   attachments: [],
   collaborators: [],
   context: '',
@@ -135,13 +135,19 @@ function ActivityReport({
           && report.collaborators.find((u) => u.id === user.id);
         const isAuthor = report.userId === user.id;
         const canWriteReport = (isCollaborator || isAuthor)
-          && (report.status === REPORT_STATUSES.DRAFT
-              || report.status === REPORT_STATUSES.NEEDS_ACTION);
+          && (report.calculatedStatus === REPORT_STATUSES.DRAFT
+              || report.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION);
 
         updateAdditionalData({ recipients, collaborators, availableApprovers });
         updateFormData(report);
-        // FIXME: We will need to lookup approver id's from the report.approvers, and compare to user.id
-        updateIsApprover(report.approvingManagerId === user.id);
+
+        // Determine if the current user matches any of the approvers for this activity report.
+        // We also need to check if the original the original approval manager id.
+        // Question? for SJ.
+        if(report.approvers.some(a => a.user && a.user.id === user.id) || report.oldApprovingManagerId === user.id) {
+          updateIsApprover(true);
+        }
+
         updateEditable(canWriteReport);
 
         if (showLastUpdatedTime) {
@@ -241,7 +247,7 @@ function ActivityReport({
   };
 
   const reportCreator = { name: user.name, role: user.role };
-  const tagClass = formData.status === REPORT_STATUSES.APPROVED ? 'smart-hub--tag-approved' : '';
+  const tagClass = formData.calculatedStatus === REPORT_STATUSES.APPROVED ? 'smart-hub--tag-approved' : '';
 
   return (
     <div className="smart-hub-activity-report">
@@ -255,8 +261,8 @@ function ActivityReport({
           </h1>
         </Grid>
         <Grid col="auto" className="flex-align-self-center">
-          {formData.status && (
-            <div className={`${tagClass} smart-hub-status-label bg-gray-5 padding-x-2 padding-y-105 font-sans-md text-bold`}>{startCase(formData.status)}</div>
+          {formData.calculatedStatus && (
+            <div className={`${tagClass} smart-hub-status-label bg-gray-5 padding-x-2 padding-y-105 font-sans-md text-bold`}>{startCase(formData.calculatedStatus)}</div>
           )}
         </Grid>
       </Grid>

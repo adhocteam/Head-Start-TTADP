@@ -25,13 +25,12 @@ const Draft = ({
   const [selectedApprovers, updateSelectedApprovers] = useState([]);
 
   const onApproverItemSelected = (event) => {
-    let approverIds = [];
-    event.map((e) => {
+     const approverIds = event.map((e) => {
       if (e && !Number.isNaN(e.value)) {
-        const approverId = parseInt(e.value, DECIMAL_BASE);
-        approverIds.push(approverId);
+        return parseInt(e.value, DECIMAL_BASE);
       }
     });
+    console.log('approver ids', approverIds);
     updateSelectedApprovers(approverIds);
   };
 
