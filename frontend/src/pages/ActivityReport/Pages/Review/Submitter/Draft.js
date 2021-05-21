@@ -3,35 +3,36 @@ import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
 import { Redirect } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form/dist/index.ie11';
-import {
-  Dropdown, Form, Fieldset, Button,
-} from '@trussworks/react-uswds';
+import { Form, Fieldset, Button } from '@trussworks/react-uswds';
 
 import IncompletePages from './IncompletePages';
 import { DECIMAL_BASE } from '../../../../../Constants';
 import FormItem from '../../../../../components/FormItem';
 import HookFormRichEditor from '../../../../../components/HookFormRichEditor';
+import MultiSelect from '../../../../../components/MultiSelect';
 
 const Draft = ({
-  // FIXME: approvers -> possibleApprovers?
-  approvers,
+  availableApprovers,
   onFormSubmit,
   onSaveForm,
   incompletePages,
   reportId,
   displayId,
 }) => {
-  const {
-    watch, register, handleSubmit,
-  } = useFormContext();
+  const { watch, handleSubmit, control } = useFormContext();
   const hasIncompletePages = incompletePages.length > 0;
   const [justSubmitted, updatedJustSubmitted] = useState(false);
+  const [selectedApprovers, updateSelectedApprovers] = useState([]);
 
-  const setValue = (e) => {
-    if (e === '') {
-      return null;
-    }
-    return parseInt(e, DECIMAL_BASE);
+  const onApproverItemSelected = (event) => {
+    let approverIds = [];
+    event.map((e) => {
+      if (e && !Number.isNaN(e.value)) {
+        const approverId = parseInt(e.value, DECIMAL_BASE);
+        approverIds.push(approverId);
+      }
+    });
+    updateSelectedApprovers(approverIds);
   };
 
   const onSubmit = (e) => {
@@ -40,6 +41,7 @@ const Draft = ({
       updatedJustSubmitted(true);
     }
   };
+
   const watchTextValue = watch('additionalNotes');
   const textAreaClass = watchTextValue !== '' ? 'yes-print' : 'no-print';
 
@@ -55,7 +57,6 @@ const Draft = ({
     status: 'submitted',
   };
 
-  // FIXME: <option> -> <MultiSelect> for selecting multiple approvers
   return (
     <>
       { justSubmitted && <Redirect to={{ pathname: '/activity-reports', state: { message } }} />}
@@ -82,12 +83,15 @@ const Draft = ({
             label="Approving manager"
             name="approvingManagerId"
           >
-            <Dropdown id="approvingManagerId" name="approvingManagerId" inputRef={register({ setValueAs: setValue, required: 'A manager must be assigned to the report before submitting' })}>
-              <option name="default" value="" disabled hidden>- Select -</option>
-              {approvers.map((approver) => (
-                <option key={approver.id} value={approver.id}>{approver.name}</option>
-              ))}
-            </Dropdown>
+            <MultiSelect
+              id="approvingManagerId"
+              name="approvingManagerName"
+              control={control}
+              required={false}
+              simple={false}
+              onItemSelected={onApproverItemSelected}
+              options={availableApprovers.map((a) => ({ value: a.id, label: a.name }))}
+            />
           </FormItem>
         </Fieldset>
         {hasIncompletePages && <IncompletePages incompletePages={incompletePages} />}
@@ -100,7 +104,7 @@ const Draft = ({
 
 Draft.propTypes = {
   onSaveForm: PropTypes.func.isRequired,
-  approvers: PropTypes.arrayOf(PropTypes.shape({
+  availableApprovers: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
   })).isRequired,

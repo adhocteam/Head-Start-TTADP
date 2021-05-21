@@ -40,8 +40,7 @@ const reviewPage = {
     ) => (
       <ReviewSubmit
         updateShowValidationErrors={updateShowValidationErrors}
-        // FIXME: These are people who could be asked to approver a report
-        approvers={additionalData.approvers}
+        availableApprovers={additionalData.availableApprovers}
         onSubmit={onSubmit}
         onSaveForm={onSaveForm}
         onReview={onReview}

@@ -10,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form/dist/index.ie11';
 import ReviewSubmit from '../index';
 import { REPORT_STATUSES } from '../../../../../Constants';
 
-const approvers = [
+const availableApprovers = [
   { id: 1, name: 'user 1' },
   { id: 2, name: 'user 2' },
 ];
@@ -35,7 +35,7 @@ const RenderReview = ({
         allComplete={allComplete}
         onSubmit={onSubmit}
         reviewItems={[]}
-        approvers={approvers}
+        availableApprovers={availableApprovers}
         formData={formData}
         onReview={onReview}
         onResetToDraft={() => {}}
