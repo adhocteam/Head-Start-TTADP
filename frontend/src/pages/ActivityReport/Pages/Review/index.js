@@ -15,8 +15,7 @@ const ReviewSubmit = ({
   onSubmit,
   onReview,
   reviewItems,
-  // NOTE: approvers here are people who can be asked to approve
-  approvers,
+  availableApprovers,
   isApprover,
   reportCreator,
   formData,
@@ -79,7 +78,7 @@ const ReviewSubmit = ({
         && (
         <Submitter
           status={status}
-          approvers={approvers}
+          availableApprovers={availableApprovers}
           pages={pages}
           onFormSubmit={onFormSubmit}
           onResetToDraft={onReset}
@@ -110,7 +109,7 @@ const ReviewSubmit = ({
 ReviewSubmit.propTypes = {
   updateShowValidationErrors: PropTypes.func.isRequired,
   onSaveForm: PropTypes.func.isRequired,
-  approvers: PropTypes.arrayOf(
+  availableApprovers: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,

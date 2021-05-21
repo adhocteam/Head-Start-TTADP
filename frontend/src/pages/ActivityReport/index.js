@@ -128,7 +128,7 @@ function ActivityReport({
           getApprovers(report.regionId),
         ];
 
-        const [recipients, collaborators, approvers] = await Promise.all(apiCalls);
+        const [recipients, collaborators, availableApprovers] = await Promise.all(apiCalls);
         reportId.current = activityReportId;
 
         const isCollaborator = report.collaborators
@@ -138,7 +138,7 @@ function ActivityReport({
           && (report.status === REPORT_STATUSES.DRAFT
               || report.status === REPORT_STATUSES.NEEDS_ACTION);
 
-        updateAdditionalData({ recipients, collaborators, approvers });
+        updateAdditionalData({ recipients, collaborators, availableApprovers });
         updateFormData(report);
         // FIXME: We will need to lookup approver id's from the report.approvers, and compare to user.id
         updateIsApprover(report.approvingManagerId === user.id);

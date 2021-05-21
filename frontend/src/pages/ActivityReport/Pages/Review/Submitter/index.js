@@ -10,9 +10,7 @@ import Approved from './Approved';
 import Submitted from './Submitted';
 
 const Submitter = ({
-  // FIXME: approvers -> possibleApprovers
-  // This is used by Draft.js, which displays the form for selecting who should approve the AR
-  approvers,
+  availableApprovers,
   onFormSubmit,
   formData,
   onResetToDraft,
@@ -91,7 +89,7 @@ const Submitter = ({
         <DraftReview
           onSaveForm={onSaveForm}
           incompletePages={incompletePages}
-          approvers={approvers}
+          availableApprovers={availableApprovers}
           onFormSubmit={onFormSubmit}
           reportId={id}
           displayId={displayId}
@@ -139,7 +137,7 @@ Submitter.propTypes = {
     review: PropTypes.bool,
     label: PropTypes.string,
   })).isRequired,
-  approvers: PropTypes.arrayOf(PropTypes.shape({
+  availableApprovers: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
   })).isRequired,

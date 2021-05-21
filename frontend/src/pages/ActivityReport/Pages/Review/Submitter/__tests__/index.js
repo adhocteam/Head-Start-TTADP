@@ -27,7 +27,7 @@ const RenderSubmitter = ({
         onResetToDraft={onResetToDraft}
         onSaveForm={onSave}
         formData={formData}
-        approvers={[{ name: 'test', id: 1 }]}
+        availableApprovers={[{ name: 'test', id: 1 }]}
       >
         <div />
       </Submitter>
