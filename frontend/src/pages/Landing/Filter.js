@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Button } from '@trussworks/react-uswds';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 
@@ -29,24 +30,6 @@ function Filter({ applyFilters, forMyAlerts }) {
   const [open, updateOpen] = useState(false);
   const [filters, updateFilters] = useState([]);
 
-  const prevFilterCount = useRef();
-  const lastItemRef = useRef();
-  const menuRef = useRef();
-  const menuButtonRef = useRef();
-
-  useEffect(() => {
-    if (prevFilterCount.current !== filters.length && lastItemRef.current) {
-      lastItemRef.current.focus();
-    }
-    prevFilterCount.current = filters.length;
-  }, [filters]);
-
-  useEffect(() => {
-    if (open === true) {
-      menuRef.current.focus();
-    }
-  }, [open]);
-
   const onFilterUpdated = (index, name, value) => {
     const newFilters = [...filters];
     const filter = newFilters[index];
@@ -72,28 +55,6 @@ function Filter({ applyFilters, forMyAlerts }) {
     applyFilters(filters);
   };
 
-  const onMenuBlur = (e) => {
-    // https://reactjs.org/docs/events.html#detecting-focus-entering-and-leaving
-    // e.relatedTarget can be null when focus changes within the menu (when using VoiceOver)
-
-    /* the <td>'s inside the datepicker have a tabindex=-1 so that they will always evaluate to
-    null as e.relatedTarget (or that's my understanding)despite having a role="button",
-    so manually check to see if they are a calendar day */
-
-    const isCalendarDay = e.target.classList.contains('CalendarDay');
-
-    if (!isCalendarDay && !e.currentTarget.contains(e.relatedTarget)) {
-      updateOpen(false);
-    }
-  };
-
-  const onMenuKeyDown = (e) => {
-    if (['Escape', 'Esc'].includes(e.key)) {
-      updateOpen(false);
-      menuButtonRef.current.focus();
-    }
-  };
-
   const hasFilters = filters.length !== 0;
   let filterClass = '';
 
@@ -103,45 +64,38 @@ function Filter({ applyFilters, forMyAlerts }) {
 
   return (
     <span className="position-relative">
-      <button
-        ref={menuButtonRef}
-        aria-haspopup="menu"
+      <Button
         type="button"
-        aria-label={`Filters Menu. ${filters.length} filter${filters.length !== 1 ? 's' : ''} currently applied`}
         onClick={() => {
           updateOpen(!open);
         }}
-        className={`usa-button usa-button--outline smart-hub--filter-button smart-hub--table-controls__button ${filterClass}`}
+        outline
+        className={`smart-hub--filter-button smart-hub--table-controls__button ${filterClass}`}
       >
         {`Filters ${filters.length > 0 ? `(${filters.length})` : ''}`}
         {' '}
         <FontAwesomeIcon className="margin-left-1" size="1x" style={{ paddingBottom: '2px' }} color="black" icon={faSortDown} />
-      </button>
+      </Button>
       {open && (
-      <div role="menu" tabIndex={-1} onBlur={onMenuBlur} onKeyDown={onMenuKeyDown} ref={menuRef} className="z-400 position-absolute">
+      <div className="z-400 position-absolute">
         <Container padding={2} className="margin-bottom-0">
           <div className="font-body-2xs">
             {hasFilters && (
               <>
-                {filters.map((f, index, array) => {
-                  const lastItem = index === array.length - 1;
-
-                  return (
-                    <FilterItem
-                      key={f.id}
-                      ref={lastItem ? lastItemRef : null}
-                      id={f.id}
-                      condition={f.condition}
-                      topic={f.topic}
-                      query={f.query}
-                      forMyAlerts={forMyAlerts}
-                      onRemoveFilter={() => onRemoveFilter(index)}
-                      onUpdateFilter={(name, value) => {
-                        onFilterUpdated(index, name, value);
-                      }}
-                    />
-                  );
-                })}
+                {filters.map((f, index) => (
+                  <FilterItem
+                    key={f.id}
+                    id={f.id}
+                    condition={f.condition}
+                    topic={f.topic}
+                    query={f.query}
+                    forMyAlerts={forMyAlerts}
+                    onRemoveFilter={() => onRemoveFilter(index)}
+                    onUpdateFilter={(name, value) => {
+                      onFilterUpdated(index, name, value);
+                    }}
+                  />
+                ))}
               </>
             )}
             {!hasFilters && (
@@ -150,23 +104,24 @@ function Filter({ applyFilters, forMyAlerts }) {
             </div>
             )}
             <div className="height-20 margin-top-2 clearfix">
-              <button
+              <Button
                 type="button"
-                className="usa-button usa-button--outline float-left smart-hub--filter-button"
+                outline
+                className="float-left smart-hub--filter-button"
                 onClick={() => {
                   updateFilters([...filters, defaultFilter()]);
                 }}
               >
                 Add New Filter
-              </button>
+              </Button>
               {hasFilters && (
-              <button
+              <Button
                 type="button"
-                className="usa-button float-right smart-hub--filter-button"
+                className="float-right smart-hub--filter-button"
                 onClick={onApplyFilter}
               >
                 Apply Filters
-              </button>
+              </Button>
               )}
             </div>
           </div>
