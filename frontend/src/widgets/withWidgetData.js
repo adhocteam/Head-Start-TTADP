@@ -15,13 +15,19 @@ const withWidgetData = (Widget, widgetId) => {
     const [error, updateError] = useState('');
     const [data, updateData] = useState({});
 
-    const { filters, loadingOverride, errorOverride } = props;
-
+    const {
+      region, allRegions, filters, loadingOverride, errorOverride,
+    } = props;
+    console.log('-----Wdget Overview props===============');
+    console.log(props);
     useEffect(() => {
       const fetch = async () => {
         try {
           updateLoading(true);
-          const fetchedData = await fetchWidget(widgetId, filters);
+          const requestedRegion = region || allRegions[0];
+          console.log('--------Requested region');
+          console.log(requestedRegion);
+          const fetchedData = await fetchWidget(widgetId, requestedRegion, filters);
           updateData(fetchedData);
           updateError('');
         } catch (e) {
@@ -31,7 +37,7 @@ const withWidgetData = (Widget, widgetId) => {
         }
       };
       fetch();
-    }, [filters]);
+    }, [filters, region, allRegions]);
 
     if (loading || loadingOverride) {
       return (
@@ -54,6 +60,8 @@ const withWidgetData = (Widget, widgetId) => {
 
   WidgetWrapper.propTypes = {
     filters: PropTypes.string.isRequired,
+    region: PropTypes.number.isRequired,
+    allRegions: PropTypes.arrayOf(PropTypes.number).isRequired,
     errorOverride: PropTypes.bool,
     loadingOverride: PropTypes.bool,
   };

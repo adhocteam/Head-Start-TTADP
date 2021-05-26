@@ -1,0 +1,11 @@
+.smart-hub--overview-period {
+  padding: 25px;
+}
+
+.smart-hub--overview-padding {
+  padding: 0px 0px 0px 0px !important;
+}
+
+.smart-hub--overview-nowrap {
+  white-space: nowrap;
+}

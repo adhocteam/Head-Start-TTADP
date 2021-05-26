@@ -1,7 +1,7 @@
+import { Op } from 'sequelize';
 import {
-  ActivityReport, ActivityRecipient, Grant, Grantee, NonGrantee, sequelize, Objective,
+  ActivityReport, ActivityRecipient, Grant, Grantee, NonGrantee, sequelize,
 } from '../models';
-
 /*
   Widgets on the backend should only have to worry about fetching data in the format required
   by the widget. In this case we return a single object but other widgets my require an array
@@ -11,22 +11,25 @@ import {
 
   If adding a new widget be sure to add the widget to ./index.js
 */
-export default async function example(scopes) {
-  const filterGen = (where) => sequelize.literal(`COUNT(*) FILTER ${where}`);
+export default async function overview(scopes, region) {
+  const sumFn = (field, where = {}) => sequelize.literal(`COALESCE(SUM(${field}) FILTER ${where}, 0)`);
+
+  const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${region})`;
+  const trainingWhere = '(WHERE "ttaType" = \'{"training"}\')';
+  const taWhere = '(WHERE "ttaType" = \'{"technical-assistance"}\')';
+  const ttaWhere = '(WHERE "ttaType" = \'{"training", "technical-assistance"}\')';
 
   const res = await ActivityReport.findAll({
     attributes: [
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"ActivityReport".id'))), 'numReports'],
-      // I really don't like `"activityRecipients->grant->grantee"."id"` but couldn't find a way
-      // to have sequelize leave table names alone (`required: false` makes sequelize alias tables
-      // for some reason)
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"activityRecipients->grant->grantee"."id"'))), 'numGrantees'],
-      [filterGen('(WHERE "requester" = \'Grantee\')'), 'numGranteeRequests'],
-      [filterGen('(WHERE "requester" = \'Regional Office\')'), 'numRegionalOfficeRequests'],
-      [sequelize.fn('SUM', sequelize.col('duration')), 'sumDuration'],
-      [filterGen('(WHERE "objectives"."status" = \'Complete\')'), 'numCompleteObjectives'],
+      [sequelize.literal(`(SELECT COUNT(*) from "Grants" ${grantsWhere})`), 'numTotalGrantees'],
+      [sequelize.fn('SUM', sequelize.col('numberOfParticipants')), 'numParticipants'],
+      [sumFn('duration', trainingWhere), 'sumTrainingDuration'],
+      [sumFn('duration', taWhere), 'sumTaDuration'],
+      [sumFn('duration', ttaWhere), 'sumDuration'],
     ],
-    where: scopes,
+    where: { [Op.and]: [scopes, { legacyId: null }] },
     raw: true,
     // without 'includeIgnoreAttributes' the attributes from the join table
     // "activityReportObjectives" are included which causes postgres to error when
@@ -58,12 +61,6 @@ export default async function example(scopes) {
             required: false,
           },
         ],
-      },
-      {
-        model: Objective,
-        attributes: [],
-        as: 'objectives',
-        required: false,
       },
     ],
   });

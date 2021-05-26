@@ -1,0 +1,6 @@
+.tta-smarthub--check {
+  filter: invert(18%) sepia(90%) saturate(2759%) hue-rotate(190deg) brightness(104%) contrast(99%);
+  /* width: 36;
+  float: 'right';
+  margin-top: '-11px '; */
+}

@@ -20,10 +20,12 @@ import 'uswds/dist/css/uswds.css';
 import '@trussworks/react-uswds/lib/index.css';
 import './index.css';
 import MyAlerts from './MyAlerts';
-import { hasReadWrite } from '../../permissions';
+import { hasReadWrite, allRegionsUserHasPermissionTo } from '../../permissions';
 import { REPORTS_PER_PAGE, ALERTS_PER_PAGE } from '../../Constants';
 import Filter, { filtersToQueryString } from './Filter';
 import ReportMenu from './ReportMenu';
+import Overview from '../../widgets/Overview';
+import RegionalSelect from './RegionalSelect';
 
 function renderReports(reports, history, reportCheckboxes, handleReportSelect) {
   const emptyReport = {
@@ -210,6 +212,7 @@ function Landing() {
   const [alertReportsCount, setAlertReportsCount] = useState(0);
   const [filters, setFilters] = useState([]);
   const [alertFilters, setAlertFilters] = useState([]);
+  const [appliedRegion, updateAppliedRegion] = useState(0);
 
   const [reportCheckboxes, setReportCheckboxes] = useState({});
   const [allReportsChecked, setAllReportsChecked] = useState(false);
@@ -268,16 +271,28 @@ function Landing() {
     setAlertsSortConfig({ sortBy, direction });
   };
 
+  const getUserRegions = (user) => {
+    const regions = allRegionsUserHasPermissionTo(user);
+    if (appliedRegion === 0) updateAppliedRegion(regions[0]);
+    return regions;
+  };
+
+  const onApplyRegion = (region) => {
+    const regionId = region ? region.value : appliedRegion;
+    updateAppliedRegion(regionId);
+  };
+
   useEffect(() => {
     async function fetchReports() {
       const filterQuery = filtersToQueryString(filters);
+      const filterWithRegionQuery = `${filterQuery}${filterQuery ? '&' : ''}region.in[]=${appliedRegion}`;
       try {
         const { count, rows } = await getReports(
           sortConfig.sortBy,
           sortConfig.direction,
           offset,
           perPage,
-          filterQuery,
+          filterWithRegionQuery,
         );
         updateReports(rows);
         setReportsCount(count || 0);
@@ -289,18 +304,19 @@ function Landing() {
       setIsLoaded(true);
     }
     fetchReports();
-  }, [sortConfig, offset, perPage, filters]);
+  }, [sortConfig, offset, perPage, filters, appliedRegion]);
 
   useEffect(() => {
     async function fetchAlertReports() {
       const filterQuery = filtersToQueryString(alertFilters);
+      const filterWithRegionQuery = `${filterQuery}${filterQuery ? '&' : ''}region.in[]=${appliedRegion}`;
       try {
         const { alertsCount, alerts } = await getReportAlerts(
           alertsSortConfig.sortBy,
           alertsSortConfig.direction,
           alertsOffset,
           alertsPerPage,
-          filterQuery,
+          filterWithRegionQuery,
         );
         updateReportAlerts(alerts);
         if (alertsCount) {
@@ -315,7 +331,7 @@ function Landing() {
       setIsLoaded(true);
     }
     fetchAlertReports();
-  }, [alertsSortConfig, alertsOffset, alertsPerPage, alertFilters]);
+  }, [alertsSortConfig, alertsOffset, alertsPerPage, alertFilters, appliedRegion]);
 
   // When reports are updated, make sure all checkboxes are unchecked
   useEffect(() => {
@@ -436,29 +452,38 @@ function Landing() {
         {({ user }) => (
           <>
             {showAlert && message && (
-            <Alert
-              type="success"
-              role="alert"
-              noIcon
-              cta={(
-                <Button
-                  role="button"
-                  unstyled
-                  aria-label="dismiss alert"
-                  onClick={() => updateShowAlert(false)}
-                >
-                  <span className="fa-sm">
-                    <FontAwesomeIcon color="black" icon={faTimesCircle} />
-                  </span>
-                </Button>
-              )}
-            >
-              {msg}
-            </Alert>
+              <Alert
+                type="success"
+                role="alert"
+                noIcon
+                cta={(
+                  <Button
+                    role="button"
+                    unstyled
+                    aria-label="dismiss alert"
+                    onClick={() => updateShowAlert(false)}
+                  >
+                    <span className="fa-sm">
+                      <FontAwesomeIcon color="black" icon={faTimesCircle} />
+                    </span>
+                  </Button>
+                )}
+              >
+                {msg}
+              </Alert>
             )}
             <Grid row gap>
               <Grid>
                 <h1 className="landing">Activity Reports</h1>
+              </Grid>
+              <Grid col={2} className="flex-align-self-center">
+                {getUserRegions(user).length > 1
+                && (
+                <RegionalSelect
+                  regions={allRegionsUserHasPermissionTo(user)}
+                  onApply={onApplyRegion}
+                />
+                )}
               </Grid>
               <Grid className="flex-align-self-center">
                 {reportAlerts
@@ -466,11 +491,20 @@ function Landing() {
                   && hasReadWrite(user) && <NewReport />}
               </Grid>
             </Grid>
+            <Grid row gap className="smart-hub--overview">
+              <Grid col={8} className="smart-hub--overview-padding1">
+                <Overview
+                  filters={filters}
+                  region={appliedRegion}
+                  allRegions={getUserRegions(user)}
+                />
+              </Grid>
+            </Grid>
             <Grid row>
               {error && (
-              <Alert type="error" role="alert">
-                {error}
-              </Alert>
+                <Alert type="error" role="alert">
+                  {error}
+                </Alert>
               )}
             </Grid>
             <MyAlerts
@@ -491,8 +525,7 @@ function Landing() {
 
             <Container className="landing inline-size maxw-full" padding={0}>
               <span className="smart-hub--table-controls">
-                {numberOfSelectedReports > 0
-                  && (
+                {numberOfSelectedReports > 0 && (
                   <span className="smart-hub--selected-tag margin-right-1">
                     {numberOfSelectedReports}
                     {' '}
@@ -506,10 +539,14 @@ function Landing() {
                         toggleSelectAll({ target: { checked: false } });
                       }}
                     >
-                      <FontAwesomeIcon color="blue" inverse icon={faTimesCircle} />
+                      <FontAwesomeIcon
+                        color="blue"
+                        inverse
+                        icon={faTimesCircle}
+                      />
                     </Button>
                   </span>
-                  )}
+                )}
                 <Filter applyFilters={setFilters} />
                 <ReportMenu
                   hasSelectedReports={numberOfSelectedReports > 0}
@@ -554,7 +591,13 @@ function Landing() {
                   <thead>
                     <tr>
                       <th className="width-8" aria-label="Select">
-                        <Checkbox id="all-reports" label="" onChange={toggleSelectAll} checked={allReportsChecked} aria-label="Select or de-select all reports" />
+                        <Checkbox
+                          id="all-reports"
+                          label=""
+                          onChange={toggleSelectAll}
+                          checked={allReportsChecked}
+                          aria-label="Select or de-select all reports"
+                        />
                       </th>
                       {renderColumnHeader('Report ID', 'regionId')}
                       {renderColumnHeader('Grantee', 'activityRecipients')}
@@ -568,7 +611,12 @@ function Landing() {
                     </tr>
                   </thead>
                   <tbody>
-                    {renderReports(reports, history, reportCheckboxes, handleReportSelect)}
+                    {renderReports(
+                      reports,
+                      history,
+                      reportCheckboxes,
+                      handleReportSelect,
+                    )}
                   </tbody>
                 </Table>
               </div>
