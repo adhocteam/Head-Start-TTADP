@@ -10,9 +10,9 @@ post:
         schema:
           type: object
           properties:
-            approvers:
+            userIds:
               type: array
-              description: Array of manager ids assigned to approve the report
+              description: Array of userIds of managers assigned to approve the report
             additionalNotes:
               type: string
               description: Any contextual information the author/collaborators want to provide the approving managers

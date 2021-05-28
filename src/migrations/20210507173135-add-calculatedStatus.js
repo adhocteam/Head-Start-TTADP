@@ -1,9 +1,18 @@
+const statuses = [
+  'deleted',
+  'draft',
+  'submitted',
+  'needs_action',
+  'approved',
+];
+
 module.exports = {
-  up: async (queryInterface) => queryInterface.sequelize.transaction((transaction) => (
+  up: async (queryInterface, Sequelize) => queryInterface.sequelize.transaction((transaction) => (
     Promise.all([
       queryInterface.renameColumn('ActivityReports', 'status', 'submissionStatus', { transaction }),
       queryInterface.renameColumn('ActivityReports', 'approvingManagerId', 'oldApprovingManagerId', { transaction }),
       queryInterface.renameColumn('ActivityReports', 'managerNotes', 'oldManagerNotes', { transaction }),
+      queryInterface.addColumn('ActivityReports', 'calculatedStatus', { type: Sequelize.DataTypes.ENUM(...statuses) }, { transaction }),
     ])
   )),
 
@@ -12,6 +21,7 @@ module.exports = {
       queryInterface.renameColumn('ActivityReports', 'submissionStatus', 'status', { transaction }),
       queryInterface.renameColumn('ActivityReports', 'oldApprovingManagerId', 'approvingManagerId', { transaction }),
       queryInterface.renameColumn('ActivityReports', 'oldManagerNotes', 'managerNotes', { transaction }),
+      queryInterface.removeColumn('ActivityReports', 'calculatedStatus', { transaction }),
     ])
   )),
 };

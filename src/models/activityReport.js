@@ -31,7 +31,7 @@ export default (sequelize, DataTypes) => {
       ActivityReport.hasMany(models.File, { foreignKey: 'activityReportId', as: 'attachments' });
       ActivityReport.hasMany(models.NextStep, { foreignKey: 'activityReportId', as: 'specialistNextSteps' });
       ActivityReport.hasMany(models.NextStep, { foreignKey: 'activityReportId', as: 'granteeNextSteps' });
-      ActivityReport.hasMany(models.ActivityReportApprover, { foreignKey: 'activityReportId', as: 'approvers' });
+      ActivityReport.hasMany(models.ActivityReportApprover, { foreignKey: 'activityReportId', as: 'approvers', hooks: true });
       ActivityReport.belongsToMany(models.Objective, {
         scope: {
           goalId: { [Op.is]: null },
@@ -183,46 +183,8 @@ export default (sequelize, DataTypes) => {
       },
     },
     calculatedStatus: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        if (this.submissionStatus === REPORT_STATUSES.SUBMITTED) {
-          // Calculate status based on all approvals.
-          const approvalStatuses = {};
-
-          // For approvals assigned by old "single approver" method,
-          // capture pending review.
-          if (this.oldApprovingManagerId) {
-            approvalStatuses[this.oldApprovingManagerId] = null;
-          }
-
-          // Capture approvals assigned by new "multiple approver" method.
-          if (this.approvers) {
-            // If manager was assigned by old method and reviewed by
-            // new method, then overwrite pending review (null value added above)
-            // with new approver.
-            this.approvers.forEach((approval) => {
-              approvalStatuses[approval.userId] = approval.status;
-            });
-          }
-
-          const approved = (status) => status === REPORT_STATUSES.APPROVED;
-          if (Object.values(approvalStatuses).every(approved)) {
-            return REPORT_STATUSES.APPROVED;
-          }
-
-          const needsAction = (status) => status === REPORT_STATUSES.NEEDS_ACTION;
-          if (Object.values(approvalStatuses).some(needsAction)) {
-            return REPORT_STATUSES.NEEDS_ACTION;
-          }
-
-          // Awaiting review(s)
-          return REPORT_STATUSES.SUBMITTED;
-        }
-        // AR was given status of deleted, draft, approved or needs_action
-        // by old "single approver" method. In all these cases calculatedStatus
-        // and submissionStatus match.
-        return this.submissionStatus;
-      },
+      allowNull: true,
+      type: DataTypes.ENUM(Object.keys(REPORT_STATUSES).map((k) => REPORT_STATUSES[k])),
     },
     ttaType: {
       type: DataTypes.ARRAY(DataTypes.STRING),

@@ -146,8 +146,9 @@ components:
           type: string
           enum: ['draft', 'submitted', 'deleted']
           description: |
-            Submission status of the report.
-            Field formerly called "status".
+            Submission status of the report. Field formerly called "status".
+            Reports submitted before multiple approvers feature was available
+            can have value of 'needs_action' or 'approved'.
         calculatedStatus:
           type: string
           enum: ['draft', 'submitted', 'deleted', 'needs_action', 'approved']
