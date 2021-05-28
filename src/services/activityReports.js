@@ -145,6 +145,56 @@ async function create(report, transaction) {
   return ActivityReport.create(report, { transaction });
 }
 
+
+function calculateStatus(report) {
+  const { submissionStatus, oldApprovingManagerId} = report
+  const approvers = report.getApprovers()
+
+  if (submissionStatus === REPORT_STATUSES.SUBMITTED) {
+    console.log('submissionStatus is SUBMITTED')
+    // Calculate status based on all approvals.
+    const approverStatuses = {};
+
+    // For approvals assigned by old "single approver" method,
+    // capture pending review.
+    if (oldApprovingManagerId) {
+      console.log('found oldApprovingManagerId')
+      approverStatuses[oldApprovingManagerId] = null;
+    }
+
+    // Capture approvals assigned by new "multiple approver" method.
+    if (approvers) {
+      // If manager was assigned by old method and reviewed by
+      // new method, then overwrite pending review (null value added above)
+      // with new approver.
+      approvers.forEach((approver) => {
+        console.log(approver)
+        approverStatuses[approver.userId] = approver.status;
+      });
+    }
+
+    console.log('determined all approverStatuses >', approverStatuses)
+
+    const approved = (status) => status === REPORT_STATUSES.APPROVED;
+    if (Object.values(approverStatuses).every(approved)) {
+      return REPORT_STATUSES.APPROVED;
+    }
+
+    const needsAction = (status) => status === REPORT_STATUSES.NEEDS_ACTION;
+    if (Object.values(approverStatuses).some(needsAction)) {
+      return REPORT_STATUSES.NEEDS_ACTION;
+    }
+
+    // Awaiting review(s)
+    return REPORT_STATUSES.SUBMITTED;
+  }
+  // AR was given status of deleted, draft, approved or needs_action
+  // by old "single approver" method. In all these cases calculatedStatus
+  // and submissionStatus match.
+  console.log('returning submissionStatus >', submissionStatus)
+  return submissionStatus;
+}
+
 export function activityReportByLegacyId(legacyId) {
   return ActivityReport.findOne({
     where: {
@@ -285,7 +335,7 @@ export function activityReports(
 
   const where = {
     regionId: regions,
-    status: REPORT_STATUSES.APPROVED,
+    calculatedStatus: REPORT_STATUSES.APPROVED,
     [Op.and]: scopes,
   };
 
@@ -302,7 +352,7 @@ export function activityReports(
         'startDate',
         'lastSaved',
         'topics',
-        'status',
+        'calculatedStatus',
         'regionId',
         'updatedAt',
         'sortedTopics',
@@ -374,9 +424,9 @@ export function activityReports(
 /**
  * Retrieves alerts based on the following logic:
  * One or both of these high level conditions are true -
- * manager - approvingManagerId matches and report status is submitted.
- * specialist - author id or one of the collaborator's id matches and status is not approved nor
- * submitted.
+ * manager - approvingManagerId matches and report calculatedStatus is 'submitted'.
+ * specialist - author id or one of the collaborator's id matches and calculatedStatus is not
+ * 'approved' or 'submitted'.
  * @param {*} userId
  */
 export function activityReportAlerts(userId, {
@@ -558,7 +608,14 @@ export async function setStatus(report, status) {
   const updatedReport = await report.update({ status }, {
     fields: ['submissionStatus'],
   });
-  return updatedReport;
+  return updateCalculatedStatus(updatedReport);
+}
+
+export async function updateCalculatedStatus(report) {
+  const calculatedStatus = calculateStatus(report)
+  return await report.update({ calculatedStatus }, {
+    fields: ['calculatedStatus']
+  })
 }
 
 /*
@@ -699,8 +756,8 @@ export async function getAllDownloadableActivityReportAlerts(userId, filters) {
     [Op.or]: [
       {
         [Op.or]: [
-          { status: REPORT_STATUSES.SUBMITTED },
-          { status: REPORT_STATUSES.NEEDS_ACTION },
+          { calculatedStatus: REPORT_STATUSES.SUBMITTED },
+          { calculatedStatus: REPORT_STATUSES.NEEDS_ACTION },
         ],
         approvingManagerId: userId,
       },
@@ -709,7 +766,7 @@ export async function getAllDownloadableActivityReportAlerts(userId, filters) {
           {
             [Op.and]: [
               {
-                status: { [Op.ne]: REPORT_STATUSES.APPROVED },
+                calculatedStatus: { [Op.ne]: REPORT_STATUSES.APPROVED },
               },
             ],
           },

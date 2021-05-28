@@ -47,7 +47,7 @@ const topicToQuery = {
     in: (query) => withCollaborators(query),
     nin: (query) => withoutCollaborators(query),
   },
-  status: {
+  calculatedStatus: {
     in: (query) => withStatus(query),
     nin: (query) => withoutStatus(query),
   },

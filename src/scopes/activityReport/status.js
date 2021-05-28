@@ -3,7 +3,7 @@ import { sequelize } from '../../models';
 
 export function withStatus(statuses) {
   return sequelize.where(
-    sequelize.cast(sequelize.col('"ActivityReport".status'), 'text'),
+    sequelize.cast(sequelize.col('"ActivityReport".calculatedStatus'), 'text'),
     {
       [Op.iRegexp]: statuses.join('|'),
     },
@@ -12,7 +12,7 @@ export function withStatus(statuses) {
 
 export function withoutStatus(statuses) {
   return sequelize.where(
-    sequelize.cast(sequelize.col('"ActivityReport".status'), 'text'),
+    sequelize.cast(sequelize.col('"ActivityReport".calculatedStatus'), 'text'),
     {
       [Op.notIRegexp]: statuses.join('|'),
     },

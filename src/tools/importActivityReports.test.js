@@ -52,19 +52,23 @@ describe('Import Activity Reports', () => {
     const legacyId = 'R14-AR-001132';
     const legacyReport = await ActivityReport.create({
       legacyId,
-      status: REPORT_STATUSES.SUBMITTED,
+      submissionStatus: REPORT_STATUSES.SUBMITTED,
     }, { validate: false });
     await importActivityReports(fileName, 14);
 
     const records = await ActivityReport.findAll({
-      attributes: ['id', 'legacyId', 'status'],
+      attributes: ['id', 'legacyId', 'submissionStatus'],
       where: {
         legacyId: { [Op.ne]: null },
       },
     });
     expect(records).toBeDefined();
     expect(records).toContainEqual(
-      expect.objectContaining({ id: legacyReport.id, legacyId, status: REPORT_STATUSES.APPROVED }),
+      expect.objectContaining({
+        id: legacyReport.id,
+        legacyId,
+        submissionStatus: REPORT_STATUSES.APPROVED,
+      }),
     );
   });
 });

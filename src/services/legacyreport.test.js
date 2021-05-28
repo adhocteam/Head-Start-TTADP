@@ -10,7 +10,7 @@ import { activityReportByLegacyId } from './activityReports';
 
 const report1 = {
   activityRecipientType: 'grantee',
-  status: REPORT_STATUSES.DRAFT,
+  submissionStatus: REPORT_STATUSES.DRAFT,
   regionId: 1,
   ECLKCResourcesUsed: ['test'],
   legacyId: 'legacy-1',
@@ -23,7 +23,7 @@ const report1 = {
 
 const report2 = {
   activityRecipientType: 'grantee',
-  status: REPORT_STATUSES.DRAFT,
+  submissionStatus: REPORT_STATUSES.DRAFT,
   regionId: 1,
   ECLKCResourcesUsed: ['test'],
   legacyId: 'legacy-2',

@@ -134,7 +134,7 @@ export async function getApprovers(req, res) {
 }
 
 /**
- * Review a report setting it's status to approved or needs action
+ * Review a report, setting approver status to approved or needs action
  *
  * @param {*} req - request
  * @param {*} res - response
@@ -163,7 +163,7 @@ export async function reviewReport(req, res) {
       activityReportId,
       userId,
     });
-    const savedReport = await activityReportById(activityReportId);
+    const savedReport = await updateCalculatedStatus(activityReportId);
 
     if (savedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
       if (savedReport.activityRecipientType === 'grantee') {
@@ -205,7 +205,7 @@ export async function resetToDraft(req, res) {
 }
 
 /**
- * Mark activity report status as deleted
+ * Mark activity report submissionStatus as deleted
  *
  * @param {*} req - request
  * @param {*} res - response
@@ -223,7 +223,7 @@ export async function softDeleteReport(req, res) {
       return;
     }
 
-    await setStatus(report, REPORT_STATUSES.DELETED);
+    setStatus(report, REPORT_STATUSES.DELETED);
     res.sendStatus(204);
   } catch (error) {
     await handleErrors(req, res, error, logContext);
@@ -238,7 +238,7 @@ export async function softDeleteReport(req, res) {
 export async function submitReport(req, res) {
   try {
     const { activityReportId } = req.params;
-    const { approvers, additionalNotes } = req.body;
+    const { userIds, additionalNotes } = req.body;
 
     const user = await userById(req.session.userId);
     const report = await activityReportById(activityReportId);
@@ -257,10 +257,10 @@ export async function submitReport(req, res) {
 
     // Save Approvers and notify
     const savedApprovers = [];
-    approvers.forEach((approverId) => {
+    userIds.forEach((userId) => {
       const savedApprover = upsertApprover({}, {
         activityReportId,
-        userId: approverId,
+        userId,
       });
       savedApprovers.push(savedApprover);
     });

@@ -129,7 +129,7 @@ const arTransformers = [
   'reason',
   'participants',
   'topics',
-  'status',
+  'calculatedStatus',
   'ttaType',
   'numberOfParticipants',
   'deliveryMethod',
