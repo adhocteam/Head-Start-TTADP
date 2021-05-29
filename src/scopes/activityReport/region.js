@@ -9,12 +9,3 @@ export default function withRegion(regions) {
     },
   );
 }
-
-// export function withoutRegion(regions) {
-//   return sequelize.where(
-//     sequelize.col('"ActivityReport".regionId'),
-//     {
-//       [Op.notIn]: regions,
-//     },
-//   );
-// }

@@ -54,7 +54,6 @@ const topicToQuery = {
   },
   region: {
     in: (query) => withRegion(query),
-    nin: (query) => withoutRegion(query),
   },
 };
 
