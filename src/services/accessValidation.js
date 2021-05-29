@@ -121,7 +121,7 @@ export async function getUserReadRegions(userId) {
 */
 export async function setReadRegions(query, userId) {
   const readRegions = await getUserReadRegions(userId);
-  if ('region.in' in query) {
+  if ('region.in' in query && Array.isArray(query['region.in']) && query['region.in'][0]) {
     return {
       ...query,
       'region.in': query['region.in'].filter((r) => readRegions.includes(parseInt(r, DECIMAL_BASE))),

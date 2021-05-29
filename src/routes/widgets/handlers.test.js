@@ -25,20 +25,22 @@ describe('Widget handlers', () => {
       ...mockRequest,
       query: { 'region.in': ['1'] },
     };
+    const response = {
+      numGrants: '0', numParticipants: '0', numReports: '0', numTotalGrants: '2', sumDuration: '0', sumTaDuration: '0', sumTrainingDuration: '0',
+    };
 
     it('returns overview data', async () => {
-      const response = {
-        numGrants: '0', numParticipants: '0', numReports: '0', numTotalGrants: '2', sumDuration: '0', sumTaDuration: '0', sumTrainingDuration: '0',
-      };
       await getWidget(request, mockResponse);
       expect(mockResponse.json).toHaveBeenCalledWith(response);
     });
 
     it('handles no region in query', async () => {
-      const response = {
-        numGrants: '0', numParticipants: '0', numReports: '0', numTotalGrants: '2', sumDuration: '0', sumTaDuration: '0', sumTrainingDuration: '0',
-      };
       await getWidget({ ...mockRequest, query: {} }, mockResponse);
+      expect(mockResponse.json).toHaveBeenCalledWith(response);
+    });
+
+    it('handles error in parsing region', async () => {
+      await getWidget({ ...mockRequest, query: { 'region.in': [''] } }, mockResponse);
       expect(mockResponse.json).toHaveBeenCalledWith(response);
     });
 
