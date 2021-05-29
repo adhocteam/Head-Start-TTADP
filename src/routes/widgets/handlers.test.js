@@ -1,4 +1,9 @@
 import { getWidget } from './handlers';
+import { setReadRegions } from '../../services/accessValidation';
+import widgets from '../../widgets';
+
+jest.mock('../../services/accessValidation');
+jest.mock('../../widgets');
 
 const mockResponse = {
   json: jest.fn(),
@@ -28,6 +33,11 @@ describe('Widget handlers', () => {
     const response = {
       numGrants: '0', numParticipants: '0', numReports: '0', numTotalGrants: '2', sumDuration: '0', sumTaDuration: '0', sumTrainingDuration: '0',
     };
+
+    beforeEach(() => {
+      setReadRegions.mockReturnValue(Promise.resolve({ 'region.in': ['1'] }));
+      widgets.overview.mockReturnValue(Promise.resolve(response));
+    });
 
     it('returns overview data', async () => {
       await getWidget(request, mockResponse);
