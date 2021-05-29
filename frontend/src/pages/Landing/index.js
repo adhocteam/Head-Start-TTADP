@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Tag, Table, Alert, Grid, Button, Checkbox,
 } from '@trussworks/react-uswds';
@@ -11,6 +11,7 @@ import { Link, useHistory } from 'react-router-dom';
 import Pagination from 'react-js-pagination';
 
 import UserContext from '../../UserContext';
+import AriaLiveContext from '../../AriaLiveContext';
 import ContextMenu from '../../components/ContextMenu';
 import Container from '../../components/Container';
 import { getReports, getReportAlerts } from '../../fetchers/activityReports';
@@ -217,6 +218,8 @@ function Landing() {
   const [reportCheckboxes, setReportCheckboxes] = useState({});
   const [allReportsChecked, setAllReportsChecked] = useState(false);
 
+  const ariaLiveContext = useContext(AriaLiveContext);
+
   const makeReportCheckboxes = (reportsArr, checked) => (
     reportsArr.reduce((obj, r) => ({ ...obj, [r.id]: checked }), {})
   );
@@ -280,6 +283,18 @@ function Landing() {
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
     updateAppliedRegion(regionId);
+  };
+
+  // Update ariaLiveContext outside of effects to avoid infinite re-renders and
+  // the initial "0 filters applied" on first render
+  const handleApplyFilters = (newFilters) => {
+    setFilters(newFilters);
+    ariaLiveContext.announce(`${newFilters.length} filter${newFilters.length !== 1 ? 's' : ''} applied to reports`);
+  };
+
+  const handleApplyAlertFilters = (newFilters) => {
+    setAlertFilters(newFilters);
+    ariaLiveContext.announce(`${newFilters.length} filter${newFilters.length !== 1 ? 's' : ''} applied to my alerts`);
   };
 
   useEffect(() => {
@@ -516,7 +531,7 @@ function Landing() {
               alertsActivePage={alertsActivePage}
               alertReportsCount={alertReportsCount}
               sortHandler={requestAlertsSort}
-              updateReportFilters={setAlertFilters}
+              updateReportFilters={handleApplyAlertFilters}
               hasFilters={alertFilters.length > 0}
               updateReportAlerts={updateReportAlerts}
               setAlertReportsCount={setAlertReportsCount}
@@ -547,7 +562,7 @@ function Landing() {
                     </Button>
                   </span>
                 )}
-                <Filter applyFilters={setFilters} />
+                <Filter applyFilters={handleApplyFilters} />
                 <ReportMenu
                   hasSelectedReports={numberOfSelectedReports > 0}
                   onExportAll={handleDownloadAllReports}
