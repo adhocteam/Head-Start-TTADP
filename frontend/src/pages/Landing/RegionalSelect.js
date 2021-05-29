@@ -7,7 +7,6 @@ import { Button } from '@trussworks/react-uswds';
 import 'uswds/dist/css/uswds.css';
 import '@trussworks/react-uswds/lib/index.css';
 import './index.css';
-// import { REGIONS } from '../../Constants';
 import './RegionalSelect.css';
 
 import triangleDown from '../../images/triange_down.png';
@@ -20,12 +19,6 @@ const DropdownIndicator = (props) => (
 );
 
 const Placeholder = (props) => <components.Placeholder {...props} />;
-
-// const getValues = (value) => (value.map((v) => ({
-//   value: v, label: v,
-// })));
-
-// const getValue = (selectedRegion, appliedRegion) => ({ value: selectedRegion ? selectedRegion.value : 0, label: appliedRegion ? appliedRegion.label : 'test' });
 
 export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
 
@@ -44,9 +37,6 @@ const styles = {
     borderColor: '#0166AB',
     backgroundColor: '#0166AB',
     borderRadius: '5px',
-    // '&:hover': {
-    //   borderColor: '#565c65',
-    // },
     paddingLeft: '5px',
     paddingTop: '4px',
     paddingBottom: '4px',
@@ -80,23 +70,19 @@ const styles = {
 
 function RegionalSelect(props) {
   const {
-    regions, onChange, onApply,
+    regions, onApply,
   } = props;
 
-  // const [selectedItem, setSelectedItem] = useState({ value: regionId, label: `Region ${regionId}` });
-  // const [selectedItem, setSelectedItem] = useState({ value: 12, label: 'Region 12' });
-  // const [appliedItem, setAppliedItem] = useState({ value: 12, label: 'Region 12' });
   const [selectedItem, setSelectedItem] = useState();
   const [appliedItem, setAppliedItem] = useState();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
-  const delayedCloseMenu = () => setTimeout(setMenuIsOpen(false), 1000);
+  // const delayedCloseMenu = () => setTimeout(setMenuIsOpen(false), 1000);
 
   const CustomOption = (props1) => {
     const {
       data, innerRef, innerProps, isSelected,
     } = props1;
-    console.log(props1);
     return data.custom ? (
       <div ref={innerRef} {...innerProps}>
         <Button
@@ -138,9 +124,6 @@ function RegionalSelect(props) {
     innerProps: PropTypes.object.isRequired,
   };
 
-  // CustomOption.defaultProps = {
-  // };
-
   const options = [...getUserOptions(regions), { custom: true }];
   return (
     <Select
@@ -167,7 +150,6 @@ function RegionalSelect(props) {
 
 RegionalSelect.propTypes = {
   regions: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired,
   onApply: PropTypes.func.isRequired,
 };
 
