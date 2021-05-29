@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { sequelize } from '../../models';
 
-export function withRegion(regions) {
+export default function withRegion(regions) {
   return sequelize.where(
     sequelize.col('"ActivityReport".regionId'),
     {
@@ -10,11 +10,11 @@ export function withRegion(regions) {
   );
 }
 
-export function withoutRegion(regions) {
-  return sequelize.where(
-    sequelize.col('"ActivityReport".regionId'),
-    {
-      [Op.notIn]: regions,
-    },
-  );
-}
+// export function withoutRegion(regions) {
+//   return sequelize.where(
+//     sequelize.col('"ActivityReport".regionId'),
+//     {
+//       [Op.notIn]: regions,
+//     },
+//   );
+// }

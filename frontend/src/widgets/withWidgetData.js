@@ -18,15 +18,11 @@ const withWidgetData = (Widget, widgetId) => {
     const {
       region, allRegions, filters, loadingOverride, errorOverride,
     } = props;
-    console.log('-----Wdget Overview props===============');
-    console.log(props);
     useEffect(() => {
       const fetch = async () => {
         try {
           updateLoading(true);
           const requestedRegion = region || allRegions[0];
-          console.log('--------Requested region');
-          console.log(requestedRegion);
           const fetchedData = await fetchWidget(widgetId, requestedRegion, filters);
           updateData(fetchedData);
           updateError('');

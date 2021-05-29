@@ -34,7 +34,6 @@ Field.defaultProps = {
   id in the backend `src/widgets/index.js` file or you will get 404s.
 */
 function Overview({ data, region }) {
-  // const totalGrantees = `Grantees served (of ${data.numGrantees})`;
   return (
     <Container>
       <Grid row className="smart-hub--overview-padding">
@@ -48,7 +47,7 @@ function Overview({ data, region }) {
         <span className="smart-hub--overview-period"> 3/17/21 to Today</span>
       </Grid>
       <Grid row>
-        <Field col={3} label={`Grantees served (of ${data.numTotalGrantees})`} data={data.numGrantees} />
+        <Field col={3} label={`Grants served (of ${data.numTotalGrants})`} data={data.numGrants} />
         <Field label="Activity reports" data={data.numReports} />
         <Field label="Participants" data={data.numParticipants} />
         <Field label="Hrs of Training" data={data.sumTrainingDuration} />
@@ -62,8 +61,8 @@ function Overview({ data, region }) {
 Overview.propTypes = {
   data: PropTypes.shape({
     numReports: PropTypes.string,
-    numGrantees: PropTypes.string,
-    numTotalGrantees: PropTypes.string,
+    numGrants: PropTypes.string,
+    numTotalGrants: PropTypes.string,
     numParticipants: PropTypes.string,
     sumTrainingDuration: PropTypes.string,
     sumTaDuration: PropTypes.string,

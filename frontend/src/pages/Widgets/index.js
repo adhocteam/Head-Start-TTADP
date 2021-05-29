@@ -30,6 +30,7 @@ function Widgets() {
       </Container>
       <Example
         filters={appliedFilters}
+        region={1}
         errorOverride={errorOverride}
         loadingOverride={loadingOverride}
       />
