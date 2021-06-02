@@ -56,7 +56,6 @@ export default (sequelize, DataTypes) => {
             [Op.ne]: 'deleted',
           },
         },
-        include: [{ model: models.ActivityReportApprover, as: 'approvers' }],
       });
     }
   }

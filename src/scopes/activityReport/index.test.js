@@ -678,7 +678,7 @@ describe('filtersToScopes', () => {
     it('includes statuses with a partial match', async () => {
       const filters = { 'calculatedStatus.in': ['approved'] };
       const scope = filtersToScopes(filters);
-      console.log('scope >', scope)
+      console.log('scope >', scope);
       const found = await ActivityReport.findAll({
         where: { [Op.and]: [scope, { id: possibleIds }] },
       });

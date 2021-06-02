@@ -6,6 +6,7 @@ import { filtersToScopes } from '../scopes/activityReport';
 
 import {
   ActivityReport,
+  ActivityReportApprover,
   ActivityReportCollaborator,
   sequelize,
   ActivityRecipient,
@@ -145,56 +146,6 @@ async function create(report, transaction) {
   return ActivityReport.create(report, { transaction });
 }
 
-
-function calculateStatus(report) {
-  const { submissionStatus, oldApprovingManagerId} = report
-  const approvers = report.getApprovers()
-
-  if (submissionStatus === REPORT_STATUSES.SUBMITTED) {
-    console.log('submissionStatus is SUBMITTED')
-    // Calculate status based on all approvals.
-    const approverStatuses = {};
-
-    // For approvals assigned by old "single approver" method,
-    // capture pending review.
-    if (oldApprovingManagerId) {
-      console.log('found oldApprovingManagerId')
-      approverStatuses[oldApprovingManagerId] = null;
-    }
-
-    // Capture approvals assigned by new "multiple approver" method.
-    if (approvers) {
-      // If manager was assigned by old method and reviewed by
-      // new method, then overwrite pending review (null value added above)
-      // with new approver.
-      approvers.forEach((approver) => {
-        console.log(approver)
-        approverStatuses[approver.userId] = approver.status;
-      });
-    }
-
-    console.log('determined all approverStatuses >', approverStatuses)
-
-    const approved = (status) => status === REPORT_STATUSES.APPROVED;
-    if (Object.values(approverStatuses).every(approved)) {
-      return REPORT_STATUSES.APPROVED;
-    }
-
-    const needsAction = (status) => status === REPORT_STATUSES.NEEDS_ACTION;
-    if (Object.values(approverStatuses).some(needsAction)) {
-      return REPORT_STATUSES.NEEDS_ACTION;
-    }
-
-    // Awaiting review(s)
-    return REPORT_STATUSES.SUBMITTED;
-  }
-  // AR was given status of deleted, draft, approved or needs_action
-  // by old "single approver" method. In all these cases calculatedStatus
-  // and submissionStatus match.
-  console.log('returning submissionStatus >', submissionStatus)
-  return submissionStatus;
-}
-
 export function activityReportByLegacyId(legacyId) {
   return ActivityReport.findOne({
     where: {
@@ -301,8 +252,8 @@ export function activityReportById(activityReportId) {
         required: false,
       },
       {
-        model: User,
-        as: 'approvingManager',
+        model: ActivityReportApprover,
+        as: 'approvers',
         required: false,
       },
     ],
@@ -335,7 +286,10 @@ export function activityReports(
 
   const where = {
     regionId: regions,
-    calculatedStatus: REPORT_STATUSES.APPROVED,
+    [Op.or]: {
+      submissionStatus: REPORT_STATUSES.APPROVED,
+      calculatedStatus: REPORT_STATUSES.APPROVED,
+    },
     [Op.and]: scopes,
   };
 
@@ -608,14 +562,6 @@ export async function setStatus(report, status) {
   const updatedReport = await report.update({ status }, {
     fields: ['submissionStatus'],
   });
-  return updateCalculatedStatus(updatedReport);
-}
-
-export async function updateCalculatedStatus(report) {
-  const calculatedStatus = calculateStatus(report)
-  return await report.update({ calculatedStatus }, {
-    fields: ['calculatedStatus']
-  })
 }
 
 /*

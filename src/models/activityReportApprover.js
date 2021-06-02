@@ -1,37 +1,18 @@
 import { APPROVER_STATUSES, REPORT_STATUSES } from '../constants';
 
-import { ActivityReportApprover } from '.'
-// import ActivityReport from './activityReport'
-
 const { Model } = require('sequelize');
 
-function calculateStatus(report, approvals) {
-  // Object for keeping track of all our approvals
-  const approvalStatuses = {};
-
-  // For approvals assigned by old "single approver" method,
-  // capture pending review.
-  if (report.oldApprovingManagerId) {
-    approvalStatuses[report.oldApprovingManagerId] = null;
-  }
-
-  approvals.forEach((approval) => {
-    approvalStatuses[approval.userId] = approval.status;
-  });
-
-  // All approvers approved
-  const approved = (status) => status === REPORT_STATUSES.APPROVED;
-  if (Object.values(approvalStatuses).every(approved)) {
+function calculateStatus(approvals) {
+  const approved = (status) => status === APPROVER_STATUSES.APPROVED;
+  if (approvals.every(approved)) {
     return REPORT_STATUSES.APPROVED;
   }
 
-  // At least one approver requested edits
-  const needsAction = (status) => status === REPORT_STATUSES.NEEDS_ACTION;
-  if (Object.values(approvalStatuses).some(needsAction)) {
+  const needsAction = (status) => status === APPROVER_STATUSES.NEEDS_ACTION;
+  if (approvals.some(needsAction)) {
     return REPORT_STATUSES.NEEDS_ACTION;
   }
 
-  // At least one review is pending
   return REPORT_STATUSES.SUBMITTED;
 }
 
@@ -69,25 +50,41 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       afterCreate: async (instance, options) => {
         const { transaction } = options;
-        const report = await sequelize.models.ActivityReport.findByPk(instance.activityReportId, { transaction: transaction })
+        const report = await sequelize.models.ActivityReport.findByPk(
+          instance.activityReportId,
+          { transaction },
+        );
 
-        let calculatedStatus
-        switch(instance.status) {
-          case null:
-            calculatedStatus = REPORT_STATUSES.SUBMITTED
-          case APPROVER_STATUSES.NEEDS_ACTION:
-            calculatedStatus = REPORT_STATUSES.NEEDS_ACTION
-          case APPROVER_STATUSES.APPROVED:
-            const approvals = await sequelize.models.ActivityReportApprover.findAll({ where: {activityReportId: instance.activityReportId}}, { transaction: transaction })
-            calculatedStatus = calculateStatus(report, approvals)
+        let calculatedStatus;
+        switch (instance.status) {
+          case APPROVER_STATUSES.NEEDS_ACTION: {
+            calculatedStatus = REPORT_STATUSES.NEEDS_ACTION;
+            break;
+          }
+          case APPROVER_STATUSES.APPROVED: {
+            const approverStatuses = await sequelize.models.ActivityReportApprover.findAll(
+              {
+                attributes: ['status'],
+                raw: true,
+                where: {
+                  activityReportId: instance.activityReportId,
+                },
+              },
+              { transaction },
+            ).map((a) => a.status);
+            calculatedStatus = calculateStatus(approverStatuses);
+            break;
+          }
+          default: {
+            calculatedStatus = REPORT_STATUSES.SUBMITTED;
+            break;
+          }
         }
 
-        console.log('[afterCreate] determined calculatedStatus to be >', calculatedStatus)
         report.calculatedStatus = calculatedStatus;
         await report.save();
         await report.reload();
-        console.log('[afterCreate] updated report id:', report.id, 'to have calculated status', report.calculatedStatus)
-      }
+      },
     },
     sequelize,
     modelName: 'ActivityReportApprover',

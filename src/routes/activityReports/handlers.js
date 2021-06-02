@@ -134,7 +134,7 @@ export async function getApprovers(req, res) {
 }
 
 /**
- * Review a report, setting approver status to approved or needs action
+ * Review a report, setting Approver status to approved or needs action
  *
  * @param {*} req - request
  * @param {*} res - response
@@ -163,21 +163,23 @@ export async function reviewReport(req, res) {
       activityReportId,
       userId,
     });
-    const savedReport = await updateCalculatedStatus(activityReportId);
 
-    if (savedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
-      if (savedReport.activityRecipientType === 'grantee') {
+    const reviewedReport = await activityReportById(activityReportId);
+
+    if (reviewedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
+      if (reviewedReport.activityRecipientType === 'grantee') {
         await copyGoalsToGrants(
-          savedReport.goals,
-          savedReport.activityRecipients.map((recipient) => recipient.activityRecipientId),
+          reviewedReport.goals,
+          reviewedReport.activityRecipients.map((recipient) => recipient.activityRecipientId),
         );
       }
-      reportApprovedNotification(savedReport);
+      reportApprovedNotification(reviewedReport);
     }
 
-    if (savedReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION) {
-      changesRequestedNotification(savedReport, savedApprover);
+    if (reviewedReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION) {
+      changesRequestedNotification(reviewedReport, savedApprover);
     }
+
     res.json(savedApprover);
   } catch (error) {
     await handleErrors(req, res, error, logContext);
