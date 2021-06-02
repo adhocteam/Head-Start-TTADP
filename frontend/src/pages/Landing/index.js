@@ -299,15 +299,14 @@ function Landing() {
 
   useEffect(() => {
     async function fetchReports() {
-      const filterQuery = filtersToQueryString(filters);
-      const filterWithRegionQuery = `${filterQuery}${filterQuery ? '&' : ''}region.in[]=${appliedRegion}`;
+      const filterQuery = filtersToQueryString(filters, appliedRegion);
       try {
         const { count, rows } = await getReports(
           sortConfig.sortBy,
           sortConfig.direction,
           offset,
           perPage,
-          filterWithRegionQuery,
+          filterQuery,
         );
         updateReports(rows);
         setReportsCount(count || 0);
@@ -323,15 +322,14 @@ function Landing() {
 
   useEffect(() => {
     async function fetchAlertReports() {
-      const filterQuery = filtersToQueryString(alertFilters);
-      const filterWithRegionQuery = `${filterQuery}${filterQuery ? '&' : ''}region.in[]=${appliedRegion}`;
+      const filterQuery = filtersToQueryString(alertFilters, appliedRegion);
       try {
         const { alertsCount, alerts } = await getReportAlerts(
           alertsSortConfig.sortBy,
           alertsSortConfig.direction,
           alertsOffset,
           alertsPerPage,
-          filterWithRegionQuery,
+          filterQuery,
         );
         updateReportAlerts(alerts);
         if (alertsCount) {

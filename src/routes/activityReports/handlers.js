@@ -280,7 +280,7 @@ export async function getReport(req, res) {
  * @param {*} res - response
  */
 export async function getReports(req, res) {
-  const query = await setReadRegions(req.query, req.session.userId);
+  const query = await setReadRegions(req.query, req.session.userId, true);
   const reportsWithCount = await activityReports(query);
   if (!reportsWithCount) {
     res.sendStatus(404);

@@ -119,7 +119,7 @@ export async function getUserReadRegions(userId) {
   Make sure the user has read permissions to the regions requested. If no regions
   are explicitly requested default to all regions which the user has access to.
 */
-export async function setReadRegions(query, userId) {
+export async function setReadRegions(query, userId, useFirstReadRegion = false) {
   const readRegions = await getUserReadRegions(userId);
   if ('region.in' in query && Array.isArray(query['region.in']) && query['region.in'][0]) {
     return {
@@ -130,6 +130,6 @@ export async function setReadRegions(query, userId) {
 
   return {
     ...query,
-    'region.in': readRegions,
+    'region.in': useFirstReadRegion ? [readRegions[0]] : readRegions,
   };
 }

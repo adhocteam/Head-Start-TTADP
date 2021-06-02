@@ -48,9 +48,9 @@ const styles = {
     ...provided,
     width: '200px',
   }),
-  placeholder: () => ({
-    color: 'white', fontWeight: 600, fontSize: '17px', marginRight: '-5px',
-  }),
+  // placeholder: () => ({
+  //   color: 'white', fontWeight: 600, fontSize: '17px', marginRight: '-5px',
+  // }),
   option: (provided, state) => ({
     ...provided,
     color: state.isSelected ? '#0166AB' : 'black',
@@ -149,7 +149,7 @@ function RegionalSelect(props) {
 }
 
 RegionalSelect.propTypes = {
-  regions: PropTypes.number.isRequired,
+  regions: PropTypes.arrayOf(PropTypes.number).isRequired,
   onApply: PropTypes.func.isRequired,
 };
 
