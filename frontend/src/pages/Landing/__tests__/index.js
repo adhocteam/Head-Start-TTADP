@@ -272,7 +272,6 @@ describe('Landing Page sorting', () => {
   it('clicking status column header will sort by status', async () => {
     const statusColumnHeader = await screen.findByText(/status/i);
     fetchMock.reset();
-    // fetchMock.get('/api/activity-reports/alerts?sortBy=startDate&sortDir=desc&offset=0&limit=10&region.in[]=1',
     fetchMock.get(defaultBaseAlertsUrlWithRegionOne,
       { alertsCount: 0, alerts: [] });
     fetchMock.get(
