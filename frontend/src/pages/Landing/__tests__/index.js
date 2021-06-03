@@ -247,14 +247,7 @@ describe('Landing Page sorting', () => {
   afterEach(() => fetchMock.restore());
 
   beforeEach(async () => {
-    fetchMock.get(defaultBaseAlertsUrlWithRegionOne, {
-      alertsCount: 0,
-      alerts: [],
-    });
-    fetchMock.get(defaultBaseUrlWithRegionOne, {
-      count: 2,
-      rows: activityReports,
-    });
+    mockFetchWithRegionOne();
     const user = {
       name: 'test@test.com',
       permissions: [
@@ -469,8 +462,7 @@ describe('Landing page table menus & selections', () => {
 
     beforeEach(async () => {
       fetchMock.reset();
-      fetchMock.get(defaultBaseAlertsUrlWithRegionOne,
-        { alertsCount: 0, alerts: [] });
+      mockFetchWithRegionOne();
       fetchMock.get(
         defaultBaseUrl,
         { count: 10, rows: generateXFakeReports(10) },
@@ -867,8 +859,7 @@ describe('Landing Page error', () => {
   afterEach(() => fetchMock.restore());
 
   beforeEach(() => {
-    fetchMock.get(defaultBaseAlertsUrlWithRegionOne,
-      { alertsCount: 0, alerts: [] });
+    mockFetchWithRegionOne();
   });
 
   it('handles errors by displaying an error message', async () => {
@@ -980,6 +971,7 @@ describe('handleApplyAlertFilters', () => {
       alerts: generateXFakeReports(10),
     });
     fetchMock.get(defaultBaseUrl, { count: 0, rows: [] });
+    mockFetchWithRegionOne();
   });
 
   afterEach(() => fetchMock.restore());
