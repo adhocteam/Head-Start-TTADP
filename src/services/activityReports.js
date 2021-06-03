@@ -253,8 +253,15 @@ export function activityReportById(activityReportId) {
       },
       {
         model: ActivityReportApprover,
+        attributes: ['id', 'userId', 'status', 'note'],
         as: 'approvers',
         required: false,
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name', 'role', 'fullName'],
+          },
+        ],
       },
     ],
     order: [
@@ -286,10 +293,7 @@ export function activityReports(
 
   const where = {
     regionId: regions,
-    [Op.or]: {
-      submissionStatus: REPORT_STATUSES.APPROVED,
-      calculatedStatus: REPORT_STATUSES.APPROVED,
-    },
+    calculatedStatus: REPORT_STATUSES.APPROVED,
     [Op.and]: scopes,
   };
 
@@ -364,6 +368,18 @@ export function activityReports(
           as: 'collaborators',
           through: { attributes: [] },
         },
+        {
+          model: ActivityReportApprover,
+          attributes: ['id', 'userId', 'status', 'note'],
+          as: 'approvers',
+          required: false,
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'name', 'role', 'fullName'],
+            },
+          ],
+        },
       ],
       order: orderReportsBy(sortBy, sortDir),
       offset,
@@ -378,9 +394,9 @@ export function activityReports(
 /**
  * Retrieves alerts based on the following logic:
  * One or both of these high level conditions are true -
- * manager - approvingManagerId matches and report calculatedStatus is 'submitted'.
+ * manager - assigned to approve and report is 'submitted' or 'needs_action'.
  * specialist - author id or one of the collaborator's id matches and calculatedStatus is not
- * 'approved' or 'submitted'.
+ * 'approved'.
  * @param {*} userId
  */
 export function activityReportAlerts(userId, {
@@ -393,17 +409,17 @@ export function activityReportAlerts(userId, {
       [Op.or]: [
         {
           [Op.or]: [
-            { status: REPORT_STATUSES.SUBMITTED },
-            { status: REPORT_STATUSES.NEEDS_ACTION },
+            { calculatedStatus: REPORT_STATUSES.SUBMITTED },
+            { calculatedStatus: REPORT_STATUSES.NEEDS_ACTION },
           ],
-          approvingManagerId: userId,
+          '$approvers.userId$': userId,
         },
         {
           [Op.and]: [
             {
               [Op.and]: [
                 {
-                  status: { [Op.ne]: REPORT_STATUSES.APPROVED },
+                  calculatedStatus: { [Op.ne]: REPORT_STATUSES.APPROVED },
                 },
               ],
             },
@@ -419,10 +435,9 @@ export function activityReportAlerts(userId, {
       'id',
       'displayId',
       'startDate',
-      'status',
+      'calculatedStatus',
       'regionId',
       'userId',
-      'approvingManagerId',
       sequelize.literal(
         '(SELECT name as authorName FROM "Users" WHERE "Users"."id" = "ActivityReport"."userId")',
       ),
@@ -476,6 +491,18 @@ export function activityReportAlerts(userId, {
         as: 'collaborators',
         duplicating: true,
         through: { attributes: [] },
+      },
+      {
+        model: ActivityReportApprover,
+        attributes: ['id', 'userId', 'status', 'note'],
+        as: 'approvers',
+        required: false,
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name', 'role', 'fullName'],
+          },
+        ],
       },
     ],
     order: orderReportsBy(sortBy, sortDir),
@@ -562,6 +589,7 @@ export async function setStatus(report, status) {
   const updatedReport = await report.update({ status }, {
     fields: ['submissionStatus'],
   });
+  return updatedReport;
 }
 
 /*
@@ -674,6 +702,18 @@ async function getDownloadableActivityReports(where) {
           as: 'granteeNextSteps',
           required: false,
         },
+        {
+          model: ActivityReportApprover,
+          attributes: ['id', 'userId', 'status', 'note'],
+          as: 'approvers',
+          required: false,
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'name', 'role', 'fullName'],
+            },
+          ],
+        },
       ],
       distinct: true,
       order: [['id', 'DESC']],
@@ -705,7 +745,7 @@ export async function getAllDownloadableActivityReportAlerts(userId, filters) {
           { calculatedStatus: REPORT_STATUSES.SUBMITTED },
           { calculatedStatus: REPORT_STATUSES.NEEDS_ACTION },
         ],
-        approvingManagerId: userId,
+        '$approvers.userId$': userId,
       },
       {
         [Op.and]: [

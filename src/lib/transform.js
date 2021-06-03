@@ -18,7 +18,7 @@ function transformSimpleValue(instance, field) {
 /*
  * Generates a function that can transform values of a related model
  * @param {string} field The field of the related model
- * @param {string} key The key on the related model to transform
+ * @param {string} prop The key on the related model to transform
  * @returns {function} A function that will perform the transformation
  */
 function transformRelatedModel(field, prop) {
@@ -119,7 +119,7 @@ async function transformGoalsAndObjectives(report) {
 const arTransformers = [
   'displayId',
   transformRelatedModel('author', 'name'),
-  transformRelatedModel('approvingManager', 'name'),
+  transformRelatedModel('approvers', 'name'),
   transformRelatedModel('lastUpdatedBy', 'name'),
   'requester',
   transformRelatedModel('collaborators', 'name'),
@@ -145,7 +145,6 @@ const arTransformers = [
   transformRelatedModel('granteeNextSteps', 'note'),
   transformRelatedModel('specialistNextSteps', 'note'),
   'context',
-  'managerNotes',
   'additionalNotes',
   'lastSaved',
 ];

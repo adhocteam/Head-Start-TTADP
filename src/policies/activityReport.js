@@ -45,14 +45,13 @@ export default class ActivityReport {
   }
 
   canGet() {
-    const { calculatedStatus } = this.activityReport;
     const canReadUnapproved = this.isAuthor() || this.isCollaborator() || this.isApprovingManager();
 
     if (canReadUnapproved) {
       return canReadUnapproved;
     }
 
-    if (calculatedStatus === REPORT_STATUSES.APPROVED) {
+    if (this.activityReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
       return this.canReadInRegion();
     }
 
@@ -102,11 +101,11 @@ export default class ActivityReport {
       });
     }
 
-    return this.activityReport.oldApprovingManagerId === this.user.id;
+    return false;
   }
 
   reportHasEditableStatus() {
-    return this.activityReport.calculatedStatus === REPORT_STATUSES.DRAFT
+    return this.activityReport.submissionStatus === REPORT_STATUSES.DRAFT
       || this.activityReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION;
   }
 }

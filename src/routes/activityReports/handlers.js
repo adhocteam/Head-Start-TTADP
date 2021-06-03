@@ -398,7 +398,7 @@ export async function createReport(req, res) {
       return;
     }
     const userId = parseInt(req.session.userId, 10);
-    newReport.status = REPORT_STATUSES.DRAFT;
+    newReport.submissionStatus = REPORT_STATUSES.DRAFT;
     newReport.userId = userId;
     newReport.lastUpdatedById = userId;
     const user = await userById(req.session.userId);

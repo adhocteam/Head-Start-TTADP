@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { sequelize } from '../../models';
 
-export function withStatus(statuses) {
+export function withCalculatedStatus(statuses) {
   return sequelize.where(
     sequelize.cast(sequelize.col('"ActivityReport".calculatedStatus'), 'text'),
     {
@@ -10,7 +10,7 @@ export function withStatus(statuses) {
   );
 }
 
-export function withoutStatus(statuses) {
+export function withoutCalculatedStatus(statuses) {
   return sequelize.where(
     sequelize.cast(sequelize.col('"ActivityReport".calculatedStatus'), 'text'),
     {
