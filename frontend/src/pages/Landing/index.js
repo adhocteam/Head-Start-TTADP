@@ -505,7 +505,7 @@ function Landing() {
               </Grid>
             </Grid>
             <Grid row gap className="smart-hub--overview">
-              <Grid col={8} className="smart-hub--overview-padding1">
+              <Grid col={10}>
                 <Overview
                   filters={filters}
                   region={appliedRegion}

@@ -42,6 +42,7 @@ const styles = {
     paddingBottom: '4px',
     whiteSpace: 'nowrap',
     color: 'white',
+    width: '120px',
   }),
   indicatorSeparator: () => ({ display: 'none' }),
   menu: (provided) => ({
