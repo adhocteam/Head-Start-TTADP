@@ -465,25 +465,25 @@ function Landing() {
         {({ user }) => (
           <>
             {showAlert && message && (
-              <Alert
-                type="success"
-                role="alert"
-                noIcon
-                cta={(
-                  <Button
-                    role="button"
-                    unstyled
-                    aria-label="dismiss alert"
-                    onClick={() => updateShowAlert(false)}
-                  >
-                    <span className="fa-sm">
-                      <FontAwesomeIcon color="black" icon={faTimesCircle} />
-                    </span>
-                  </Button>
-                )}
-              >
-                {msg}
-              </Alert>
+            <Alert
+              type="success"
+              role="alert"
+              noIcon
+              cta={(
+                <Button
+                  role="button"
+                  unstyled
+                  aria-label="dismiss alert"
+                  onClick={() => updateShowAlert(false)}
+                >
+                  <span className="fa-sm margin-right-2">
+                    <FontAwesomeIcon color="black" icon={faTimesCircle} />
+                  </span>
+                </Button>
+              )}
+            >
+              {msg}
+            </Alert>
             )}
             <Grid row gap>
               <Grid>
