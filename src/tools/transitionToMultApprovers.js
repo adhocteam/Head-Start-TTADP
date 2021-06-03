@@ -5,6 +5,10 @@ import { auditLogger } from '../logger';
 import { ActivityReport, ActivityReportApprover } from '../models';
 
 const transitionToMultApprovers = async () => {
+  //
+  // Record old 'single approver' records in new ActivityReportApprovers table.
+  //
+
   const reviewedReports = await ActivityReport.findAll({
     raw: true,
     attributes: [
@@ -34,15 +38,41 @@ const transitionToMultApprovers = async () => {
   });
 
   const approvals = reviewedReports.concat(submittedReports);
-  auditLogger.info(`Found ${approvals.length} approvals to create.`);
+  auditLogger.info(`Found ${approvals.length} approval(s) to create.`);
 
   const createdApprovals = await ActivityReportApprover.bulkCreate(
     approvals,
     { individualHooks: true },
   );
-  auditLogger.info(`Created ${createdApprovals.length} approvals.`);
+  auditLogger.info(`Created ${createdApprovals.length} approval(s).`);
 
-  return createdApprovals;
+  //
+  // For reports that weren't submitted yet, copy submissionStatus to calculatedStatus
+  // so FE can use just calculatedStatus as overall status value.
+  //
+
+  const draftReports = await ActivityReport.update(
+    { calculatedStatus: REPORT_STATUSES.DRAFT},
+    {
+      where: { submissionStatus: REPORT_STATUSES.DRAFT },
+      hooks: false,
+      silent: true,
+      returning: true
+    },
+  )
+  auditLogger.info(`Updated calculatedStatus of ${draftReports[0]} draft report(s).`);
+
+  const deletedReports = await ActivityReport.update(
+    { calculatedStatus: REPORT_STATUSES.DELETED},
+    {
+      where: { submissionStatus: REPORT_STATUSES.DELETED },
+      hooks: false,
+      silent: true,
+      returning: true,
+    },
+  )
+  auditLogger.info(`Updated calculatedStatus of ${deletedReports[0]} deleted report(s).`);
+
 };
 
 export default transitionToMultApprovers;

@@ -11,6 +11,13 @@ function formatDate(fieldName) {
   return null;
 }
 
+function copySubmissionStatus(instance) {
+  if (instance.submissionStatus === REPORT_STATUSES.DRAFT ||
+    instance.submissionStatus === REPORT_STATUSES.DELETED) {
+    instance.calculatedStatus = instace.submissionStatus
+  }
+}
+
 export default (sequelize, DataTypes) => {
   class ActivityReport extends Model {
     static associate(models) {
@@ -244,6 +251,14 @@ export default (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'ActivityReport',
+    hooks: {
+      afterCreate: (instance, options) => {
+        copySubmissionStatus(instance)
+      },
+      afterUpdate: (instance, options) => {
+        copySubmissionStatus(instance)
+      }
+    }
   });
   return ActivityReport;
 };

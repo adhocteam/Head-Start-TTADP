@@ -40,6 +40,11 @@ const report = {
   ttaType: ['type'],
 };
 
+const deletedReport = {
+  ...report,
+  submissionStatus: REPORT_STATUSES.DELETED,
+};
+
 const draftReport = {
   ...report,
   submissionStatus: REPORT_STATUSES.DRAFT,
@@ -71,7 +76,7 @@ describe('Transition to multiple approvers', () => {
     await User.create(manager);
 
     await ActivityReport.bulkCreate([
-      draftReport, submittedReport, needsActionReport, approvedReport,
+      deletedReport, draftReport, submittedReport, needsActionReport, approvedReport,
     ]);
 
     await transitionToMultApprovers();
@@ -79,6 +84,15 @@ describe('Transition to multiple approvers', () => {
 
   afterAll(async () => {
     await db.sequelize.close();
+  });
+
+  it('updated the calculatedStatus of draft and deleted reports', async () => {
+    const draft = await ActivityReport.findAll({ where: { submissionStatus: REPORT_STATUSES.DRAFT }})
+    expect(draft.length).toBe(1);
+    expect(draft[0].calculatedStatus).toEqual(REPORT_STATUSES.DRAFT)
+    const deleted = await ActivityReport.findAll({ where: { submissionStatus: REPORT_STATUSES.DELETED }})
+    expect(deleted.length).toBe(1);
+    expect(deleted[0].calculatedStatus).toEqual(REPORT_STATUSES.DELETED)
   });
 
   it('created submitted approver', async () => {
