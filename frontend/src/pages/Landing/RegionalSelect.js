@@ -7,7 +7,6 @@ import { Button } from '@trussworks/react-uswds';
 import 'uswds/dist/css/uswds.css';
 import '@trussworks/react-uswds/lib/index.css';
 import './index.css';
-import './RegionalSelect.css';
 
 import triangleDown from '../../images/triange_down.png';
 import check from '../../images/check.svg';

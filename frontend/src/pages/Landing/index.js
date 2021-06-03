@@ -598,7 +598,7 @@ function Landing() {
               <div className="usa-table-container--scrollable">
                 <Table className="usa-table usa-table--borderless usa-table--striped">
                   <caption>
-                    Activity reports
+                    { `Region ${appliedRegion} Activity reports`}
                     <p id="arTblDesc">with sorting and pagination</p>
                   </caption>
                   <thead>
