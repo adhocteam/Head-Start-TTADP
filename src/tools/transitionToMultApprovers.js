@@ -52,27 +52,26 @@ const transitionToMultApprovers = async () => {
   //
 
   const draftReports = await ActivityReport.update(
-    { calculatedStatus: REPORT_STATUSES.DRAFT},
+    { calculatedStatus: REPORT_STATUSES.DRAFT },
     {
       where: { submissionStatus: REPORT_STATUSES.DRAFT },
       hooks: false,
       silent: true,
-      returning: true
+      returning: true,
     },
-  )
+  );
   auditLogger.info(`Updated calculatedStatus of ${draftReports[0]} draft report(s).`);
 
   const deletedReports = await ActivityReport.update(
-    { calculatedStatus: REPORT_STATUSES.DELETED},
+    { calculatedStatus: REPORT_STATUSES.DELETED },
     {
       where: { submissionStatus: REPORT_STATUSES.DELETED },
       hooks: false,
       silent: true,
       returning: true,
     },
-  )
+  );
   auditLogger.info(`Updated calculatedStatus of ${deletedReports[0]} deleted report(s).`);
-
 };
 
 export default transitionToMultApprovers;

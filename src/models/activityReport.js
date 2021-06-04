@@ -11,10 +11,18 @@ function formatDate(fieldName) {
   return null;
 }
 
-function copySubmissionStatus(instance) {
-  if (instance.submissionStatus === REPORT_STATUSES.DRAFT ||
-    instance.submissionStatus === REPORT_STATUSES.DELETED) {
-    instance.calculatedStatus = instace.submissionStatus
+/**
+ * Helper function called by AR model hooks.
+ * calculatedStatus is updated to 'submitted', 'needs_review', and 'approved'
+ * based on hooks on the ActivityReportApprovers. Before submission though,
+ * we want calculatedStatus to function like submissionStatus so developers
+ * only have to check calculatedStatus to determine overall report status.
+ */
+function copyStatus(report) {
+  const { submissionStatus } = report;
+  if (submissionStatus === REPORT_STATUSES.DRAFT
+    || submissionStatus === REPORT_STATUSES.DELETED) {
+    report.calculatedStatus = submissionStatus;
   }
 }
 
@@ -252,13 +260,13 @@ export default (sequelize, DataTypes) => {
     sequelize,
     modelName: 'ActivityReport',
     hooks: {
-      afterCreate: (instance, options) => {
-        copySubmissionStatus(instance)
+      beforeCreate: (report) => {
+        copyStatus(report);
       },
-      afterUpdate: (instance, options) => {
-        copySubmissionStatus(instance)
-      }
-    }
+      beforeUpdate: (report) => {
+        copyStatus(report);
+      },
+    },
   });
   return ActivityReport;
 };

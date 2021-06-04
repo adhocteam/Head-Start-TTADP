@@ -105,6 +105,8 @@ describe('Activity Reports DB service', () => {
       const report = await ActivityReport.create(reportObject);
       const newReport = await createOrUpdate({ ECLKCResourcesUsed: [{ value: 'updated' }] }, report);
       expect(newReport.ECLKCResourcesUsed).toEqual(['updated']);
+      // Check afterUpdate copySubmissionStatus hook
+      expect(newReport.calculatedStatus).toEqual(REPORT_STATUSES.DRAFT);
     });
 
     it('creates a new report', async () => {
@@ -113,6 +115,8 @@ describe('Activity Reports DB service', () => {
       const endARCount = await ActivityReport.findAll({ where: { userId: mockUser.id } });
       expect(endARCount.length - beginningARCount.length).toBe(1);
       expect(report.activityRecipients[0].grant.id).toBe(GRANTEE_ID);
+      // Check afterCreate copySubmissionStatus hook
+      expect(report.calculatedStatus).toEqual(REPORT_STATUSES.DRAFT);
     });
 
     it('creates a new report with non-grantee recipient', async () => {

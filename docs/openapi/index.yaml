@@ -142,19 +142,12 @@ components:
               type: string
             4:
               type: string
-        submissionStatus:
-          type: string
-          enum: ['draft', 'submitted', 'deleted']
-          description: |
-            Submission status of the report. Field formerly called "status".
-            Reports submitted before multiple approvers feature was available
-            can have value of 'needs_action' or 'approved'.
         calculatedStatus:
           type: string
-          enum: ['draft', 'submitted', 'deleted', 'needs_action', 'approved']
+          enum: ['deleted', 'draft', 'submitted', 'needs_action', 'approved']
           description: |
             Current state of the report calculated from submissionStatus
-            and manager reviews. Virtual field- only returned as API response,
+            and manager reviews. Value is calculated by sequelize logic,
             not a valid request field.
         ttaType:
           type: array
@@ -317,7 +310,7 @@ components:
         user:
           $ref: '#/components/schemas/user'
         status:
-          description: The status of the approval
+          description: The judgement of the activity report by the approver
           type: string
           enum: ['approved', 'needs_action', null]
         note:
@@ -409,7 +402,7 @@ components:
       in: query
       name: cacluatedStatus.in
       type: array
-      description: Include reports with a status that partial match value
+      description: Include reports with a calculatedStatus that partial match value
       collectionFormat: multi
       items:
         type: string
@@ -417,7 +410,7 @@ components:
       in: query
       name: cacluatedStatus.nin
       type: array
-      description: Include reports with a status that does not partial match value
+      description: Include reports with a calculatedStatus that does not partial match value
       collectionFormat: multi
       items:
         type: string

@@ -83,7 +83,6 @@ module.exports = (sequelize, DataTypes) => {
 
         report.calculatedStatus = calculatedStatus;
         await report.save();
-        await report.reload();
       },
     },
     sequelize,
