@@ -313,24 +313,24 @@ describe('Activity Reports DB service', () => {
       });
       await ActivityReport.create({
         ...submittedReport,
-        submissionStatus: REPORT_STATUSES.APPROVED,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
         userId: mockUserTwo.id,
         topics: topicsOne,
       });
       await createOrUpdate({
         ...submittedReport,
-        submissionStatus: REPORT_STATUSES.APPROVED,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
         collaborators: [{ id: mockUser.id }],
       });
       await ActivityReport.create({
         ...submittedReport,
-        submissionStatus: REPORT_STATUSES.APPROVED,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
         regionId: 2,
       });
       const report = await ActivityReport.create({
         ...submittedReport,
         activityRecipients: [{ grantId: firstGrant.id }],
-        submissionStatus: REPORT_STATUSES.APPROVED,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
         topics: topicsTwo,
       });
       await ActivityRecipient.create({
@@ -339,7 +339,7 @@ describe('Activity Reports DB service', () => {
       });
       latestReport = await ActivityReport.create({
         ...submittedReport,
-        submissionStatus: REPORT_STATUSES.APPROVED,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
         updatedAt: '1900-01-01T12:00:00Z',
       });
     });
