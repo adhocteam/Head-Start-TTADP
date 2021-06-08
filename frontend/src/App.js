@@ -115,7 +115,7 @@ function App() {
           exact
           path="/dashboard"
           render={()=> (         
-            <Dashboard />
+            <Dashboard user={user} />
           )}
         />
         <Route

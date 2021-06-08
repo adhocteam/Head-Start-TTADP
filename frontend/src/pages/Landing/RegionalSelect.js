@@ -41,6 +41,7 @@ const styles = {
     paddingBottom: '4px',
     whiteSpace: 'nowrap',
     color: 'white',
+    minWidth: '200px',
     width: '120px',
   }),
   indicatorSeparator: () => ({ display: 'none' }),
@@ -81,10 +82,11 @@ function RegionalSelect(props) {
 
   const CustomOption = (props1) => {
     const {
-      data, innerRef, innerProps, isSelected,
+      data,  innerProps, isSelected,
     } = props1;
+    
     return data.custom ? (
-      <div ref={innerRef} {...innerProps}>
+      <div  {...innerProps}>
         <Button
           type="button"
           className="float-left margin-2 smart-hub--filter-button"
@@ -119,7 +121,7 @@ function RegionalSelect(props) {
   CustomOption.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     data: PropTypes.object.isRequired,
-    innerRef: PropTypes.string.isRequired,
+    //innerRef: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     innerProps: PropTypes.object.isRequired,
   };

@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink as Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faThLarge } from '@fortawesome/free-solid-svg-icons';
 
 import './SiteNav.css';
 
@@ -66,9 +66,9 @@ const SiteNav = ({
                     to="/dashboard"
                   >
                     <span className="padding-right-105">
-                      <FontAwesomeIcon color="white" icon={faChartBar} />
+                      {/* todo - get proper icon */}
+                      <FontAwesomeIcon color="white" icon={faThLarge} />
                     </span>
-                    {/* todo - get right fa icon */}
                       TTA Dashboard                  
                     </NavLink>
                 </li>
