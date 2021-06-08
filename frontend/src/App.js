@@ -124,8 +124,6 @@ function App() {
             <ActivityReport location={location} match={match} user={user} />
           )}
         />
-<<<<<<< HEAD
-=======
         {enableWidgets && (
           <Route
             path="/widgets"
@@ -134,7 +132,6 @@ function App() {
             )}
           />
         )}
->>>>>>> kw-overview-widget
         {admin && (
           <Route
             path="/admin"
