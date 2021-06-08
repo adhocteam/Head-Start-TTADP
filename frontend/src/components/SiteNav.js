@@ -63,6 +63,17 @@ const SiteNav = ({
               <ul className="add-list-reset">
                 <li>
                   <NavLink
+                    to="/dashboard"
+                  >
+                    <span className="padding-right-105">
+                      <FontAwesomeIcon color="white" icon={faChartBar} />
+                    </span>
+                    {/* todo - get right fa icon */}
+                      TTA Dashboard                  
+                    </NavLink>
+                </li>
+                <li>
+                  <NavLink
                     to="/activity-reports"
                   >
                     <span className="padding-right-105">
