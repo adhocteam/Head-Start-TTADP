@@ -1,4 +1,5 @@
 import join from 'url-join';
+import { allRegionsUserHasPermissionTo } from '../permissions';
 
 const getReportsDownloadURL = (reportIds) => {
   const activityReportUrl = join('/', 'api', 'activity-reports');
@@ -17,9 +18,11 @@ const getAllAlertsDownloadURL = (filterQuery) => {
   return join('/', 'api', 'activity-reports', 'alerts', `download-all${query}`);
 };
 
+
 export {
   getReportsDownloadURL as default,
   getReportsDownloadURL,
   getAllReportsDownloadURL,
   getAllAlertsDownloadURL,
+
 };

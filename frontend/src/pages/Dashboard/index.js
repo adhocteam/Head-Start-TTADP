@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { Grid } from '@trussworks/react-uswds';
 import { Helmet } from 'react-helmet';
 import { v4 as uuidv4 } from 'uuid';
-
 import RegionalSelect from '../Landing/RegionalSelect';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 
-import { allRegionsUserHasPermissionTo } from '../../permissions';
+import { allRegionsUserHasPermissionTo, getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
 function Dashboard( props ) {
@@ -49,13 +48,6 @@ function Dashboard( props ) {
         
     },[ appliedRegion, dateRange ]);
 
-
-    // TODO - this is shared between here and ..Landing/index.js - should be consolidated to one file
-    const getUserRegions = (user) => {
-        const regions = allRegionsUserHasPermissionTo(user);
-        if (appliedRegion === 0) updateAppliedRegion(regions[0]);
-        return regions;
-    };
 
     const onApplyRegion = (region) => {
         const regionId = region ? region.value : appliedRegion;

@@ -5,18 +5,11 @@ import { Button } from '@trussworks/react-uswds';
 
 import 'uswds/dist/css/uswds.css';
 import '@trussworks/react-uswds/lib/index.css';
-// import './index.css';
 
+import DropdownIndicator from '../../../components/DropDownIndicator';
 import { DATE_OPTIONS } from '../constants';
-import triangleDown from '../../../images/triange_down.png';
-import check from '../../../images/check.svg';
 
-// todo - move this out into it's own component, same code used elsewhere
-const DropdownIndicator = (props) => (
-  <components.DropdownIndicator {...props}>
-    <img alt="" style={{ width: '22px' }} src={triangleDown} />
-  </components.DropdownIndicator>
-);
+import check from '../../../images/check.svg';
 
 export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
 
@@ -125,15 +118,29 @@ function DateSelect(props) {
 
   const options = [...DATE_OPTIONS, {custom: true}];
 
-  const onKeyDown = (e) => {
-    if(e.keyCode === 13) {      
+  const onKeyDown = (e) => {  
+
+    if(e.keyCode === 13 || e.keyCode == 40) {      
       innerRef.current.focus()
       setMenuIsOpen(true);
+    }
+
+    if( e.keyCode == 40 ) {
+      if( !selectedItem ) {
+
+
+        // setSelectedItem( options ); 
+
+        console.log(options);
+      }
     }
 
     if( e.keyCode === 27 ) {
       setMenuIsOpen(false);
     }
+
+
+
   }
 
   const onMenuOpen = () => {
@@ -159,6 +166,8 @@ function DateSelect(props) {
         placeholder="Select Date Range"
         closeMenuOnSelect={false}
         maxMenuHeight={600}
+        tabSelectsValue={true}
+        tabIndex="0"
         ref={innerRef}
       />
     </div>

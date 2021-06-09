@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import DateRangePicker from '../../../components/DateRangePicker';
 import { formatDateRange, CUSTOM_DATE_RANGE } from '../constants';
 
@@ -46,6 +47,10 @@ function DateRangeSelect(props) {
     ) 
 }
 
-//todo - proptypes
+DateRangeSelect.propTypes = {
+    selectedDateRangeOption: PropTypes.number, 
+    dateRange: PropTypes.string, 
+    updateDateRange: PropTypes.func
+};
 
 export default DateRangeSelect;

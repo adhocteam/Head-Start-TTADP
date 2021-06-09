@@ -103,8 +103,16 @@ const hasReadWrite = (user) => {
   ) !== undefined;
 };
 
+const getUserRegions = (user) => {
+  const regions = allRegionsUserHasPermissionTo(user);
+  if (appliedRegion === 0) updateAppliedRegion(regions[0]);
+  return regions;
+};
+
+
 export {
   isAdmin as default,
   getRegionWithReadWrite,
   hasReadWrite,
+  getUserRegions
 };

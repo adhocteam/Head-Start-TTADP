@@ -1,6 +1,7 @@
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
 import { GOVERNMENT_HOSTNAME_EXTENSION, REPORT_STATUSES } from './Constants';
+import { allRegionsUserHasPermissionTo } from './permissions';
 
 /**
  * Given a potential url, verify that it is a valid url with http(s) scheme.
@@ -58,3 +59,5 @@ export const getEditorState = (name) => {
   const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
   return EditorState.createWithContent(contentState);
 };
+
+

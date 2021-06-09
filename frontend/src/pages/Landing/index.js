@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { Helmet } from 'react-helmet';
 import { Link, useHistory } from 'react-router-dom';
-
 import Pagination from 'react-js-pagination';
 
 import UserContext from '../../UserContext';
@@ -21,7 +20,7 @@ import 'uswds/dist/css/uswds.css';
 import '@trussworks/react-uswds/lib/index.css';
 import './index.css';
 import MyAlerts from './MyAlerts';
-import { hasReadWrite, allRegionsUserHasPermissionTo } from '../../permissions';
+import { hasReadWrite, allRegionsUserHasPermissionTo, getUserRegions } from '../../permissions';
 import { REPORTS_PER_PAGE, ALERTS_PER_PAGE } from '../../Constants';
 import Filter, { filtersToQueryString } from './Filter';
 import ReportMenu from './ReportMenu';
@@ -272,12 +271,6 @@ function Landing() {
     setAlertsActivePage(1);
     setAlertsOffset(0);
     setAlertsSortConfig({ sortBy, direction });
-  };
-
-  const getUserRegions = (user) => {
-    const regions = allRegionsUserHasPermissionTo(user);
-    if (appliedRegion === 0) updateAppliedRegion(regions[0]);
-    return regions;
   };
 
   const onApplyRegion = (region) => {
