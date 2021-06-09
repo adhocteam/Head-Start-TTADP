@@ -6,7 +6,7 @@ import { DateRangePicker as DateRange, isInclusivelyBeforeDay } from 'react-date
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
-import { DATE_FMT, EARLIEST_FILTER_DATE } from '../constants';
+import { DATE_FMT, EARLIEST_FILTER_DATE } from '../pages/Landing/constants';
 
 const phrases = {
   focusStartDate: 'Interact with the calendar and add the dates for your date range',
@@ -15,7 +15,7 @@ const phrases = {
 };
 
 function DateRangePicker({
-  query, onUpdateFilter, id,
+  query, onUpdateFilter, id, classNames
 }) {
   const [focusedInput, updateFocused] = useState(null);
   const [opened, updateOpened] = useState(false);
@@ -38,8 +38,10 @@ function DateRangePicker({
   const startDateId = `${id}-start`;
   const endDateId = `${id}-end`;
 
+  const cssClasses = `ttahub-date-range-picker ${classNames.join(" ")}`;
+
   return (
-    <span id={id}>
+    <span id={id} className={cssClasses}>
       <DateRange
         small
         phrases={phrases}
@@ -82,6 +84,7 @@ DateRangePicker.propTypes = {
   query: PropTypes.string,
   onUpdateFilter: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
+  classNames: PropTypes.arrayOf(PropTypes.string)
 };
 
 DateRangePicker.defaultProps = {

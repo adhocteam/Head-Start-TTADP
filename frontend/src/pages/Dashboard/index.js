@@ -1,21 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Grid } from '@trussworks/react-uswds';
 import { Helmet } from 'react-helmet';
+import { v4 as uuidv4 } from 'uuid';
 
-// import Container from '../../components/Container';
 import RegionalSelect from '../Landing/RegionalSelect';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 
-import { hasReadWrite, allRegionsUserHasPermissionTo } from '../../permissions';
+import { allRegionsUserHasPermissionTo } from '../../permissions';
+import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
 function Dashboard( props ) {
 
-  const { user } = props;
+    const { user } = props;
  
-  const [appliedRegion, updateAppliedRegion] = useState(0);
-  const [appliedDateRange, updateAppliedDateRange ] = useState(0);
+    const [appliedRegion, updateAppliedRegion] = useState(0);
+    const [selectedDateRangeOption, updateSelectedDateRangeOption ] = useState(1);
+    const [dateRange, updateDateRange] = useState("");   
+    
+    /* 
+    *    the idea is that this filters variable, which roughly matches the implementation on the landing page, 
+    *    would be passed down into each visualization
+    */
+
+    const [filters, updateFilters] = useState([]);
+
+    useEffect(()=> {        
+        
+        // The number and nature of the filters is static, so we can just update them like so
+        const filters = [
+            {
+                id: uuidv4(), // note to self- is this just for unique keys/.map?
+                topic: 'region',
+                condition: 'Is equal to',
+                query: appliedRegion,
+            },
+            {
+                id: uuidv4(),
+                topic: 'dateRange',
+                condition: 'Is within',
+                query: dateRange,
+            }
+        ];
+
+        updateFilters(filters);
+        
+        
+    },[ appliedRegion, dateRange ]);
+
 
     // TODO - this is shared between here and ..Landing/index.js - should be consolidated to one file
     const getUserRegions = (user) => {
@@ -30,8 +63,13 @@ function Dashboard( props ) {
     };
 
     const onApplyDateRange = range => {       
-        const rangeId = range ? range.value : appliedDateRange;        
-        updateAppliedDateRange(rangeId);
+        const rangeId = range ? range.value : selectedDateRangeOption;        
+        updateSelectedDateRangeOption(rangeId);
+
+        if( selectedDateRangeOption !== CUSTOM_DATE_RANGE ) {
+            updateDateRange( formatDateRange(selectedDateRangeOption, { forDateTime: true}) );
+        }          
+
     }
 
     if( !user ) {
@@ -43,7 +81,7 @@ function Dashboard( props ) {
     const userRegions = getUserRegions(user);
 
   return (
-    <div className="smart-hub-tta-dashboard">
+    <div className="ttahub-dashboard">
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
            
                 <>                  
@@ -52,22 +90,25 @@ function Dashboard( props ) {
                         <Grid col="auto">
                             <h1 className="landing">Region {appliedRegion} TTA Activity Dashboard</h1>
                         </Grid>
-                        <div className="flex-fill display-flex flex-align-self-center flex-row">                            
+                        <div className="tthub-dashboard--filters flex-fill display-flex flex-align-center flex-align-self-center flex-row">                            
                             
                             {userRegions.length > 1
-                            && (
-                            <RegionalSelect
-                                
-                                regions={allRegionsUserHasPermissionTo(user)}
-                                onApply={onApplyRegion}
-                            />
+                                && (
+                                    <RegionalSelect                                
+                                        regions={allRegionsUserHasPermissionTo(user)}
+                                        onApply={onApplyRegion}
+                                    />
                             )}
 
                             <DateSelect                                 
                                 onApply={onApplyDateRange} 
                             />
 
-                            <DateRangeSelect appliedDateRange={appliedDateRange} />
+                            <DateRangeSelect 
+                                dateRange={dateRange}
+                                updateDateRange={updateDateRange}
+                                selectedDateRangeOption={selectedDateRangeOption}                                
+                            />
                             
                         </div>                   
 

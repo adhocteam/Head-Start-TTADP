@@ -82,11 +82,11 @@ function RegionalSelect(props) {
 
   const CustomOption = (props1) => {
     const {
-      data,  innerProps, isSelected,
+      data,  innerProps, isSelected, innerRef
     } = props1;
     
     return data.custom ? (
-      <div  {...innerProps}>
+      <div ref={innerRef}  {...innerProps}>
         <Button
           type="button"
           className="float-left margin-2 smart-hub--filter-button"

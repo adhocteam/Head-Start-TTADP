@@ -1,23 +1,51 @@
 import React from 'react';
-import {DATE_OPTIONS} from './DateSelect';
+import DateRangePicker from '../../../components/DateRangePicker';
+import { formatDateRange, CUSTOM_DATE_RANGE } from '../constants';
 
 function DateRangeSelect(props) {
 
-    const { appliedDateRange } = props;
+    const { selectedDateRangeOption, dateRange, updateDateRange } = props;      
 
-    // todo - probably better to store this value as a const as well, and up a level
-    const isCustom = appliedDateRange === DATE_OPTIONS[1].value;
+    // just a check to see if the "custom date range" option is selected
+    const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
+
+    // handle updating the query for the page
+    const onUpdateFilter = (query, date) => {
+        updateDateRange(date);
+    }
+
     
-    // console.log(appliedDateRange);
-    //console.log(DATE_OPTIONS)
+
+    /**
+     * if custom range is selected, render the twin date pickers
+     */
 
     if( isCustom ) {
-         return (<p>Date PICKERS!</p>)
+   
+         return (            
+            <DateRangePicker 
+                id="mainDateSelect"
+                query={dateRange}
+                onUpdateFilter={onUpdateFilter}
+                classNames={['display-flex']}                
+            />
+         
+        )
     }
-    
-    return(
-        <span>10/01/2020 to 03/01/2021</span>
+
+    /**
+     * 
+     * otherwise format the date range for display
+     */
+
+    const dateInExpectedFormat = formatDateRange(selectedDateRangeOption, { forDateTime: true } ); 
+    const prettyPrintedQuery = formatDateRange( selectedDateRangeOption, { withSpaces: true } );
+
+    return(        
+        <time className="display-flex flex-align-center" dateTime={dateInExpectedFormat}>{prettyPrintedQuery}</time>
     ) 
 }
+
+//todo - proptypes
 
 export default DateRangeSelect;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Select, { components } from 'react-select';
 import PropTypes from 'prop-types';
 import { Button } from '@trussworks/react-uswds';
@@ -7,6 +7,7 @@ import 'uswds/dist/css/uswds.css';
 import '@trussworks/react-uswds/lib/index.css';
 // import './index.css';
 
+import { DATE_OPTIONS } from '../constants';
 import triangleDown from '../../../images/triange_down.png';
 import check from '../../../images/check.svg';
 
@@ -17,19 +18,6 @@ const DropdownIndicator = (props) => (
   </components.DropdownIndicator>
 );
 
-const DATE_OPTIONS = [
-  {
-    label: 'Last 30 Days',
-    value: 1,
-  },
-  {
-    label: 'Custom Date Range',
-    value: 2,
-  }
-];
-
-const Placeholder = (props) => <components.Placeholder {...props} />;
-
 export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
 
 function DateSelect(props) {
@@ -39,20 +27,31 @@ function DateSelect(props) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
 
+  const innerRef = useRef(null);
+
   const CustomOption = (props) => {
     const {
-      data, innerProps, isSelected,
+      data, innerProps, isSelected, innerRef
     } = props;
 
+    const onButtonKeyPress = (e) => {
+      if( e.keyCode === 13 ) {
+        closeMenu();
+      }     
+    }
+
+    const closeMenu = () => {
+      onApply(selectedItem);
+      setMenuIsOpen(false);
+    }
+
     return data.custom ? (
-      <div {...innerProps}>
+      <div ref={innerRef} {...innerProps}>
         <Button
           type="button"
           className="float-left margin-2 smart-hub--filter-button"
-          onClick={() => {
-            onApply(selectedItem);
-            setMenuIsOpen(false);
-          }}
+          onClick={closeMenu}
+          onKeyPress={onButtonKeyPress}          
         >
           Apply
         </Button>
@@ -79,7 +78,7 @@ function DateSelect(props) {
   const styles = {
     container: (provided, state) => {
       // To match the focus indicator provided by uswds
-      const outline = state.isFocused ? '0.25rem solid #2491ff;' : '';
+      const outline = state.isFocused ? '0.25rem solid purple;' : '';
       return {
         ...provided,
         outline,
@@ -126,13 +125,28 @@ function DateSelect(props) {
 
   const options = [...DATE_OPTIONS, {custom: true}];
 
+  const onKeyDown = (e) => {
+    if(e.keyCode === 13) {      
+      innerRef.current.focus()
+      setMenuIsOpen(true);
+    }
+
+    if( e.keyCode === 27 ) {
+      setMenuIsOpen(false);
+    }
+  }
+
+  const onMenuOpen = () => {
+      setMenuIsOpen(true);
+  }
+
   return (
-    <div className="margin-x-1">
+    <div className="margin-x-1" tabIndex="0" onKeyDown={onKeyDown} aria-label="select date range">
       <Select
         options={options}
         menuIsOpen={menuIsOpen}
         onChange={(value) => (value && value.value ? setSelectedItem(value) : null )}
-        onMenuOpen={() => setMenuIsOpen(true)}
+        onMenuOpen={onMenuOpen}       
         onBlur={() => setMenuIsOpen(false)}
         name="Select Date Range"
         defaultValue={options[0]}
@@ -141,10 +155,11 @@ function DateSelect(props) {
           label: selectedItem ? selectedItem.label : options[0].label,
         }}
         styles={styles}
-        components={{ Placeholder, DropdownIndicator, Option: CustomOption }}
+        components={{ DropdownIndicator, Option: CustomOption }}
         placeholder="Select Date Range"
         closeMenuOnSelect={false}
         maxMenuHeight={600}
+        ref={innerRef}
       />
     </div>
   );
@@ -156,5 +171,4 @@ DateSelect.propTypes = {
 };
 
 
-export { DATE_OPTIONS };
 export default DateSelect;
