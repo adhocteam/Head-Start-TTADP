@@ -183,7 +183,7 @@
     "newrelic": "^7.0.1",
     "nodemailer": "^6.5.0",
     "pg": "^8.3.3",
-    "sequelize": "^5.22.3",
+    "sequelize": "^6.2.1",
     "sequelize-cli": "^6.2.0",
     "throng": "^5.0.0",
     "url-join": "^4.0.1",
