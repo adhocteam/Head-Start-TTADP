@@ -255,14 +255,9 @@ If your env variable is secret or the value is dependent on the deployment envir
 
 	You're all done! In sandbox, `process.env.SECRET_FRUIT` will be `"strawberry"`. In dev, `process.env.SECRET_FRUIT` will be `"dewberry"`.  🎉
 
+**Login to cloud.gov via Cloud Foundry CLI**
 
-**Interacting with a deployed database**
-
-Our project includes four deployed Postgres databases, one to interact with each application environment (sandbox, dev, staging, prod). For instructions on how to create and modify databases instances within the cloud.gov ecosystem see the [terraform/README.md](terraform/README.md).
-
-You can run psql commands directly against a deployed database by following these directions.
-
-1. Install Version 7 of the Cloud Foundry CLI tool
+1. Install Version 7 (not 6) of the Cloud Foundry CLI tool
 
     - On MacOS: `brew install cloudfoundry/tap/cf-cli@7`
     - On other platforms: [Download and install cf][cf-install]. Be sure to get version 7.x
@@ -272,21 +267,22 @@ You can run psql commands directly against a deployed database by following thes
     ```bash
     cf login -a api.fr.cloud.gov --sso
     # follow temporary authorization code prompts
+    # respond to command line prompt to choose appropriate organization and space
     ```
+
+**Interacting with a deployed database**
+
+Our project includes four deployed Postgres databases, one to interact with each application environment (sandbox, dev, staging, prod). For instructions on how to create and modify databases instances within the cloud.gov ecosystem see the [terraform/README.md](terraform/README.md).
+
+You can run psql commands directly against a deployed database by following these directions.
+
+1. Follow the "Login to cloud.gov via Cloud Foundry CLI" directions above.
 
 1. Install the cloud foundry plugin [cf-service-connect][cf-service-connect]
 
 	```bash
 	# Example install for macOS
 	cf install-plugin https://github.com/cloud-gov/cf-service-connect/releases/download/1.1.0/cf-service-connect-darwin-386
-	```
-
-1. Target the desired organization and space
-
-	```bash
-	cf target -o <org> -s <space>
-	# Example for sandbox
-	cf target -o hhs-acf-ohs-tta -s ttahub-sandbox
 	```
 
 1. Connect to the desired database
@@ -300,26 +296,23 @@ You can run psql commands directly against a deployed database by following thes
 	On success, your terminal prompt will change to match the `db_name` from the database instance credentials.
 	This indicates you are in an open psql session, the command-line interface to PostgreSQL.
 
-**Using Maintenance Mode**
+**Put the application into Maintenance Mode**
 
-if you need to put the application into maintenance mode, you can run the maintenance script located at `bin/maintenance`.
+1. Follow the "Login to cloud.gov via Cloud Foundry CLI" directions above.
 
-This script require that you have [Cloud Foundry's CLI v7](https://github.com/cloudfoundry/cli/wiki/V7-CLI-Installation-Guide) installed to run.
+1. Run the maintenance script located at `bin/maintenance`.
 
-The script takes two flags
-- \-m | \-\-maintenance\-mode controls whether the script takes the app into maintenance mode or out of it.
-  - Options are "on" or "off
-- \-e | \-\-environment controls which environment you are targeting.
-  - Options are "sandbox", "dev", "staging", and "prod"
+	The script takes two flags
+	- \-m | \-\-maintenance\-mode controls whether the script takes the app into maintenance mode or out of it.
+	  - Options are "on" or "off
+	- \-e | \-\-environment controls which environment you are targeting.
+	  - Options are "sandbox", "dev", "staging", and "prod"
 
-Ex. 
-```
-# Puts the dev environment into maintenance mode
-./bin/maintenance -e dev -m on
-```
-
-If you are not logged into the cf cli, it will ask you for an sso temporary password. You can get a temporary password at https://login.fr.cloud.gov/passcode.
-
+	Ex. 
+	```
+	# Puts the dev environment into maintenance mode
+	./bin/maintenance -e dev -m on
+	```
 
 <!-- Links -->
 
