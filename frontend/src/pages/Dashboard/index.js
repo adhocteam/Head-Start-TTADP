@@ -70,7 +70,10 @@ function Dashboard( props ) {
         );
     }
 
-    const userRegions = getUserRegions(user);
+  const regions = getUserRegions(user);
+    if (appliedRegion === 0) {
+      updateAppliedRegion(regions[0]);
+    }
 
   return (
     <div className="ttahub-dashboard">
@@ -84,10 +87,10 @@ function Dashboard( props ) {
                         </Grid>
                         <div className="tthub-dashboard--filters flex-fill display-flex flex-align-center flex-align-self-center flex-row">                            
                             
-                            {userRegions.length > 1
+                            {regions.length > 1
                                 && (
                                     <RegionalSelect                                
-                                        regions={allRegionsUserHasPermissionTo(user)}
+                                        regions={regions}
                                         onApply={onApplyRegion}
                                     />
                             )}

@@ -103,12 +103,17 @@ const hasReadWrite = (user) => {
   ) !== undefined;
 };
 
+/**
+ * 
+ * // probably makes sense to seperate this logic
+ * @param {object} user user object 
+ * @param {number} appliedRegion 
+ * @param {function} updateAppliedRegion 
+ * @returns 
+ */
 const getUserRegions = (user) => {
-  const regions = allRegionsUserHasPermissionTo(user);
-  if (appliedRegion === 0) updateAppliedRegion(regions[0]);
-  return regions;
+  return allRegionsUserHasPermissionTo(user);
 };
-
 
 export {
   isAdmin as default,

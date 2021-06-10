@@ -455,7 +455,12 @@ function Landing() {
         <title>Landing</title>
       </Helmet>
       <UserContext.Consumer>
-        {({ user }) => (
+        {({ user }) => {
+          
+          const regions = getUserRegions(user);
+          if (appliedRegion === 0) updateAppliedRegion(regions[0]);
+          
+          return (
           <>
             {showAlert && message && (
             <Alert
@@ -483,7 +488,7 @@ function Landing() {
                 <h1 className="landing">Activity Reports</h1>
               </Grid>
               <Grid col={2} className="flex-align-self-center">
-                {getUserRegions(user).length > 1
+                {regions.length > 1
                 && (
                 <RegionalSelect
                   regions={allRegionsUserHasPermissionTo(user)}
@@ -502,7 +507,7 @@ function Landing() {
                 <Overview
                   filters={filters}
                   region={appliedRegion}
-                  allRegions={getUserRegions(user)}
+                  allRegions={regions}
                 />
               </Grid>
             </Grid>
@@ -629,9 +634,10 @@ function Landing() {
             </Container>
           </>
         )}
-      </UserContext.Consumer>
+        }
+       </UserContext.Consumer>
     </>
-  );
-}
+    );
+  }
 
 export default Landing;

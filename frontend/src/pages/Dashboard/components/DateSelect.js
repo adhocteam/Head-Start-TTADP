@@ -1,15 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Select, { components } from 'react-select';
 import PropTypes from 'prop-types';
 import { Button } from '@trussworks/react-uswds';
-
-import 'uswds/dist/css/uswds.css';
-import '@trussworks/react-uswds/lib/index.css';
-
 import DropdownIndicator from '../../../components/DropDownIndicator';
 import { DATE_OPTIONS } from '../constants';
-
 import check from '../../../images/check.svg';
+import 'uswds/dist/css/uswds.css';
+import '@trussworks/react-uswds/lib/index.css';
 
 export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
 
@@ -20,7 +17,16 @@ function DateSelect(props) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
 
-  const innerRef = useRef(null);
+  const container = useRef(null);
+
+  useEffect(()=>{
+    if( container ) {
+      // console.log(innerRef.current.querySelectorAll('li'));
+      console.log(container.current.querySelector('a'));
+    }
+    
+  },[menuIsOpen]);
+
 
   const CustomOption = (props) => {
     const {
@@ -119,36 +125,24 @@ function DateSelect(props) {
   const options = [...DATE_OPTIONS, {custom: true}];
 
   const onKeyDown = (e) => {  
-
     if(e.keyCode === 13 || e.keyCode == 40) {      
-      innerRef.current.focus()
-      setMenuIsOpen(true);
-    }
-
-    if( e.keyCode == 40 ) {
-      if( !selectedItem ) {
-
-
-        // setSelectedItem( options ); 
-
-        console.log(options);
-      }
+      // innerRef.current.focus()
+      setMenuIsOpen(true); 
     }
 
     if( e.keyCode === 27 ) {
       setMenuIsOpen(false);
     }
 
-
-
   }
+
 
   const onMenuOpen = () => {
       setMenuIsOpen(true);
   }
 
   return (
-    <div className="margin-x-1" tabIndex="0" onKeyDown={onKeyDown} aria-label="select date range">
+    <div className="margin-x-1" tabIndex="0" onKeyDown={onKeyDown} aria-label="select date range" ref={container}>
       <Select
         options={options}
         menuIsOpen={menuIsOpen}
@@ -166,9 +160,7 @@ function DateSelect(props) {
         placeholder="Select Date Range"
         closeMenuOnSelect={false}
         maxMenuHeight={600}
-        tabSelectsValue={true}
-        tabIndex="0"
-        ref={innerRef}
+        tabSelectsValue={true}          
       />
     </div>
   );
