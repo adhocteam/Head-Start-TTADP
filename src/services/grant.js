@@ -47,7 +47,7 @@ export async function assignCDIGrant(grant, regionId, granteeId) {
     granteeId,
   }, {
     fields: ['regionId', 'granteeId'],
-    returning: true,
-  });
+    returning: true, // might need to change, both fields are fk, does that count as "part of model"?
+  }); // ref: https://sequelize.org/master/manual/upgrade-to-v6.html
   return updatedGrant;
 }
