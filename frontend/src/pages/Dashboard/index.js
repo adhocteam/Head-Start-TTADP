@@ -55,6 +55,7 @@ function Dashboard( props ) {
     };
 
     const onApplyDateRange = range => {       
+        console.log( range );
         const rangeId = range ? range.value : selectedDateRangeOption;        
         updateSelectedDateRangeOption(rangeId);
 
@@ -95,11 +96,11 @@ function Dashboard( props ) {
                                     />
                             )}
 
-                            <DateSelect                                 
+                            <DateRangeSelect                              
                                 onApply={onApplyDateRange} 
                             />
 
-                            <DateRangeSelect 
+                            <DateSelect 
                                 dateRange={dateRange}
                                 updateDateRange={updateDateRange}
                                 selectedDateRangeOption={selectedDateRangeOption}                                

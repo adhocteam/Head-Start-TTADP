@@ -1,56 +1,72 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import Select, { components } from 'react-select';
 import PropTypes from 'prop-types';
-import DateRangePicker from '../../../components/DateRangePicker';
-import { formatDateRange, CUSTOM_DATE_RANGE } from '../constants';
+import { Button } from '@trussworks/react-uswds';
+import DropdownIndicator from '../../../components/DropDownIndicator';
+import { DATE_OPTIONS } from '../constants';
+import check from '../../../images/check.svg';
+import triangleDown from '../../../images/triange_down.png';
+import 'uswds/dist/css/uswds.css';
+import '@trussworks/react-uswds/lib/index.css';
+import './DateRangeSelect.css';
 
-function DateRangeSelect(props) {
+export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
 
-    const { selectedDateRangeOption, dateRange, updateDateRange } = props;      
+export default function DateRangeSelect(props) {
 
-    // just a check to see if the "custom date range" option is selected
-    const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
+  const { onApply } = props;
 
-    // handle updating the query for the page
-    const onUpdateFilter = (query, date) => {
-        updateDateRange(date);
-    }
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(0);
 
-    
+  const onApplyClick = () => {
+    onApply(selectedItem);
+    setMenuIsOpen(false);
+  }
 
-    /**
-     * if custom range is selected, render the twin date pickers
-     */
+  /**
+   * Grab the label text from the DATE_OPTIONS constant
+   */
+  const buttonText = selectedItem ? selectedItem.label : "Select Date Range";
 
-    if( isCustom ) {
+  return (
+    <div className="margin-x-1">
+      <button 
+        onClick={setMenuIsOpen}
+        className="usa-button smart-hub--date-range-select-toggle-btn display-flex">
+          {buttonText}<img src={triangleDown} alt="" aria-hidden="true"  />
+        </button>
+      { menuIsOpen ?
+      <div className="smart-hub--date-range-select-menu">
+          
+          { DATE_OPTIONS.map( option => {                     
+            return (      
+              <button 
+                aria-pressed={ option === selectedItem}
+                className="smart-hub--date-range-select-range-button" 
+                key={option.value} 
+                data-value={option.value}
+                onClick={()=> {
+                  setSelectedItem( option );
+                }}>
+                  {option.label}
+
+                { option === selectedItem ? <img className="smart-hub--date-range-select-checkmark" src={check} alt="" aria-hidden="true" /> : null } 
+
+                </button>         
+            )
+          })}           
+
+          <button className="usa-button margin-2" onClick={onApplyClick}>Apply</button>
+        </div>
+      : null }
    
-         return (            
-            <DateRangePicker 
-                id="mainDateSelect"
-                query={dateRange}
-                onUpdateFilter={onUpdateFilter}
-                classNames={['display-flex']}                
-            />
-         
-        )
-    }
-
-    /**
-     * 
-     * otherwise format the date range for display
-     */
-
-    const dateInExpectedFormat = formatDateRange(selectedDateRangeOption, { forDateTime: true } ); 
-    const prettyPrintedQuery = formatDateRange( selectedDateRangeOption, { withSpaces: true } );
-
-    return(        
-        <time className="display-flex flex-align-center" dateTime={dateInExpectedFormat}>{prettyPrintedQuery}</time>
-    ) 
+    </div>
+  );
 }
 
 DateRangeSelect.propTypes = {
-    selectedDateRangeOption: PropTypes.number, 
-    dateRange: PropTypes.string, 
-    updateDateRange: PropTypes.func
+  onApply: PropTypes.func,
 };
 
-export default DateRangeSelect;
+
