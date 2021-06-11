@@ -7,7 +7,7 @@ import RegionalSelect from '../Landing/RegionalSelect';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 
-import { allRegionsUserHasPermissionTo, getUserRegions } from '../../permissions';
+import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
 function Dashboard( props ) {
@@ -17,7 +17,8 @@ function Dashboard( props ) {
     const [appliedRegion, updateAppliedRegion] = useState(0);
     const [selectedDateRangeOption, updateSelectedDateRangeOption ] = useState(1);
     const [dateRange, updateDateRange] = useState("");   
-    const focusedControl = useRef(null);
+    // const focusedControl = useRef(null);
+    const [gainFocus, setGainFocus] = useState(false);
     
     /* 
     *    the idea is that this filters variable, which roughly matches the implementation on the landing page, 
@@ -56,12 +57,14 @@ function Dashboard( props ) {
     };
 
     const onApplyDateRange = range => {       
-        console.log( range );
         const rangeId = range ? range.value : selectedDateRangeOption;        
         updateSelectedDateRangeOption(rangeId);
 
         if( selectedDateRangeOption !== CUSTOM_DATE_RANGE ) {
             updateDateRange( formatDateRange(selectedDateRangeOption, { forDateTime: true}) );
+
+            // set focus to DateRangePicker 1st input
+            setGainFocus(true);
         }          
 
     }
@@ -99,13 +102,14 @@ function Dashboard( props ) {
 
                             <DateRangeSelect                              
                                 onApply={onApplyDateRange} 
+                               
                             />
 
                             <DateSelect 
                                 dateRange={dateRange}
                                 updateDateRange={updateDateRange}
                                 selectedDateRangeOption={selectedDateRangeOption}                                
-                                focusedControl={focusedControl}
+                                gainFocus={gainFocus}                     
                             />
                             
                         </div>                   

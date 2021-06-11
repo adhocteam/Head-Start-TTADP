@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import DateRangePicker from '../../../components/DateRangePicker';
 import { formatDateRange, CUSTOM_DATE_RANGE } from '../constants';
 
 export default function DateSelect(props) {
 
-    const { selectedDateRangeOption, dateRange, updateDateRange, focusedControl } = props;      
+    const { selectedDateRangeOption, dateRange, updateDateRange, gainFocus } = props;      
 
     // just a check to see if the "custom date range" option is selected
     const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
@@ -14,12 +14,6 @@ export default function DateSelect(props) {
     const onUpdateFilter = (query, date) => {
         updateDateRange(date);
     }
-
-    useEffect( ()=> {
-        console.log('test')
-    }, [focusedControl])
-
-    
 
     /**
      * if custom range is selected, render the twin date pickers
@@ -33,7 +27,7 @@ export default function DateSelect(props) {
                 query={dateRange}
                 onUpdateFilter={onUpdateFilter}
                 classNames={['display-flex']}             
-                gainFocus={false}                
+                gainFocus={gainFocus}                
             />
          
         )
@@ -55,6 +49,12 @@ export default function DateSelect(props) {
 DateSelect.propTypes = {
     selectedDateRangeOption: PropTypes.number, 
     dateRange: PropTypes.string, 
-    updateDateRange: PropTypes.func
+    updateDateRange: PropTypes.func,
+    gainFocus: PropTypes.bool
 };
+
+DateSelect.defaultProps = {
+    selectedDateRangeOption: 0,
+    gainFocus: false
+}
 

@@ -1,8 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import Select, { components } from 'react-select';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@trussworks/react-uswds';
-import DropdownIndicator from '../../../components/DropDownIndicator';
 import { DATE_OPTIONS } from '../constants';
 import check from '../../../images/check.svg';
 import triangleDown from '../../../images/triange_down.png';
@@ -24,6 +21,13 @@ export default function DateRangeSelect(props) {
     setMenuIsOpen(false);
   }
 
+  const onKeyDown = e => {
+    if( e.keyCode === 27 ) {
+      setMenuIsOpen(false);
+    }
+  }
+
+
   /**
    * Grab the label text from the DATE_OPTIONS constant
    */
@@ -33,31 +37,34 @@ export default function DateRangeSelect(props) {
     <div className="margin-x-1">
       <button 
         onClick={setMenuIsOpen}
-        className="usa-button smart-hub--date-range-select-toggle-btn display-flex">
+        onKeyDown={onKeyDown}
+        className="usa-button smart-hub--date-range-select-toggle-btn display-flex"
+        aria-label="open date range options menu">
           {buttonText}<img src={triangleDown} alt="" aria-hidden="true"  />
         </button>
+        
       { menuIsOpen ?
-      <div className="smart-hub--date-range-select-menu">
-          
+      <div className="smart-hub--date-range-select-menu" role="group" aria-describedby="dateRangeOptionsLabel">          
+          <span className="sr-only" id="dateRangeOptionsLabel">Date range options</span>
           { DATE_OPTIONS.map( option => {                     
             return (      
               <button 
                 aria-pressed={ option === selectedItem}
                 className="smart-hub--date-range-select-range-button" 
                 key={option.value} 
+                onKeyDown={onKeyDown}
                 data-value={option.value}
+                aria-label={`Select to view data from ${option.label}. Select Apply filters button to apply selection`}
                 onClick={()=> {
                   setSelectedItem( option );
                 }}>
-                  {option.label}
-
+                {option.label}
                 { option === selectedItem ? <img className="smart-hub--date-range-select-checkmark" src={check} alt="" aria-hidden="true" /> : null } 
-
                 </button>         
             )
           })}           
 
-          <button className="usa-button margin-2" onClick={onApplyClick}>Apply</button>
+          <button onKeyDown={onKeyDown} className="usa-button margin-2" onClick={onApplyClick} aria-label="Apply filters">Apply</button>
         </div>
       : null }
    

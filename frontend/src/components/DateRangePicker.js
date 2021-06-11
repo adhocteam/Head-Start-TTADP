@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Button } from '@trussworks/react-uswds';
@@ -19,6 +19,19 @@ function DateRangePicker({
 }) {
   const [focusedInput, updateFocused] = useState(null);
   const [opened, updateOpened] = useState(false);
+
+  useEffect( ()=> {
+
+    /***
+     * This is for when the date range selector is conditionally created
+     * It will auto focus the start date input
+     */
+    if( gainFocus ) {     
+
+      const input = document.getElementById(startDateId);
+      if (input) input.focus();      
+    }
+  }, [gainFocus])
 
   let startDate;
   let endDate;
@@ -89,6 +102,7 @@ DateRangePicker.propTypes = {
 
 DateRangePicker.defaultProps = {
   query: '',
+  classNames: []
 };
 
 export default DateRangePicker;
