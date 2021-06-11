@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Grid } from '@trussworks/react-uswds';
 import { Helmet } from 'react-helmet';
@@ -17,6 +17,7 @@ function Dashboard( props ) {
     const [appliedRegion, updateAppliedRegion] = useState(0);
     const [selectedDateRangeOption, updateSelectedDateRangeOption ] = useState(1);
     const [dateRange, updateDateRange] = useState("");   
+    const focusedControl = useRef(null);
     
     /* 
     *    the idea is that this filters variable, which roughly matches the implementation on the landing page, 
@@ -104,6 +105,7 @@ function Dashboard( props ) {
                                 dateRange={dateRange}
                                 updateDateRange={updateDateRange}
                                 selectedDateRangeOption={selectedDateRangeOption}                                
+                                focusedControl={focusedControl}
                             />
                             
                         </div>                   

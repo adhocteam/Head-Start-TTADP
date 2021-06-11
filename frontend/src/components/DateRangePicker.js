@@ -15,7 +15,7 @@ const phrases = {
 };
 
 function DateRangePicker({
-  query, onUpdateFilter, id, classNames
+  query, onUpdateFilter, id, classNames, gainFocus
 }) {
   const [focusedInput, updateFocused] = useState(null);
   const [opened, updateOpened] = useState(false);
