@@ -537,15 +537,16 @@ function Landing() {
             />
 
             <Container className="landing inline-size maxw-full" padding={0}>
-              <span className="smart-hub--table-controls">
-                {numberOfSelectedReports > 0 && (
-                  <span className="smart-hub--selected-tag margin-right-1">
+              <span className="smart-hub--table-controls display-flex flex-row flex-align-center">
+                {numberOfSelectedReports > 0
+                  && (
+                  <span className="padding-y-05 padding-left-105 padding-right-1 text-white smart-hub-bg-vivid radius-pill font-sans-xs text-middle margin-right-1 smart-hub--selected-tag">
                     {numberOfSelectedReports}
                     {' '}
                     selected
                     {' '}
                     <Button
-                      className="smart-hub--select-tag__button"
+                      className="smart-hub--select-tag__button margin-left-1"
                       unstyled
                       aria-label="deselect all reports"
                       onClick={() => {
@@ -598,8 +599,8 @@ function Landing() {
               <div className="usa-table-container--scrollable">
                 <Table className="usa-table usa-table--borderless usa-table--striped">
                   <caption>
-                    { `Region ${appliedRegion} Activity reports`}
-                    <p id="arTblDesc">with sorting and pagination</p>
+                    { `Region ${appliedRegion} Activity reports` }
+                    <p className="usa-sr-only">with sorting and pagination</p>
                   </caption>
                   <thead>
                     <tr>
