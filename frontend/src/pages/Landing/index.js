@@ -456,87 +456,86 @@ function Landing() {
       </Helmet>
       <UserContext.Consumer>
         {({ user }) => {
-          
           const regions = getUserRegions(user);
           if (appliedRegion === 0) updateAppliedRegion(regions[0]);
-          
+
           return (
-          <>
-            {showAlert && message && (
-            <Alert
-              type="success"
-              role="alert"
-              noIcon
-              cta={(
-                <Button
-                  role="button"
-                  unstyled
-                  aria-label="dismiss alert"
-                  onClick={() => updateShowAlert(false)}
-                >
-                  <span className="fa-sm margin-right-2">
-                    <FontAwesomeIcon color="black" icon={faTimesCircle} />
-                  </span>
-                </Button>
+            <>
+              {showAlert && message && (
+              <Alert
+                type="success"
+                role="alert"
+                noIcon
+                cta={(
+                  <Button
+                    role="button"
+                    unstyled
+                    aria-label="dismiss alert"
+                    onClick={() => updateShowAlert(false)}
+                  >
+                    <span className="fa-sm margin-right-2">
+                      <FontAwesomeIcon color="black" icon={faTimesCircle} />
+                    </span>
+                  </Button>
               )}
-            >
-              {msg}
-            </Alert>
-            )}
-            <Grid row gap>
-              <Grid>
-                <h1 className="landing">Activity Reports</h1>
-              </Grid>
-              <Grid col={2} className="flex-align-self-center">
-                {regions.length > 1
+              >
+                {msg}
+              </Alert>
+              )}
+              <Grid row gap>
+                <Grid>
+                  <h1 className="landing">Activity Reports</h1>
+                </Grid>
+                <Grid col={2} className="flex-align-self-center">
+                  {regions.length > 1
                 && (
                 <RegionalSelect
                   regions={allRegionsUserHasPermissionTo(user)}
                   onApply={onApplyRegion}
                 />
                 )}
-              </Grid>
-              <Grid className="flex-align-self-center">
-                {reportAlerts
+                </Grid>
+                <Grid className="flex-align-self-center">
+                  {reportAlerts
                   && reportAlerts.length > 0
                   && hasReadWrite(user) && <NewReport />}
+                </Grid>
               </Grid>
-            </Grid>
-            <Grid row gap className="smart-hub--overview">
-              <Grid col={10}>
-                <Overview
-                  filters={filters}
-                  region={appliedRegion}
-                  allRegions={regions}
-                />
+              <Grid row gap className="smart-hub--overview">
+                <Grid col={10}>
+                  <Overview
+                    filters={filters}
+                    region={appliedRegion}
+                    allRegions={regions}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-            <Grid row>
-              {error && (
+              <Grid row>
+                {error && (
                 <Alert type="error" role="alert">
                   {error}
                 </Alert>
-              )}
-            </Grid>
-            <MyAlerts
-              reports={reportAlerts}
-              newBtn={hasReadWrite(user)}
-              alertsSortConfig={alertsSortConfig}
-              alertsOffset={alertsOffset}
-              alertsPerPage={alertsPerPage}
-              alertsActivePage={alertsActivePage}
-              alertReportsCount={alertReportsCount}
-              sortHandler={requestAlertsSort}
-              updateReportFilters={handleApplyAlertFilters}
-              hasFilters={alertFilters.length > 0}
-              updateReportAlerts={updateReportAlerts}
-              setAlertReportsCount={setAlertReportsCount}
-              handleDownloadAllAlerts={handleDownloadAllAlerts}
-            />
+                )}
+              </Grid>
+              <MyAlerts
+                reports={reportAlerts}
+                newBtn={hasReadWrite(user)}
+                alertsSortConfig={alertsSortConfig}
+                alertsOffset={alertsOffset}
+                alertsPerPage={alertsPerPage}
+                alertsActivePage={alertsActivePage}
+                alertReportsCount={alertReportsCount}
+                sortHandler={requestAlertsSort}
+                updateReportFilters={handleApplyAlertFilters}
+                hasFilters={alertFilters.length > 0}
+                updateReportAlerts={updateReportAlerts}
+                setAlertReportsCount={setAlertReportsCount}
+                handleDownloadAllAlerts={handleDownloadAllAlerts}
+              />
 
-            <Container className="landing inline-size maxw-full" padding={0}>
-              <span className="smart-hub--table-controls">
-                {numberOfSelectedReports > 0 && (
+              <Container className="landing inline-size maxw-full" padding={0}>
+                <span className="smart-hub--table-controls">
+                  {numberOfSelectedReports > 0 && (
                   <span className="smart-hub--selected-tag margin-right-1">
                     {numberOfSelectedReports}
                     {' '}
@@ -557,87 +556,87 @@ function Landing() {
                       />
                     </Button>
                   </span>
-                )}
-                <Filter applyFilters={handleApplyFilters} />
-                <ReportMenu
-                  hasSelectedReports={numberOfSelectedReports > 0}
-                  onExportAll={handleDownloadAllReports}
-                  onExportSelected={handleDownloadClick}
-                />
-              </span>
-              <span className="smart-hub--table-nav">
-                <span aria-label="Pagination for activity reports">
-                  <span
-                    className="smart-hub--total-count"
-                    aria-label={`Page ${activePage}, displaying rows ${renderTotal(
-                      offset,
-                      perPage,
-                      activePage,
-                      reportsCount,
-                    )}`}
-                  >
-                    {renderTotal(offset, perPage, activePage, reportsCount)}
-                    <Pagination
-                      hideFirstLastPages
-                      prevPageText="<Prev"
-                      nextPageText="Next>"
-                      activePage={activePage}
-                      itemsCountPerPage={perPage}
-                      totalItemsCount={reportsCount}
-                      pageRangeDisplayed={4}
-                      onChange={handlePageChange}
-                      linkClassPrev="smart-hub--link-prev"
-                      linkClassNext="smart-hub--link-next"
-                      tabIndex={0}
-                    />
+                  )}
+                  <Filter applyFilters={handleApplyFilters} />
+                  <ReportMenu
+                    hasSelectedReports={numberOfSelectedReports > 0}
+                    onExportAll={handleDownloadAllReports}
+                    onExportSelected={handleDownloadClick}
+                  />
+                </span>
+                <span className="smart-hub--table-nav">
+                  <span aria-label="Pagination for activity reports">
+                    <span
+                      className="smart-hub--total-count"
+                      aria-label={`Page ${activePage}, displaying rows ${renderTotal(
+                        offset,
+                        perPage,
+                        activePage,
+                        reportsCount,
+                      )}`}
+                    >
+                      {renderTotal(offset, perPage, activePage, reportsCount)}
+                      <Pagination
+                        hideFirstLastPages
+                        prevPageText="<Prev"
+                        nextPageText="Next>"
+                        activePage={activePage}
+                        itemsCountPerPage={perPage}
+                        totalItemsCount={reportsCount}
+                        pageRangeDisplayed={4}
+                        onChange={handlePageChange}
+                        linkClassPrev="smart-hub--link-prev"
+                        linkClassNext="smart-hub--link-next"
+                        tabIndex={0}
+                      />
+                    </span>
                   </span>
                 </span>
-              </span>
-              <div className="usa-table-container--scrollable">
-                <Table className="usa-table usa-table--borderless usa-table--striped">
-                  <caption>
-                    { `Region ${appliedRegion} Activity reports`}
-                    <p id="arTblDesc">with sorting and pagination</p>
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th className="width-8" aria-label="Select">
-                        <Checkbox
-                          id="all-reports"
-                          label=""
-                          onChange={toggleSelectAll}
-                          checked={allReportsChecked}
-                          aria-label="Select or de-select all reports"
-                        />
-                      </th>
-                      {renderColumnHeader('Report ID', 'regionId')}
-                      {renderColumnHeader('Grantee', 'activityRecipients')}
-                      {renderColumnHeader('Start date', 'startDate')}
-                      {renderColumnHeader('Creator', 'author')}
-                      {renderColumnHeader('Topic(s)', 'topics')}
-                      {renderColumnHeader('Collaborator(s)', 'collaborators')}
-                      {renderColumnHeader('Last saved', 'updatedAt')}
-                      {renderColumnHeader('Status', 'status')}
-                      <th scope="col" aria-label="context menu" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {renderReports(
-                      reports,
-                      history,
-                      reportCheckboxes,
-                      handleReportSelect,
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            </Container>
-          </>
-        )}
-        }
-       </UserContext.Consumer>
+                <div className="usa-table-container--scrollable">
+                  <Table className="usa-table usa-table--borderless usa-table--striped">
+                    <caption>
+                      { `Region ${appliedRegion} Activity reports`}
+                      <p id="arTblDesc">with sorting and pagination</p>
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th className="width-8" aria-label="Select">
+                          <Checkbox
+                            id="all-reports"
+                            label=""
+                            onChange={toggleSelectAll}
+                            checked={allReportsChecked}
+                            aria-label="Select or de-select all reports"
+                          />
+                        </th>
+                        {renderColumnHeader('Report ID', 'regionId')}
+                        {renderColumnHeader('Grantee', 'activityRecipients')}
+                        {renderColumnHeader('Start date', 'startDate')}
+                        {renderColumnHeader('Creator', 'author')}
+                        {renderColumnHeader('Topic(s)', 'topics')}
+                        {renderColumnHeader('Collaborator(s)', 'collaborators')}
+                        {renderColumnHeader('Last saved', 'updatedAt')}
+                        {renderColumnHeader('Status', 'status')}
+                        <th scope="col" aria-label="context menu" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {renderReports(
+                        reports,
+                        history,
+                        reportCheckboxes,
+                        handleReportSelect,
+                      )}
+                    </tbody>
+                  </Table>
+                </div>
+              </Container>
+            </>
+          );
+        }}
+      </UserContext.Consumer>
     </>
-    );
-  }
+  );
+}
 
 export default Landing;

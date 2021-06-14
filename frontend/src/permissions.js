@@ -104,20 +104,18 @@ const hasReadWrite = (user) => {
 };
 
 /**
- * 
+ *
  * // probably makes sense to seperate this logic
- * @param {object} user user object 
- * @param {number} appliedRegion 
- * @param {function} updateAppliedRegion 
- * @returns 
+ * @param {object} user user object
+ * @param {number} appliedRegion
+ * @param {function} updateAppliedRegion
+ * @returns
  */
-const getUserRegions = (user) => {
-  return allRegionsUserHasPermissionTo(user);
-};
+const getUserRegions = (user) => allRegionsUserHasPermissionTo(user);
 
 export {
   isAdmin as default,
   getRegionWithReadWrite,
   hasReadWrite,
-  getUserRegions
+  getUserRegions,
 };

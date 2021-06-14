@@ -1,53 +1,51 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import {
-  render, screen
+  render, screen,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import DateSelect from '../DateSelect';
 import { formatDateRange } from '../../constants';
-import userEvent from '@testing-library/user-event';
 
-describe( "DateSelect", ()=> {
+describe('DateSelect', () => {
+  const renderSelect = (selectedDateRangeOption, updateDateRange) => {
+    render(<DateSelect
+      updateDateRange={updateDateRange}
+      selectedDateRangeOption={selectedDateRangeOption}
+    />);
+  };
 
-    const RenderSelect = ({selectedDateRangeOption, updateDateRange}) => {              
-        return <DateSelect updateDateRange={updateDateRange} selectedDateRangeOption={selectedDateRangeOption} />
-    }
+  it('shows a non interactive label when custom is not selected', () => {
+    const selectedDateRangeOption = 1;
+    const onUpdateFilter = jest.fn();
+    renderSelect(selectedDateRangeOption, onUpdateFilter);
+    const thirtyDays = formatDateRange(selectedDateRangeOption, { withSpaces: true });
+    expect(screen.getByText(thirtyDays)).toBeInTheDocument();
+  });
 
-    it( 'shows a non interactive label when custom is not selected', ()=> {
-        const selectedDateRangeOption = 1;
-        const onUpdateFilter = jest.fn();
-        render( <RenderSelect onUpdateFilter={onUpdateFilter} selectedDateRangeOption={selectedDateRangeOption}/> );
-        const thirtyDays = formatDateRange( selectedDateRangeOption, { withSpaces: true } )
-        expect( screen.getByText(thirtyDays) ).toBeInTheDocument();
-    });
+  it('shows a date picker when custom is selected', () => {
+    const onUpdateFilter = jest.fn();
+    const selectedDateRangeOption = 2;
+    renderSelect(selectedDateRangeOption, onUpdateFilter);
 
-    it( 'shows a date picker when custom is selected', ()=> {
-        const onUpdateFilter = jest.fn();
-        const selectedDateRangeOption = 2;
-        render( <RenderSelect onUpdateFilter={onUpdateFilter} selectedDateRangeOption={selectedDateRangeOption}/> );
+    const startDate = screen.getByRole('textbox', { name: /start date/i });
+    const endDate = screen.getByRole('textbox', { name: /end date/i });
 
-        const startDate = screen.getByRole('textbox', { name: /start date/i })
-        const endDate = screen.getByRole('textbox', { name: /end date/i });
+    expect(startDate).toBeEnabled();
+    expect(endDate).toBeEnabled();
+  });
 
-        expect( startDate ).toBeEnabled();
-        expect( endDate ).toBeEnabled();
+  it('calls the update filter function when the date is changed', () => {
+    const onUpdateFilter = jest.fn();
+    const selectedDateRangeOption = 2;
+    renderSelect(selectedDateRangeOption, onUpdateFilter);
 
-    });
+    const startDate = screen.getByRole('textbox', { name: /start date/i });
+    const endDate = screen.getByRole('textbox', { name: /end date/i });
 
-    it( 'calls the update filter function when the date is changed', ()=> {
-        const updateDateRange = jest.fn();
-        const selectedDateRangeOption = 2;
-        render( <RenderSelect updateDateRange={updateDateRange} selectedDateRangeOption={selectedDateRangeOption}/> );
+    userEvent.type(startDate, '05/12/2021');
+    userEvent.type(endDate, '05/12/2021');
 
-        const startDate = screen.getByRole('textbox', { name: /start date/i })
-        const endDate = screen.getByRole('textbox', { name: /end date/i });
-
-        userEvent.type(startDate, '05/12/2021');
-        userEvent.type(endDate, '05/12/2021');        
-
-        expect(updateDateRange).toHaveBeenCalledTimes(20);
-
-    });
-
-
+    expect(onUpdateFilter).toHaveBeenCalledTimes(20);
+  });
 });

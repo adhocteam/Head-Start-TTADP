@@ -10,7 +10,6 @@ import './DateRangeSelect.css';
 export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
 
 export default function DateRangeSelect(props) {
-
   const { onApply } = props;
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -19,55 +18,59 @@ export default function DateRangeSelect(props) {
   const onApplyClick = () => {
     onApply(selectedItem);
     setMenuIsOpen(false);
-  }
+  };
 
-  const onKeyDown = e => {
-    if( e.keyCode === 27 ) {
+  const onKeyDown = (e) => {
+    if (e.keyCode === 27) {
       setMenuIsOpen(false);
     }
-  }
-
+  };
 
   /**
    * Grab the label text from the DATE_OPTIONS constant
    */
-  const buttonText = selectedItem ? selectedItem.label : "Select Date Range";
+  const buttonText = selectedItem ? selectedItem.label : 'Select Date Range';
 
   return (
     <div className="margin-x-1">
-      <button 
+      <button
         onClick={setMenuIsOpen}
         onKeyDown={onKeyDown}
         className="usa-button smart-hub--date-range-select-toggle-btn display-flex"
-        aria-label="open date range options menu">
-          {buttonText}<img src={triangleDown} alt="" aria-hidden="true"  />
-        </button>
-        
-      { menuIsOpen ?
-      <div className="smart-hub--date-range-select-menu" role="group" aria-describedby="dateRangeOptionsLabel">          
-          <span className="sr-only" id="dateRangeOptionsLabel">Date range options</span>
-          { DATE_OPTIONS.map( option => {                     
-            return (      
-              <button 
-                aria-pressed={ option === selectedItem}
-                className="smart-hub--date-range-select-range-button" 
-                key={option.value} 
+        aria-label="open date range options menu"
+        type="button"
+      >
+        {buttonText}
+        <img src={triangleDown} alt="" aria-hidden="true" />
+      </button>
+
+      { menuIsOpen
+        ? (
+          <div className="smart-hub--date-range-select-menu" role="group" aria-describedby="dateRangeOptionsLabel">
+            <span className="sr-only" id="dateRangeOptionsLabel">Date range options</span>
+            { DATE_OPTIONS.map((option) => (
+              <button
+                type="button"
+                aria-pressed={option === selectedItem}
+                className="smart-hub--date-range-select-range-button"
+                key={option.value}
                 onKeyDown={onKeyDown}
                 data-value={option.value}
                 aria-label={`Select to view data from ${option.label}. Select Apply filters button to apply selection`}
-                onClick={()=> {
-                  setSelectedItem( option );
-                }}>
+                onClick={() => {
+                  setSelectedItem(option);
+                }}
+              >
                 {option.label}
-                { option === selectedItem ? <img className="smart-hub--date-range-select-checkmark" src={check} alt="" aria-hidden="true" /> : null } 
-                </button>         
-            )
-          })}           
+                { option === selectedItem ? <img className="smart-hub--date-range-select-checkmark" src={check} alt="" aria-hidden="true" /> : null }
+              </button>
+            ))}
 
-          <button onKeyDown={onKeyDown} className="usa-button margin-2" onClick={onApplyClick} aria-label="Apply filters">Apply</button>
-        </div>
-      : null }
-   
+            <button type="button" onKeyDown={onKeyDown} className="usa-button margin-2" onClick={onApplyClick} aria-label="Apply filters">Apply</button>
+          </div>
+        )
+        : null }
+
     </div>
   );
 }
@@ -76,4 +79,6 @@ DateRangeSelect.propTypes = {
   onApply: PropTypes.func,
 };
 
-
+DateRangeSelect.defaultProps = {
+  onApply: () => {},
+};

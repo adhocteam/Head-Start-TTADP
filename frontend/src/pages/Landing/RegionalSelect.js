@@ -82,11 +82,11 @@ function RegionalSelect(props) {
 
   const CustomOption = (props1) => {
     const {
-      data,  innerProps, isSelected, innerRef
+      data, innerProps, isSelected, innerRef,
     } = props1;
-    
+
     return data.custom ? (
-      <div ref={innerRef}  {...innerProps}>
+      <div ref={innerRef} {...innerProps}>
         <Button
           type="button"
           className="float-left margin-2 smart-hub--filter-button"
@@ -121,7 +121,7 @@ function RegionalSelect(props) {
   CustomOption.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     data: PropTypes.object.isRequired,
-    //innerRef: PropTypes.string.isRequired,
+    // innerRef: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     innerProps: PropTypes.object.isRequired,
   };

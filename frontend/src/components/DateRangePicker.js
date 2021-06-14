@@ -15,23 +15,24 @@ const phrases = {
 };
 
 function DateRangePicker({
-  query, onUpdateFilter, id, classNames, gainFocus
+  query, onUpdateFilter, id, classNames, gainFocus,
 }) {
   const [focusedInput, updateFocused] = useState(null);
   const [opened, updateOpened] = useState(false);
 
-  useEffect( ()=> {
+  const startDateId = `${id}-start`;
+  const endDateId = `${id}-end`;
 
-    /***
+  useEffect(() => {
+    /** *
      * This is for when the date range selector is conditionally created
      * It will auto focus the start date input
      */
-    if( gainFocus ) {     
-
+    if (gainFocus) {
       const input = document.getElementById(startDateId);
-      if (input) input.focus();      
+      if (input) input.focus();
     }
-  }, [gainFocus])
+  }, [gainFocus, startDateId]);
 
   let startDate;
   let endDate;
@@ -48,10 +49,7 @@ function DateRangePicker({
     onUpdateFilter('query', date);
   };
 
-  const startDateId = `${id}-start`;
-  const endDateId = `${id}-end`;
-
-  const cssClasses = `ttahub-date-range-picker ${classNames.join(" ")}`;
+  const cssClasses = `ttahub-date-range-picker ${classNames.join(' ')}`;
 
   return (
     <span id={id} className={cssClasses}>
@@ -97,12 +95,14 @@ DateRangePicker.propTypes = {
   query: PropTypes.string,
   onUpdateFilter: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  classNames: PropTypes.arrayOf(PropTypes.string)
+  classNames: PropTypes.arrayOf(PropTypes.string),
+  gainFocus: PropTypes.bool,
 };
 
 DateRangePicker.defaultProps = {
   query: '',
-  classNames: []
+  classNames: [],
+  gainFocus: false,
 };
 
 export default DateRangePicker;
