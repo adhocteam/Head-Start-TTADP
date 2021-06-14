@@ -65,7 +65,7 @@ function Dashboard({ user }) {
         updateAppliedRegion(regions[0]);
       }
     }
-  }, [appliedRegion, dateRange, hasCentralOffice, regions, user]);
+  }, [appliedRegion, dateRange, hasCentralOffice, regions, user, regionsFetched]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
