@@ -500,49 +500,41 @@ function Landing() {
                   && reportAlerts.length > 0
                   && hasReadWrite(user) && <NewReport />}
                 </Grid>
-              </Grid>
-              <Grid row gap className="smart-hub--overview">
-                <Grid col={10}>
-                  <Overview
-                    filters={filters}
-                    region={appliedRegion}
-                    allRegions={regions}
-                  />
-                </Grid>
-              </Grid>
-              <Grid row>
-                {error && (
-                <Alert type="error" role="alert">
-                  {error}
-                </Alert>
-                )}
-              </Grid>
-              <MyAlerts
-                reports={reportAlerts}
-                newBtn={hasReadWrite(user)}
-                alertsSortConfig={alertsSortConfig}
-                alertsOffset={alertsOffset}
-                alertsPerPage={alertsPerPage}
-                alertsActivePage={alertsActivePage}
-                alertReportsCount={alertReportsCount}
-                sortHandler={requestAlertsSort}
-                updateReportFilters={handleApplyAlertFilters}
-                hasFilters={alertFilters.length > 0}
-                updateReportAlerts={updateReportAlerts}
-                setAlertReportsCount={setAlertReportsCount}
-                handleDownloadAllAlerts={handleDownloadAllAlerts}
-              />
+              </Grid>           
+            <Grid row>
+              {error && (
+              <Alert type="error" role="alert">
+                {error}
+              </Alert>
+              )}
+            </Grid>
+            <MyAlerts
+              reports={reportAlerts}
+              newBtn={hasReadWrite(user)}
+              alertsSortConfig={alertsSortConfig}
+              alertsOffset={alertsOffset}
+              alertsPerPage={alertsPerPage}
+              alertsActivePage={alertsActivePage}
+              alertReportsCount={alertReportsCount}
+              sortHandler={requestAlertsSort}
+              updateReportFilters={handleApplyAlertFilters}
+              hasFilters={alertFilters.length > 0}
+              updateReportAlerts={updateReportAlerts}
+              setAlertReportsCount={setAlertReportsCount}
+              handleDownloadAllAlerts={handleDownloadAllAlerts}
+            />
 
-              <Container className="landing inline-size maxw-full" padding={0}>
-                <span className="smart-hub--table-controls">
-                  {numberOfSelectedReports > 0 && (
-                  <span className="smart-hub--selected-tag margin-right-1">
+            <Container className="landing inline-size maxw-full" padding={0}>
+              <span className="smart-hub--table-controls display-flex flex-row flex-align-center">
+                {numberOfSelectedReports > 0
+                  && (
+                  <span className="padding-y-05 padding-left-105 padding-right-1 text-white smart-hub-bg-vivid radius-pill font-sans-xs text-middle margin-right-1">
                     {numberOfSelectedReports}
                     {' '}
                     selected
                     {' '}
                     <Button
-                      className="smart-hub--select-tag__button"
+                      className="smart-hub--select-tag__button margin-left-1"
                       unstyled
                       aria-label="deselect all reports"
                       onClick={() => {
@@ -592,48 +584,37 @@ function Landing() {
                     </span>
                   </span>
                 </span>
-                <div className="usa-table-container--scrollable">
-                  <Table className="usa-table usa-table--borderless usa-table--striped">
-                    <caption>
-                      { `Region ${appliedRegion} Activity reports`}
-                      <p id="arTblDesc">with sorting and pagination</p>
-                    </caption>
-                    <thead>
-                      <tr>
-                        <th className="width-8" aria-label="Select">
-                          <Checkbox
-                            id="all-reports"
-                            label=""
-                            onChange={toggleSelectAll}
-                            checked={allReportsChecked}
-                            aria-label="Select or de-select all reports"
-                          />
-                        </th>
-                        {renderColumnHeader('Report ID', 'regionId')}
-                        {renderColumnHeader('Grantee', 'activityRecipients')}
-                        {renderColumnHeader('Start date', 'startDate')}
-                        {renderColumnHeader('Creator', 'author')}
-                        {renderColumnHeader('Topic(s)', 'topics')}
-                        {renderColumnHeader('Collaborator(s)', 'collaborators')}
-                        {renderColumnHeader('Last saved', 'updatedAt')}
-                        {renderColumnHeader('Status', 'status')}
-                        <th scope="col" aria-label="context menu" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {renderReports(
-                        reports,
-                        history,
-                        reportCheckboxes,
-                        handleReportSelect,
-                      )}
-                    </tbody>
-                  </Table>
-                </div>
-              </Container>
-            </>
-          );
-        }}
+              </span>
+              <div className="usa-table-container--scrollable">
+                <Table className="usa-table usa-table--borderless usa-table--striped">
+                  <caption>
+                    Activity reports
+                    <p className="usa-sr-only">with sorting and pagination</p>
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th className="width-8" aria-label="Select">
+                        <Checkbox id="all-reports" label="" onChange={toggleSelectAll} checked={allReportsChecked} aria-label="Select or de-select all reports" />
+                      </th>
+                      {renderColumnHeader('Report ID', 'regionId')}
+                      {renderColumnHeader('Grantee', 'activityRecipients')}
+                      {renderColumnHeader('Start date', 'startDate')}
+                      {renderColumnHeader('Creator', 'author')}
+                      {renderColumnHeader('Topic(s)', 'topics')}
+                      {renderColumnHeader('Collaborator(s)', 'collaborators')}
+                      {renderColumnHeader('Last saved', 'updatedAt')}
+                      {renderColumnHeader('Status', 'status')}
+                      <th scope="col" aria-label="context menu" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {renderReports(reports, history, reportCheckboxes, handleReportSelect)}
+                  </tbody>
+                </Table>
+              </div>
+            </Container>
+          </>
+        )}
       </UserContext.Consumer>
     </>
   );
