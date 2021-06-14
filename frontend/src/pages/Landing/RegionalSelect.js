@@ -19,7 +19,7 @@ const DropdownIndicator = (props) => (
 
 const Placeholder = (props) => <components.Placeholder {...props} />;
 
-export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
+export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` })).sort((a, b) => a.value - b.value);
 
 const styles = {
   container: (provided, state) => {
@@ -71,11 +71,10 @@ const styles = {
 
 function RegionalSelect(props) {
   const {
-    regions, onApply,
+    regions, onApply, hasCentralOffice,
   } = props;
 
   const [selectedItem, setSelectedItem] = useState();
-  const [appliedItem, setAppliedItem] = useState();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   // const delayedCloseMenu = () => setTimeout(setMenuIsOpen(false), 1000);
@@ -92,7 +91,6 @@ function RegionalSelect(props) {
           className="float-left margin-2 smart-hub--filter-button"
           onClick={() => {
             onApply(selectedItem);
-            setAppliedItem(selectedItem);
             setMenuIsOpen(false);
           }}
         >
@@ -126,7 +124,27 @@ function RegionalSelect(props) {
     innerProps: PropTypes.object.isRequired,
   };
 
-  const options = [...getUserOptions(regions), { custom: true }];
+  let options = [...getUserOptions(regions), { custom: true }];
+
+  if (hasCentralOffice) {
+    options = [...getUserOptions(regions), { label: 'All Regions', value: 14 }, { custom: true }];
+  }
+
+  const getValue = () => {
+    if (selectedItem) {
+      return {
+        value: selectedItem.value,
+        label: selectedItem.label,
+      };
+    }
+
+    if (hasCentralOffice) {
+      return { label: 'All Regions', value: 14 };
+    }
+
+    return options[0];
+  };
+
   return (
     <Select
       options={options}
@@ -136,11 +154,8 @@ function RegionalSelect(props) {
       onBlur={() => setMenuIsOpen(false)}
       // onBlur={() => delayedCloseMenu()}
       name="RegionalSelect"
-      defaultValue={options[0]}
-      value={{
-        value: selectedItem ? selectedItem.value : options[0].value,
-        label: appliedItem ? appliedItem.label : options[0].label,
-      }}
+      defaultValue={hasCentralOffice ? { label: 'All Regions', value: 14 } : options[0]}
+      value={getValue()}
       styles={styles}
       components={{ Placeholder, DropdownIndicator, Option: CustomOption }}
       placeholder="Select Region"
@@ -153,6 +168,11 @@ function RegionalSelect(props) {
 RegionalSelect.propTypes = {
   regions: PropTypes.arrayOf(PropTypes.number).isRequired,
   onApply: PropTypes.func.isRequired,
+  hasCentralOffice: PropTypes.bool,
+};
+
+RegionalSelect.defaultProps = {
+  hasCentralOffice: false,
 };
 
 export default RegionalSelect;

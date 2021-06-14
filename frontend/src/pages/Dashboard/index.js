@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Grid } from '@trussworks/react-uswds';
 import { Helmet } from 'react-helmet';
 import { v4 as uuidv4 } from 'uuid';
-import RegionalSelect from '../Landing/RegionalSelect';
+import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 
@@ -12,9 +12,11 @@ import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
 function Dashboard({ user }) {
   const [appliedRegion, updateAppliedRegion] = useState(0);
+  const [regions, updateRegions] = useState([]);
+  const [regionsFetched, updateRegionsFetched] = useState(false);
   const [selectedDateRangeOption, updateSelectedDateRangeOption] = useState(1);
+  const [hasCentralOffice, updateHasCentralOffice] = useState(false);
   const [dateRange, updateDateRange] = useState('');
-  // const focusedControl = useRef(null);
   const [gainFocus, setGainFocus] = useState(false);
 
   /*
@@ -27,6 +29,11 @@ function Dashboard({ user }) {
   const [filters, updateFilters] = useState([]);
 
   useEffect(() => {
+
+    if( !user ) {
+      return;
+    }
+    
     // The number and nature of the filters is static, so we can just update them like so
     const filtersToApply = [
       {
@@ -43,8 +50,22 @@ function Dashboard({ user }) {
       },
     ];
 
+    if (!regionsFetched && regions.length < 1) {
+      updateRegionsFetched(true);
+      updateRegions(getUserRegions(user));
+    }
+
     updateFilters(filtersToApply);
-  }, [appliedRegion, dateRange]);
+    updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
+
+    if (appliedRegion === 0) {
+      if (hasCentralOffice) {
+        updateAppliedRegion(14);
+      } else if (regions[0]) {
+        updateAppliedRegion(regions[0]);
+      }
+    }
+  }, [appliedRegion, dateRange, hasCentralOffice, regions, user]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
@@ -68,11 +89,6 @@ function Dashboard({ user }) {
     );
   }
 
-  const regions = getUserRegions(user);
-  if (appliedRegion === 0) {
-    updateAppliedRegion(regions[0]);
-  }
-
   return (
     <div className="ttahub-dashboard">
       <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
@@ -80,23 +96,14 @@ function Dashboard({ user }) {
       <>
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
         <Grid row>
-          <Grid col="auto">
-            <h1 className="landing">
-              Region
-              {appliedRegion}
-              {' '}
-              TTA Activity Dashboard
-            </h1>
-          </Grid>
           <div className="tthub-dashboard--filters flex-fill display-flex flex-align-center flex-align-self-center flex-row">
-
-            {regions.length > 1
-                                && (
-                                <RegionalSelect
-                                  regions={regions}
-                                  onApply={onApplyRegion}
-                                />
-                                )}
+ 
+            <RegionDisplay 
+              regions={regions}
+              appliedRegion={appliedRegion}
+              onApplyRegion={onApplyRegion}
+              hasCentralOffice={hasCentralOffice}
+            />
 
             <DateRangeSelect
               onApply={onApplyDateRange}
@@ -123,6 +130,11 @@ Dashboard.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string,
     role: PropTypes.arrayOf(PropTypes.string),
+    permissions: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.number,
+      scopeId: PropTypes.number,
+      regionId: PropTypes.number,
+    })),
   }),
 };
 

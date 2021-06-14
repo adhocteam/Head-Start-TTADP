@@ -78,6 +78,12 @@ function App() {
     );
   }
 
+  // does a user have permissions to write or approve reports?
+  // include write or approve, this would be true
+  // otherwise, it'll return false
+  // const startOnActivityReport = (currentUser) => currentUser.permissions.find((permission) => {
+  // permission.scopeId === 3 || permission.scopeId === 5});
+
   const admin = isAdmin(user);
   const enableWidgets = process.env.REACT_APP_ENABLE_WIDGETS === 'true';
 
@@ -107,9 +113,18 @@ function App() {
         <Route
           exact
           path="/"
-          render={() => (
-            <Home />
-          )}
+          render={() => <Home />}
+          //   const showReport = startOnActivityReport(user);
+
+          //   if (showReport) {
+          //     return (
+          //       <LandingLayout><Landing match={match} /></LandingLayout>
+          //     );
+          //   }
+
+          //   return (
+          //     <Dashboard user={user} />
+          //   );
         />
         <Route
           exact
