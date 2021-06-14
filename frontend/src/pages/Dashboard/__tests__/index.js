@@ -10,7 +10,7 @@ describe('Dashboard page', () => {
   const renderDashboard = (user) => render(<Dashboard user={user} />);
 
   const user = {
-    permissions: []
+    permissions: [],
   };
 
   it('shows a heading', async () => {
@@ -34,7 +34,6 @@ describe('Dashboard page', () => {
   });
 
   it('shows the currently applied date range', async () => {
-    
     renderDashboard(user);
 
     const button = screen.getByRole('button', { name: /open date range options menu/i });

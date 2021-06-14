@@ -29,11 +29,10 @@ function Dashboard({ user }) {
   const [filters, updateFilters] = useState([]);
 
   useEffect(() => {
-
-    if( !user ) {
+    if (!user) {
       return;
     }
-    
+
     // The number and nature of the filters is static, so we can just update them like so
     const filtersToApply = [
       {
@@ -97,8 +96,8 @@ function Dashboard({ user }) {
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
         <Grid row>
           <div className="tthub-dashboard--filters flex-fill display-flex flex-align-center flex-align-self-center flex-row">
- 
-            <RegionDisplay 
+
+            <RegionDisplay
               regions={regions}
               appliedRegion={appliedRegion}
               onApplyRegion={onApplyRegion}
