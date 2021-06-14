@@ -9,9 +9,8 @@ import userEvent from '@testing-library/user-event';
 
 describe( "DateSelect", ()=> {
 
-    const RenderSelect = ({selectedDateRangeOption, onUpdateFilter}) => { 
-              
-        return <DateSelect onUpdateFilter={onUpdateFilter} selectedDateRangeOption={selectedDateRangeOption} />
+    const RenderSelect = ({selectedDateRangeOption, updateDateRange}) => {              
+        return <DateSelect updateDateRange={updateDateRange} selectedDateRangeOption={selectedDateRangeOption} />
     }
 
     it( 'shows a non interactive label when custom is not selected', ()=> {
@@ -36,17 +35,17 @@ describe( "DateSelect", ()=> {
     });
 
     it( 'calls the update filter function when the date is changed', ()=> {
-        const onUpdateFilter = jest.fn();
+        const updateDateRange = jest.fn();
         const selectedDateRangeOption = 2;
-        render( <RenderSelect onUpdateFilter={onUpdateFilter} selectedDateRangeOption={selectedDateRangeOption}/> );
+        render( <RenderSelect updateDateRange={updateDateRange} selectedDateRangeOption={selectedDateRangeOption}/> );
 
         const startDate = screen.getByRole('textbox', { name: /start date/i })
         const endDate = screen.getByRole('textbox', { name: /end date/i });
 
         userEvent.type(startDate, '05/12/2021');
-        userEvent.type(endDate, '05/12/2021');
+        userEvent.type(endDate, '05/12/2021');        
 
-        expect(onUpdateFilter).toHaveBeenCalledWith({});
+        expect(updateDateRange).toHaveBeenCalledTimes(20);
 
     });
 

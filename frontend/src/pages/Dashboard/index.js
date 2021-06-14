@@ -10,9 +10,7 @@ import DateRangeSelect from './components/DateRangeSelect';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
-function Dashboard( props ) {
-
-    const { user } = props;
+function Dashboard({user}) {
  
     const [appliedRegion, updateAppliedRegion] = useState(0);
     const [selectedDateRangeOption, updateSelectedDateRangeOption ] = useState(1);
@@ -62,11 +60,9 @@ function Dashboard( props ) {
 
         if( selectedDateRangeOption !== CUSTOM_DATE_RANGE ) {
             updateDateRange( formatDateRange(selectedDateRangeOption, { forDateTime: true}) );
-
             // set focus to DateRangePicker 1st input
             setGainFocus(true);
-        }          
-
+        }         
     }
 
     if( !user ) {
@@ -101,8 +97,7 @@ function Dashboard( props ) {
                             )}
 
                             <DateRangeSelect                              
-                                onApply={onApplyDateRange} 
-                               
+                                onApply={onApplyDateRange}                                
                             />
 
                             <DateSelect 
