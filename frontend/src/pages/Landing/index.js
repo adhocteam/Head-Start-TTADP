@@ -510,6 +510,7 @@ function Landing() {
                   filters={filters}
                   region={appliedRegion}
                   allRegions={getUserRegions(user)}
+                  skipLoading
                 />
               </Grid>
             </Grid>
@@ -560,7 +561,7 @@ function Landing() {
                       />
                     </Button>
                   </span>
-                )}
+                  )}
                 <Filter applyFilters={handleApplyFilters} />
                 <ReportMenu
                   hasSelectedReports={numberOfSelectedReports > 0}

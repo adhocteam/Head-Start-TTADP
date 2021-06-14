@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -48,9 +49,6 @@ const styles = {
     ...provided,
     width: '200px',
   }),
-  // placeholder: () => ({
-  //   color: 'white', fontWeight: 600, fontSize: '17px', marginRight: '-5px',
-  // }),
   option: (provided, state) => ({
     ...provided,
     color: state.isSelected ? '#0166AB' : 'black',
@@ -79,10 +77,10 @@ function RegionalSelect(props) {
 
   // const delayedCloseMenu = () => setTimeout(setMenuIsOpen(false), 1000);
 
-  const CustomOption = (props1) => {
+  const CustomOption = (customOptionProps) => {
     const {
       data, innerRef, innerProps, isSelected,
-    } = props1;
+    } = customOptionProps;
     return data.custom ? (
       <div ref={innerRef} {...innerProps}>
         <Button
@@ -98,7 +96,7 @@ function RegionalSelect(props) {
         </Button>
       </div>
     ) : (
-      <components.Option {...props1}>
+      <components.Option {...customOptionProps}>
         {data.label}
         {isSelected && (
           <img
@@ -117,10 +115,8 @@ function RegionalSelect(props) {
   };
 
   CustomOption.propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
     data: PropTypes.object.isRequired,
     innerRef: PropTypes.string.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
     innerProps: PropTypes.object.isRequired,
   };
 

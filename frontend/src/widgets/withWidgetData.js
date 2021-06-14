@@ -16,7 +16,7 @@ const withWidgetData = (Widget, widgetId) => {
     const [data, updateData] = useState({});
 
     const {
-      region, allRegions, loadingOverride, errorOverride,
+      region, allRegions, loadingOverride, skipLoading, errorOverride,
     } = props;
     useEffect(() => {
       const fetch = async () => {
@@ -35,7 +35,7 @@ const withWidgetData = (Widget, widgetId) => {
       fetch();
     }, [region, allRegions]);
 
-    if (loading || loadingOverride) {
+    if ((loading || loadingOverride) && !skipLoading) {
       return (
         <div>
           loading...
@@ -59,11 +59,13 @@ const withWidgetData = (Widget, widgetId) => {
     allRegions: PropTypes.arrayOf(PropTypes.number).isRequired,
     errorOverride: PropTypes.bool,
     loadingOverride: PropTypes.bool,
+    skipLoading: PropTypes.bool,
   };
 
   WidgetWrapper.defaultProps = {
     errorOverride: false,
     loadingOverride: false,
+    skipLoading: false,
     region: 0,
   };
 
