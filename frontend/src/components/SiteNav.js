@@ -66,7 +66,6 @@ const SiteNav = ({
                     to="/dashboard"
                   >
                     <span className="padding-right-105">
-                      {/* todo - get proper icon */}
                       <FontAwesomeIcon color="white" icon={faBorderAll} />
                     </span>
                     TTA Dashboard
