@@ -161,6 +161,7 @@ function RegionalSelect(props) {
       placeholder="Select Region"
       closeMenuOnSelect={false}
       maxMenuHeight={600}
+      className={"ttahub-region-select"}
     />
   );
 }

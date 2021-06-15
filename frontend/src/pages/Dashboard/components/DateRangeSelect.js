@@ -32,7 +32,7 @@ export default function DateRangeSelect(props) {
   const buttonText = selectedItem ? selectedItem.label : 'Select Date Range';
 
   return (
-    <div className="margin-x-1">
+    <div className="margin-left-1">
       <button
         onClick={setMenuIsOpen}
         onKeyDown={onKeyDown}

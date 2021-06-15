@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Grid } from '@trussworks/react-uswds';
 import { Helmet } from 'react-helmet';
 import { v4 as uuidv4 } from 'uuid';
 import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 
+import './index.css';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
@@ -88,36 +88,40 @@ function Dashboard({ user }) {
     );
   }
 
+  const mainClassNames = `ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap`;
+
   return (
     <div className="ttahub-dashboard">
       <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
 
       <>
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
-        <Grid row>
-          <div className="tthub-dashboard--filters flex-fill display-flex flex-align-center flex-align-self-center flex-row">
+        
+          <div className={ appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom`: mainClassNames }>
+                        
+              <RegionDisplay
+                regions={regions}
+                appliedRegion={appliedRegion}
+                onApplyRegion={onApplyRegion}
+                hasCentralOffice={hasCentralOffice}
+              />
 
-            <RegionDisplay
-              regions={regions}
-              appliedRegion={appliedRegion}
-              onApplyRegion={onApplyRegion}
-              hasCentralOffice={hasCentralOffice}
-            />
+              <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
+                <DateRangeSelect
+                  onApply={onApplyDateRange}
+                />
 
-            <DateRangeSelect
-              onApply={onApplyDateRange}
-            />
-
-            <DateSelect
-              dateRange={dateRange}
-              updateDateRange={updateDateRange}
-              selectedDateRangeOption={selectedDateRangeOption}
-              gainFocus={gainFocus}
-            />
+                <DateSelect
+                  dateRange={dateRange}
+                  updateDateRange={updateDateRange}
+                  selectedDateRangeOption={selectedDateRangeOption}
+                  gainFocus={gainFocus}
+                />
+              </div>
+           
 
           </div>
-
-        </Grid>
+       
       </>
 
     </div>
