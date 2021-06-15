@@ -40,7 +40,7 @@ Field.defaultProps = {
 */
 function Overview({ data, region }) {
   return (
-    <Container>
+    <Container className="smart-hub--overview-border">
       <Grid row className="smart-hub--overview-header">
         <h2>
           Region
