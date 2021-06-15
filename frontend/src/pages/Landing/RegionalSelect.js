@@ -69,7 +69,7 @@ const styles = {
 
 function RegionalSelect(props) {
   const {
-    regions, onApply, hasCentralOffice
+    regions, onApply, hasCentralOffice,
   } = props;
 
   const [selectedItem, setSelectedItem] = useState();
@@ -87,7 +87,7 @@ function RegionalSelect(props) {
           type="button"
           className="float-left margin-2 smart-hub--filter-button"
           onClick={() => {
-            onApply(selectedItem);            
+            onApply(selectedItem);
             setMenuIsOpen(false);
           }}
         >
@@ -158,7 +158,7 @@ function RegionalSelect(props) {
       placeholder="Select Region"
       closeMenuOnSelect={false}
       maxMenuHeight={600}
-      className={"ttahub-region-select"}
+      className="ttahub-region-select"
     />
   );
 }
@@ -166,7 +166,7 @@ function RegionalSelect(props) {
 RegionalSelect.propTypes = {
   regions: PropTypes.arrayOf(PropTypes.number).isRequired,
   onApply: PropTypes.func.isRequired,
-  hasCentralOffice: PropTypes.bool,  
+  hasCentralOffice: PropTypes.bool,
 };
 
 RegionalSelect.defaultProps = {

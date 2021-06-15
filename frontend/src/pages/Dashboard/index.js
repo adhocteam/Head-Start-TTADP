@@ -88,7 +88,7 @@ function Dashboard({ user }) {
     );
   }
 
-  const mainClassNames = `ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap`;
+  const mainClassNames = 'ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap';
 
   return (
     <div className="ttahub-dashboard">
@@ -96,32 +96,31 @@ function Dashboard({ user }) {
 
       <>
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
-        
-          <div className={ appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom`: mainClassNames }>
 
-              <RegionDisplay
-                regions={regions}
-                appliedRegion={appliedRegion}
-                onApplyRegion={onApplyRegion}
-                hasCentralOffice={hasCentralOffice}                
-              />
+        <div className={appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom` : mainClassNames}>
 
-              <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
-                <DateRangeSelect
-                  onApply={onApplyDateRange}
-                />
+          <RegionDisplay
+            regions={regions}
+            appliedRegion={appliedRegion}
+            onApplyRegion={onApplyRegion}
+            hasCentralOffice={hasCentralOffice}
+          />
 
-                <DateSelect
-                  dateRange={dateRange}
-                  updateDateRange={updateDateRange}
-                  selectedDateRangeOption={selectedDateRangeOption}
-                  gainFocus={gainFocus}
-                />
-              </div>
-           
+          <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
+            <DateRangeSelect
+              onApply={onApplyDateRange}
+            />
 
+            <DateSelect
+              dateRange={dateRange}
+              updateDateRange={updateDateRange}
+              selectedDateRangeOption={selectedDateRangeOption}
+              gainFocus={gainFocus}
+            />
           </div>
-       
+
+        </div>
+
       </>
 
     </div>

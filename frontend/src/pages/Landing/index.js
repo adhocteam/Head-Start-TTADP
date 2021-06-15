@@ -561,7 +561,7 @@ function Landing() {
                       />
                     </Button>
                   </span>
-                )}
+                  )}
                 <Filter applyFilters={handleApplyFilters} />
                 <ReportMenu
                   hasSelectedReports={numberOfSelectedReports > 0}
