@@ -38,7 +38,7 @@ export default function DateRangeSelect(props) {
         onKeyDown={onKeyDown}
         className="usa-button smart-hub--date-range-select-toggle-btn display-flex"
         aria-label="open date range options menu"
-        type="button"
+        type="button"     
       >
         {buttonText}
         <img src={triangleDown} alt="" aria-hidden="true" />

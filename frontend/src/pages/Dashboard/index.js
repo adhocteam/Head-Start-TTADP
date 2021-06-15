@@ -98,12 +98,12 @@ function Dashboard({ user }) {
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
         
           <div className={ appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom`: mainClassNames }>
-                        
+
               <RegionDisplay
                 regions={regions}
                 appliedRegion={appliedRegion}
                 onApplyRegion={onApplyRegion}
-                hasCentralOffice={hasCentralOffice}
+                hasCentralOffice={hasCentralOffice}                
               />
 
               <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
