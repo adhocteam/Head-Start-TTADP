@@ -40,7 +40,7 @@ Field.defaultProps = {
 */
 function Overview({ data, region }) {
   return (
-    <Container>
+    <Container className="smart-hub--overview-border">
       <Grid row className="smart-hub--overview-header">
         <h2>
           Region
@@ -52,12 +52,12 @@ function Overview({ data, region }) {
         <span className="smart-hub--overview-period"> 3/17/21 to Today</span>
       </Grid>
       <Grid row className="smart-hub--overview-data">
-        <Field col={3} label="Grants served " labelExt={`(of ${data.numTotalGrants})`} data={data.numGrants} />
+        <Field label="Grants served " labelExt={`(of ${data.numTotalGrants})`} data={data.numGrants} />
         <Field label="Activity reports" data={data.numReports} />
         <Field label="Participants" data={data.numParticipants} />
         <Field label="Hours of Training" data={data.sumTrainingDuration} />
         <Field label="Hours of TA" data={data.sumTaDuration} />
-        <Field col={1} label="Hours of TTA" data={data.sumDuration} />
+        <Field label="Hours of TTA" data={data.sumDuration} />
       </Grid>
     </Container>
   );

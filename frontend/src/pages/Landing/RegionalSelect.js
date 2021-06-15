@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -49,9 +50,6 @@ const styles = {
     ...provided,
     width: '200px',
   }),
-  // placeholder: () => ({
-  //   color: 'white', fontWeight: 600, fontSize: '17px', marginRight: '-5px',
-  // }),
   option: (provided, state) => ({
     ...provided,
     color: state.isSelected ? '#0166AB' : 'black',
@@ -79,11 +77,10 @@ function RegionalSelect(props) {
 
   // const delayedCloseMenu = () => setTimeout(setMenuIsOpen(false), 1000);
 
-  const CustomOption = (props1) => {
+  const CustomOption = (customOptionProps) => {
     const {
-      data, innerProps, isSelected, innerRef,
-    } = props1;
-
+      data, innerRef, innerProps, isSelected,
+    } = customOptionProps;
     return data.custom ? (
       <div ref={innerRef} {...innerProps}>
         <Button
@@ -91,6 +88,7 @@ function RegionalSelect(props) {
           className="float-left margin-2 smart-hub--filter-button"
           onClick={() => {
             onApply(selectedItem);
+            setAppliedItem(selectedItem);
             setMenuIsOpen(false);
           }}
         >
@@ -98,7 +96,7 @@ function RegionalSelect(props) {
         </Button>
       </div>
     ) : (
-      <components.Option {...props1}>
+      <components.Option {...customOptionProps}>
         {data.label}
         {isSelected && (
           <img
