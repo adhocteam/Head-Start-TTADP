@@ -9,6 +9,7 @@ import DateRangeSelect from './components/DateRangeSelect';
 import './index.css';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
+import DashboardOverview from './components/DashboardOverview';
 
 function Dashboard({ user }) {
   const [appliedRegion, updateAppliedRegion] = useState(0);
@@ -120,6 +121,13 @@ function Dashboard({ user }) {
           </div>
 
         </div>
+
+          <DashboardOverview
+            filters={filters}
+            region={appliedRegion}
+            allRegions={regions}
+            skipLoading
+          />
 
       </>
 

@@ -22,6 +22,9 @@ const withWidgetData = (Widget, widgetId) => {
       const fetch = async () => {
         try {
           updateLoading(true);
+
+          // todo -> handle if all regions are selected (14)
+
           const requestedRegion = region || allRegions[0];
           const fetchedData = await fetchWidget(widgetId, requestedRegion);
           updateData(fetchedData);
@@ -32,7 +35,9 @@ const withWidgetData = (Widget, widgetId) => {
           updateLoading(false);
         }
       };
+
       fetch();
+   
     }, [region, allRegions]);
 
     if ((loading || loadingOverride) && !skipLoading) {
