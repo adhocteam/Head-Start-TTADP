@@ -29,7 +29,6 @@ export default async function dashboardOverview(scopes, region) {
       [sequelize.literal(`(SELECT COALESCE(SUM(duration), 0) FROM "ActivityReports" ${baseWhere} AND ${ttaWhere})`), 'sumDuration'],
 
       // number of non-grantees served
-      // hours of TTA
       // grantee requests
 
     ],
