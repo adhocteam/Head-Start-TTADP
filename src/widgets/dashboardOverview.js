@@ -8,10 +8,8 @@ import {
   (say for a time series). All widgets will need to honor the scopes that are passed in. All
   that is required is that the scopes parameter is used as value for the `where` parameter (or
   combined with [op.and] if the widget needs to add additional conditions to the query).
-
-  If adding a new widget be sure to add the widget to ./index.js
 */
-export default async function overview(scopes, region) {
+export default async function dashboardOverview(scopes, region) {
   const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${region})`;
   const trainingWhere = '"ttaType" = \'{"training"}\'';
   const taWhere = '"ttaType" = \'{"technical-assistance"}\'';
@@ -25,10 +23,15 @@ export default async function overview(scopes, region) {
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"ActivityReport".id'))), 'numReports'],
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"activityRecipients->grant"."id"'))), 'numGrants'],
       [sequelize.literal(`(SELECT COUNT(*) from "Grants" ${grantsWhere})`), 'numTotalGrants'],
-      [sequelize.literal(`(SELECT COALESCE(SUM("numberOfParticipants"), 0) FROM "ActivityReports" ${baseWhere})`), 'numParticipants'],
+      [sequelize.literal(`(SELECT COALESCE(SUM("numberOfParticipants"), 0) FROM "ActivityReports" ${baseWhere})`), 'numParticipants'], // remove
       [sequelize.literal(`(SELECT COALESCE(SUM(duration), 0) FROM "ActivityReports" ${baseWhere} AND ${trainingWhere})`), 'sumTrainingDuration'],
       [sequelize.literal(`(SELECT COALESCE(SUM(duration), 0) FROM "ActivityReports" ${baseWhere} AND ${taWhere})`), 'sumTaDuration'],
       [sequelize.literal(`(SELECT COALESCE(SUM(duration), 0) FROM "ActivityReports" ${baseWhere} AND ${ttaWhere})`), 'sumDuration'],
+
+      // number of non-grantees served
+      // hours of TTA
+      // grantee requests
+
     ],
     where: { [Op.and]: [scopes, { legacyId: null }] },
     raw: true,
