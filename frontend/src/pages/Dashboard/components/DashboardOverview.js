@@ -19,7 +19,7 @@ function Field({
           </span>) : null }            
         <span class="smart-hub--dashboard-overview-field-label display-flex flex-2 flex-column flex-justify-center">
           <span className="text-bold smart-hub--overview-font-size">{data}</span>     
-          {label}{labelExt}         
+          {label} {labelExt}         
         </span>      
       </div>
     );
