@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import '@testing-library/jest-dom';
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import moment from 'moment';
 
@@ -58,7 +60,7 @@ describe('DateRangePicker', () => {
     await waitFor(() => expect(onUpdateFilter).toHaveBeenCalledWith('query', '-2022/02/02'));
   });
 
-  it( 'handles focus correctly', async ()=> {
+  it('handles focus correctly', async () => {
     const onUpdateFilter = jest.fn();
     render(<RenderDateRangePicker onUpdateFilter={onUpdateFilter} />);
 
@@ -66,18 +68,16 @@ describe('DateRangePicker', () => {
     fireEvent.click(calendarButton);
 
     const startDate = await screen.findByRole('textbox', { name: 'Start Date' });
-    expect( startDate  ).toHaveFocus();   
+    expect(startDate).toHaveFocus();
 
-    const today = moment().format('dddd[,] MMMM D[,] YYYY'); 
+    const today = moment().format('dddd[,] MMMM D[,] YYYY');
     const todaysButton = screen.getByRole('button', { name: `Choose ${today} for the earliest date` });
     fireEvent.click(todaysButton);
 
-    const tomorrow = moment().add( 1, 'days').format('dddd[,] MMMM D[,] YYYY');
+    const tomorrow = moment().add(1, 'days').format('dddd[,] MMMM D[,] YYYY');
     const tomorrowsButton = screen.getByRole('button', { name: `Choose ${tomorrow} for the latest date` });
     fireEvent.click(tomorrowsButton);
 
-    expect( startDate  ).toHaveFocus();   
-
+    expect(startDate).toHaveFocus();
   });
-
 });
