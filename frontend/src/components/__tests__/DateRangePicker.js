@@ -67,9 +67,6 @@ describe('DateRangePicker', () => {
     const calendarButton = await screen.findByRole('button', { name: /open calendar"/i });
     fireEvent.click(calendarButton);
 
-    const startDate = await screen.findByRole('textbox', { name: 'Start Date' });
-    expect(startDate).toHaveFocus();
-
     const today = moment().format('dddd[,] MMMM D[,] YYYY');
     const todaysButton = screen.getByRole('button', { name: `Choose ${today} for the earliest date` });
     fireEvent.click(todaysButton);
@@ -78,6 +75,7 @@ describe('DateRangePicker', () => {
     const tomorrowsButton = screen.getByRole('button', { name: `Choose ${tomorrow} for the latest date` });
     fireEvent.click(tomorrowsButton);
 
+    const startDate = await screen.findByRole('textbox', { name: 'Start Date' });
     expect(startDate).toHaveFocus();
   });
 });
