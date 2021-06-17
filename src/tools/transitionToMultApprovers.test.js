@@ -87,10 +87,14 @@ describe('Transition to multiple approvers', () => {
   });
 
   it('updated the calculatedStatus of draft and deleted reports', async () => {
-    const draft = await ActivityReport.findAll({ where: { submissionStatus: REPORT_STATUSES.DRAFT } });
+    const draft = await ActivityReport.findAll({
+      where: { submissionStatus: REPORT_STATUSES.DRAFT },
+    });
     expect(draft.length).toBe(1);
     expect(draft[0].calculatedStatus).toEqual(REPORT_STATUSES.DRAFT);
-    const deleted = await ActivityReport.findAll({ where: { submissionStatus: REPORT_STATUSES.DELETED } });
+    const deleted = await ActivityReport.findAll({
+      where: { submissionStatus: REPORT_STATUSES.DELETED },
+    });
     expect(deleted.length).toBe(1);
     expect(deleted[0].calculatedStatus).toEqual(REPORT_STATUSES.DELETED);
   });

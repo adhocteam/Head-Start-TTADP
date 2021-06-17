@@ -294,7 +294,6 @@ export function activityReports(
   const scopes = filtersToScopes(filters);
 
   const where = {
-    regionId: regions,
     calculatedStatus: REPORT_STATUSES.APPROVED,
     [Op.and]: scopes,
   };

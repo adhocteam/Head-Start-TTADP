@@ -22,6 +22,7 @@ function copyStatus(report) {
   const { submissionStatus } = report;
   if (submissionStatus === REPORT_STATUSES.DRAFT
     || submissionStatus === REPORT_STATUSES.DELETED) {
+    // eslint-disable-next-line no-param-reassign
     report.calculatedStatus = submissionStatus;
   }
 }
