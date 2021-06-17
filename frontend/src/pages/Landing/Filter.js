@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@trussworks/react-uswds';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 
@@ -15,6 +14,7 @@ import {
   DATE_FMT,
   QUERY_CONDITIONS,
 } from './constants';
+import { DECIMAL_BASE } from '../../Constants';
 import './Filter.css';
 
 const defaultFilter = () => (
@@ -29,6 +29,24 @@ const defaultFilter = () => (
 function Filter({ applyFilters, forMyAlerts }) {
   const [open, updateOpen] = useState(false);
   const [filters, updateFilters] = useState([]);
+
+  const prevFilterCount = useRef();
+  const lastItemRef = useRef();
+  const menuRef = useRef();
+  const menuButtonRef = useRef();
+
+  useEffect(() => {
+    if (prevFilterCount.current !== filters.length && lastItemRef.current) {
+      lastItemRef.current.focus();
+    }
+    prevFilterCount.current = filters.length;
+  }, [filters]);
+
+  useEffect(() => {
+    if (open === true) {
+      menuRef.current.focus();
+    }
+  }, [open]);
 
   const onFilterUpdated = (index, name, value) => {
     const newFilters = [...filters];
@@ -55,6 +73,28 @@ function Filter({ applyFilters, forMyAlerts }) {
     applyFilters(filters);
   };
 
+  const onMenuBlur = (e) => {
+    // https://reactjs.org/docs/events.html#detecting-focus-entering-and-leaving
+    // e.relatedTarget can be null when focus changes within the menu (when using VoiceOver)
+
+    /**
+     * We check for these because if we don't, the filter menu will abruptly close when the calendar day
+     * or the month navigation buttons are clicked, rendering the date picker un-usable
+     */
+    const isCalendarControl = e.target.matches('.CalendarDay, .DayPickerNavigation_button');
+
+    if (!isCalendarControl && !e.currentTarget.contains(e.relatedTarget)) {
+      updateOpen(false);
+    }
+  };
+
+  const onMenuKeyDown = (e) => {
+    if (['Escape', 'Esc'].includes(e.key)) {
+      updateOpen(false);
+      menuButtonRef.current.focus();
+    }
+  };
+
   const hasFilters = filters.length !== 0;
   let filterClass = '';
 
@@ -64,38 +104,45 @@ function Filter({ applyFilters, forMyAlerts }) {
 
   return (
     <span className="position-relative">
-      <Button
+      <button
+        ref={menuButtonRef}
+        aria-haspopup="menu"
         type="button"
+        aria-label={`Filters Menu. ${filters.length} filter${filters.length !== 1 ? 's' : ''} currently applied`}
         onClick={() => {
           updateOpen(!open);
         }}
-        outline
-        className={`smart-hub--filter-button smart-hub--table-controls__button ${filterClass}`}
+        className={`usa-button usa-button--outline font-sans-xs margin-left-1 smart-hub--table-controls__button ${filterClass}`}
       >
         {`Filters ${filters.length > 0 ? `(${filters.length})` : ''}`}
         {' '}
         <FontAwesomeIcon className="margin-left-1" size="1x" style={{ paddingBottom: '2px' }} color="black" icon={faSortDown} />
-      </Button>
+      </button>
       {open && (
-      <div className="z-400 position-absolute">
+      <div role="menu" tabIndex={-1} onBlur={onMenuBlur} onKeyDown={onMenuKeyDown} ref={menuRef} className="z-400 left-0 position-absolute">
         <Container padding={2} className="margin-bottom-0">
           <div className="font-body-2xs">
             {hasFilters && (
               <>
-                {filters.map((f, index) => (
-                  <FilterItem
-                    key={f.id}
-                    id={f.id}
-                    condition={f.condition}
-                    topic={f.topic}
-                    query={f.query}
-                    forMyAlerts={forMyAlerts}
-                    onRemoveFilter={() => onRemoveFilter(index)}
-                    onUpdateFilter={(name, value) => {
-                      onFilterUpdated(index, name, value);
-                    }}
-                  />
-                ))}
+                {filters.map((f, index, array) => {
+                  const lastItem = index === array.length - 1;
+
+                  return (
+                    <FilterItem
+                      key={f.id}
+                      ref={lastItem ? lastItemRef : null}
+                      id={f.id}
+                      condition={f.condition}
+                      topic={f.topic}
+                      query={f.query}
+                      forMyAlerts={forMyAlerts}
+                      onRemoveFilter={() => onRemoveFilter(index)}
+                      onUpdateFilter={(name, value) => {
+                        onFilterUpdated(index, name, value);
+                      }}
+                    />
+                  );
+                })}
               </>
             )}
             {!hasFilters && (
@@ -104,24 +151,23 @@ function Filter({ applyFilters, forMyAlerts }) {
             </div>
             )}
             <div className="height-20 margin-top-2 clearfix">
-              <Button
+              <button
                 type="button"
-                outline
-                className="float-left smart-hub--filter-button"
+                className="usa-button usa-button--outline float-left font-sans-xs margin-left-1"
                 onClick={() => {
                   updateFilters([...filters, defaultFilter()]);
                 }}
               >
                 Add New Filter
-              </Button>
+              </button>
               {hasFilters && (
-              <Button
+              <button
                 type="button"
-                className="float-right smart-hub--filter-button"
+                className="usa-button float-right font-sans-xs margin-left-1"
                 onClick={onApplyFilter}
               >
                 Apply Filters
-              </Button>
+              </button>
               )}
             </div>
           </div>
@@ -141,7 +187,7 @@ Filter.defaultProps = {
   forMyAlerts: false,
 };
 
-export function filtersToQueryString(filters) {
+export function filtersToQueryString(filters, region) {
   const filtersWithValues = filters.filter((f) => {
     if (f.condition === WITHIN) {
       const [startDate, endDate] = f.query.split('-');
@@ -153,6 +199,9 @@ export function filtersToQueryString(filters) {
     const con = QUERY_CONDITIONS[filter.condition];
     return `${filter.topic}.${con}=${filter.query}`;
   });
+  if (region && (parseInt(region, DECIMAL_BASE) !== -1)) {
+    queryFragments.push(`region.in[]=${parseInt(region, DECIMAL_BASE)}`);
+  }
   return queryFragments.join('&');
 }
 

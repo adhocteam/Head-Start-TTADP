@@ -65,6 +65,12 @@ export default (sequelize, DataTypes) => {
         otherKey: 'objectiveId',
         as: 'objectivesWithGoals',
       });
+      ActivityReport.belongsToMany(models.Objective, {
+        through: models.ActivityReportObjective,
+        foreignKey: 'activityReportId',
+        otherKey: 'objectiveId',
+        as: 'objectives',
+      });
       ActivityReport.addScope('defaultScope', {
         where: {
           submissionStatus: {

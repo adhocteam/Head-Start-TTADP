@@ -87,43 +87,41 @@ function ReportsRow({ reports, removeAlert }) {
     ];
 
     return (
-      <>
-        <tr key={idKey}>
-          <td>
-            <Link
-              to={idLink}
-            >
-              {displayId}
-            </Link>
-          </td>
-          <td>
-            <span className="smart-hub--ellipsis" title={recipientsTitle}>
-              {recipients}
-            </span>
-          </td>
-          <td>{startDate}</td>
-          <td>
-            <span className="smart-hub--ellipsis" title={author ? author.fullName : ''}>
-              {author ? author.fullName : ''}
-            </span>
-          </td>
-          <td>
-            <span className="smart-hub--ellipsis" title={collaboratorsTitle}>
-              {collaboratorsWithTags}
-            </span>
-          </td>
-          <td>
-            <Tag
-              className={statusClassName}
-            >
-              {status === 'needs_action' ? 'Needs action' : status}
-            </Tag>
-          </td>
-          <td>
-            <ContextMenu label={contextMenuLabel} menuItems={menuItems} up={index + 1 === length} />
-          </td>
-        </tr>
-      </>
+      <tr key={idKey}>
+        <td>
+          <Link
+            to={idLink}
+          >
+            {displayId}
+          </Link>
+        </td>
+        <td>
+          <span className="smart-hub--ellipsis" title={recipientsTitle}>
+            {recipients}
+          </span>
+        </td>
+        <td>{startDate}</td>
+        <td>
+          <span className="smart-hub--ellipsis" title={author ? author.fullName : ''}>
+            {author ? author.fullName : ''}
+          </span>
+        </td>
+        <td>
+          <span className="smart-hub--ellipsis" title={collaboratorsTitle}>
+            {collaboratorsWithTags}
+          </span>
+        </td>
+        <td>
+          <Tag
+            className={statusClassName}
+          >
+            {status === 'needs_action' ? 'Needs action' : status}
+          </Tag>
+        </td>
+        <td>
+          <ContextMenu label={contextMenuLabel} menuItems={menuItems} up={index + 1 === length} />
+        </td>
+      </tr>
     );
   });
 
@@ -236,10 +234,10 @@ function MyAlerts(props) {
 
       {reports && (reports.length > 0 || hasFilters) && (
       <Container className="landing inline-size maxw-full" padding={0}>
-        <span className="smart-hub--alerts-table-controls">
+        <span className="smart-hub--alerts-table-controls display-flex flex-row flex-align-center">
           <Filter applyFilters={updateReportFilters} forMyAlerts />
           <ReportMenu
-            label="Open alerts report menu"
+            label="My Alerts report menu"
             hasSelectedReports={false}
             onExportAll={handleDownloadAllAlerts}
           />
@@ -266,7 +264,7 @@ function MyAlerts(props) {
           <Table className="usa-table usa-table--borderless" fullWidth>
             <caption className="smart-hub--table-caption">
               My activity report alerts
-              <p id="arTblDesc">with sorting</p>
+              <p className="usa-sr-only">with sorting</p>
             </caption>
             <thead>
               <tr>

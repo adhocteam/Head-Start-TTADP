@@ -45,7 +45,7 @@
     "uuid": "^8.3.2"
   },
   "engines": {
-    "node": "14.16.0"
+    "node": "14.16.1"
   },
   "scripts": {
     "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
@@ -149,7 +149,8 @@
     "coveragePathIgnorePatterns": [
       "<rootDir>/src/index.js",
       "<rootDir>/src/setupProxy.js",
-      "<rootDir>/src/pages/NotFound/index.js"
+      "<rootDir>/src/pages/NotFound/index.js",
+      "<rootDir>/src/polyfills.js"
     ],
     "coverageThreshold": {
       "global": {

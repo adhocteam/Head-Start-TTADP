@@ -180,6 +180,7 @@ export function activityReportById(activityReportId) {
         attributes: ['id', 'name', 'activityRecipientId', 'grantId', 'nonGranteeId'],
         as: 'activityRecipients',
         required: false,
+        separate: true,
         include: [
           {
             model: Grant,
@@ -228,6 +229,7 @@ export function activityReportById(activityReportId) {
         },
         as: 'attachments',
         required: false,
+        separate: true,
       },
       {
         model: NextStep,
@@ -239,6 +241,7 @@ export function activityReportById(activityReportId) {
         attributes: ['note', 'id'],
         as: 'specialistNextSteps',
         required: false,
+        separate: true,
       },
       {
         model: NextStep,
@@ -250,6 +253,7 @@ export function activityReportById(activityReportId) {
         attributes: ['note', 'id'],
         as: 'granteeNextSteps',
         required: false,
+        separate: true,
       },
       {
         model: ActivityReportApprover,
@@ -282,13 +286,11 @@ export function activityReportById(activityReportId) {
  * @returns {Promise<any>} - returns a promise with total reports count and the reports slice
  */
 export function activityReports(
-  readRegions,
   {
     sortBy = 'updatedAt', sortDir = 'desc', offset = 0, limit = REPORTS_PER_PAGE, ...filters
   },
   excludeLegacy = false,
 ) {
-  const regions = readRegions || [];
   const scopes = filtersToScopes(filters);
 
   const where = {
