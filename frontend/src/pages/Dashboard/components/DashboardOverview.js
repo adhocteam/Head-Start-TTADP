@@ -48,17 +48,20 @@ function DashboardOverview({ data }) {
     <div className="smart-hub--dashboard-overview">
       <Grid row className="smart-hub--dashboard-overview-data flex-wrap">
         <Field icon={faChartBar} iconColor="#148439" backgroundColor="#F0FCF4" label="Activity reports" data={data.numReports} />
-        <Field icon={faDollarSign} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served " labelExt={`(of ${data.numTotalGrants})`} data={data.numGrants} />
-        <Field icon={faUserFriends} iconColor="#264A64" backgroundColor="#ECEEF1" label="Non-grantees served" data={data.numParticipants} />
-        <Field icon={faClock} iconColor="#E29F4D" backgroundColor="#FFF1E0" label="Hours of TTA" data={data.sumTaDuration} />
-        <Field icon={faUser} iconColor="#A12854" backgroundColor="#FFE8F0" label="Grantee Requests" data={data.sumTaDuration} labelExt="(of 426)" />
+        <Field icon={faDollarSign} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served " labelExt={`(of ${data.numGrants})`} data={data.numGrants} />
+        <Field icon={faUserFriends} iconColor="#264A64" backgroundColor="#ECEEF1" label="Non-grantees served" data={data.nonGrantees} />
+        <Field icon={faClock} iconColor="#E29F4D" backgroundColor="#FFF1E0" label="Hours of TTA" data={data.sumDuration} />
+        <Field icon={faUser} iconColor="#A12854" backgroundColor="#FFE8F0" label="Grantee Requests" data={data.granteeRequests} labelExt="(of 426)" />
       </Grid>
     </div>
   );
 }
 
+// To Do - Clean Up This
 DashboardOverview.propTypes = {
   data: PropTypes.shape({
+    granteeRequests: PropTypes.string,
+    nonGrantees: PropTypes.string,
     numReports: PropTypes.string,
     numGrants: PropTypes.string,
     numTotalGrants: PropTypes.string,

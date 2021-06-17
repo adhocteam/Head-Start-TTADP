@@ -14,7 +14,9 @@ export async function getWidget(req, res) {
   }
 
   const query = await setReadRegions(req.query, req.session.userId, true);
+
   const region = ('region.in' in query && Array.isArray(query['region.in']) && query['region.in'][0]) ? parseInt(query['region.in'][0], DECIMAL_BASE) : 0;
+
   const scopes = filtersToScopes(query);
   const widgetData = await getWidgetData(scopes, region);
 
