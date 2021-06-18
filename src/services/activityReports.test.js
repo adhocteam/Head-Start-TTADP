@@ -346,7 +346,7 @@ describe('Activity Reports DB service', () => {
 
     it('retrieves reports with default sort by updatedAt', async () => {
       const { count, rows } = await activityReports({ 'region.in': ['1'] });
-      expect(rows.length).toBe(6);
+      expect(rows.length).toBe(4);
       expect(count).toBeDefined();
       expect(rows[0].id).toBe(latestReport.id);
     });
@@ -367,7 +367,7 @@ describe('Activity Reports DB service', () => {
       const { rows } = await activityReports({
         sortBy: 'collaborators', sortDir: 'asc', offset: 0, limit: 12, 'region.in': ['1'],
       });
-      expect(rows.length).toBe(6);
+      expect(rows.length).toBe(4);
       expect(rows[0].collaborators[0].name).toBe('user1000');
     });
 
@@ -378,7 +378,7 @@ describe('Activity Reports DB service', () => {
       const { rows } = await activityReports({
         sortBy: 'regionId', sortDir: 'desc', offset: 0, limit: 12, 'region.in': ['1', '2'],
       });
-      expect(rows.length).toBe(7);
+      expect(rows.length).toBe(5);
       expect(rows[0].regionId).toBe(2);
     });
 
@@ -386,7 +386,7 @@ describe('Activity Reports DB service', () => {
       const { rows } = await activityReports({
         sortBy: 'activityRecipients', sortDir: 'asc', offset: 0, limit: 12, 'region.in': ['1', '2'],
       });
-      expect(rows.length).toBe(7);
+      expect(rows.length).toBe(5);
       expect(rows[0].activityRecipients[0].grantId).toBe(firstGrant.id);
     });
 
@@ -397,7 +397,7 @@ describe('Activity Reports DB service', () => {
       const { rows } = await activityReports({
         sortBy: 'topics', sortDir: 'asc', offset: 0, limit: 12, 'region.in': ['1', '2'],
       });
-      expect(rows.length).toBe(7);
+      expect(rows.length).toBe(5);
       expect(rows[0].sortedTopics[0]).toBe('topic a');
       expect(rows[0].sortedTopics[1]).toBe('topic b');
       expect(rows[1].sortedTopics[0]).toBe('topic c');
@@ -445,9 +445,9 @@ describe('Activity Reports DB service', () => {
   });
 
   describe('getAllDownloadableActivityReports', () => {
-    let report;
-    let legacyReport;
     let approvedReport;
+    let legacyReport;
+    let nonApprovedReport;
 
     beforeAll(async () => {
       await User.findOrCreate({
@@ -461,18 +461,18 @@ describe('Activity Reports DB service', () => {
         imported: { foo: 'bar' },
         legacyId: 'R14-AR-123456',
         regionId: 14,
-        submissionStatus: REPORT_STATUSES.APPROVED,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
       };
       const mockReport = {
         ...submittedReport,
         regionId: 14,
-        submissionStatus: REPORT_STATUSES.APPROVED,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
       };
-      report = await ActivityReport.create(mockReport);
+      approvedReport = await ActivityReport.create(mockReport);
       await ActivityReport.create(mockReport);
       legacyReport = await ActivityReport.create(mockLegacyReport);
-      approvedReport = await ActivityReport.create({
-        ...mockReport, submissionStatus: REPORT_STATUSES.SUBMITTED,
+      nonApprovedReport = await ActivityReport.create({
+        ...mockReport, calculatedStatus: REPORT_STATUSES.SUBMITTED,
       });
     });
 
@@ -482,7 +482,7 @@ describe('Activity Reports DB service', () => {
       const ids = rows.map((row) => row.id);
 
       expect(ids.length).toEqual(2);
-      expect(ids).toContain(report.id);
+      expect(ids).toContain(approvedReport.id);
     });
 
     it('excludes legacy reports', async () => {
@@ -496,7 +496,7 @@ describe('Activity Reports DB service', () => {
       const result = await getAllDownloadableActivityReports([14]);
       const { rows } = result;
       const ids = rows.map((row) => row.id);
-      expect(ids).not.toContain(approvedReport.id);
+      expect(ids).not.toContain(nonApprovedReport.id);
     });
   });
 
@@ -516,15 +516,16 @@ describe('Activity Reports DB service', () => {
         userId: mockUserThree.id,
       };
       report = await ActivityReport.create(mockReport);
+      // user is author and report submitted, would not be alert
       await ActivityReport.create(mockReport);
     });
 
-    it('returns all reports', async () => {
+    it('returns all reports', async () => { // How did this test ever pass?
       const result = await getAllDownloadableActivityReportAlerts(mockUserThree.id);
       const { rows } = result;
       const ids = rows.map((row) => row.id);
 
-      expect(ids.length).toEqual(2);
+      expect(ids.length).toEqual(0); // Originally 2
       expect(ids).toContain(report.id);
     });
   });

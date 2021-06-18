@@ -741,14 +741,14 @@ export async function getAllDownloadableActivityReportAlerts(userId, filters) {
   const where = {
     [Op.and]: scopes,
     [Op.or]: [
-      {
+      { // User is approver, and report is submitted or needs_action
         [Op.or]: [
-          { calculatedStatus: REPORT_STATUSES.SUBMITTED },
+          { submissionStatus: REPORT_STATUSES.SUBMITTED },
           { calculatedStatus: REPORT_STATUSES.NEEDS_ACTION },
         ],
         '$approvers.userId$': userId,
       },
-      {
+      { // User is author or collaborator, and report is approved
         [Op.and]: [
           {
             [Op.and]: [
