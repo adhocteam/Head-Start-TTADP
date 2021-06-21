@@ -122,12 +122,12 @@ function Dashboard({ user }) {
 
         </div>
 
-          <DashboardOverview
-            filters={filters}
-            region={appliedRegion}
-            allRegions={regions}
-            skipLoading
-          />
+        <DashboardOverview
+          filters={filters}
+          region={appliedRegion}
+          allRegions={regions}
+          skipLoading
+        />
 
       </>
 

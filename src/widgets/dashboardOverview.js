@@ -14,20 +14,40 @@ export default async function dashboardOverview(scopes, region) {
   // const trainingWhere = '"ttaType" = \'{"training"}\'';
   // const taWhere = '"ttaType" = \'{"technical-assistance"}\'';
   const ttaWhere = '"ttaType" = \'{"training", "technical-assistance"}\'';
-  const baseWhere = `WHERE "regionId" IN (${region}) AND "legacyId" IS NULL AND "status" != 'deleted'`;
+  // const baseWhere = `WHERE "regionId" IN (${region})
+  // AND "legacyId" IS NULL AND "status" != 'deleted'`;
+  const baseWhere = `WHERE "regionId" IN (${region}) AND "status" != 'deleted'`;
   // There could be a better way, but using sequelize.literal was the only way I could get correct
   // numbers for SUM
   // FIXME: see if there is a better way to get totals using SUM
+
+  // const legacy = await ActivityReport.findAll(
+  //   {
+  //     attributes: [
+  //       [sequelize.fn('COUNT', sequelize.fn('DISTINCT',
+  // sequelize.col('"ActivityReport".id'))), 'numReports'],
+  //       [sequelize.fn('COUNT', sequelize.fn('DISTINCT',
+  // sequelize.col('"activityRecipients->grant"."id"'))), 'numGrants'],
+  //     ],
+  //     where: {
+  //       legacyId: {
+  //         [Op.not]: null,
+  //       },
+  //     },
+  //     raw: true,
+  //   },
+  // );
+
   const res = await ActivityReport.findAll({
     attributes: [
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"ActivityReport".id'))), 'numReports'], // (ok) activity reports
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"activityRecipients->grant"."id"'))), 'numGrants'], // (ok) grants served
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"activityRecipients->nonGrantee"."id"'))), 'nonGrantees'], // non-grantees served
       [sequelize.literal(`(SELECT COALESCE(SUM(duration), 0) FROM "ActivityReports" ${baseWhere} AND ${ttaWhere})`), 'sumDuration'], // (ok) hours of TTA
-      [sequelize.literal(`(SELECT COALESCE(SUM("numberOfParticipants"), 0) FROM "ActivityReports" ${baseWhere})`), 'granteeRequests'], // grantee requests
-
+      [sequelize.literal(`(SELECT COALESCE(SUM(duration), 0) FROM "ActivityReports" ${baseWhere} AND "deliveryMethod" = 'in-person')`), 'inPerson'], // (ok) in person activities
     ],
-    where: { [Op.and]: [scopes, { legacyId: null }] },
+    // where: { [Op.and]: [scopes, { legacyId: null }] },
+    where: { [Op.and]: [scopes] },
     raw: true,
     // without 'includeIgnoreAttributes' the attributes from the join table
     // "activityReportObjectives" are included which causes postgres to error when

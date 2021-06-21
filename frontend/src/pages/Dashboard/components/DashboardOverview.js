@@ -51,7 +51,7 @@ function DashboardOverview({ data }) {
         <Field icon={faDollarSign} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served " labelExt={`(of ${data.numGrants})`} data={data.numGrants} />
         <Field icon={faUserFriends} iconColor="#264A64" backgroundColor="#ECEEF1" label="Non-grantees served" data={data.nonGrantees} />
         <Field icon={faClock} iconColor="#E29F4D" backgroundColor="#FFF1E0" label="Hours of TTA" data={data.sumDuration} />
-        <Field icon={faUser} iconColor="#A12854" backgroundColor="#FFE8F0" label="Grantee Requests" data={data.granteeRequests} labelExt="(of 426)" />
+        <Field icon={faUser} iconColor="#A12854" backgroundColor="#FFE8F0" label="In-person activities" data={data.inPerson} />
       </Grid>
     </div>
   );
@@ -69,6 +69,7 @@ DashboardOverview.propTypes = {
     sumTrainingDuration: PropTypes.string,
     sumTaDuration: PropTypes.string,
     sumDuration: PropTypes.string,
+    inPerson: PropTypes.string,
   }).isRequired,
 };
 
