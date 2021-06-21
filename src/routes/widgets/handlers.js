@@ -13,7 +13,7 @@ export async function getWidget(req, res) {
     return;
   }
 
-  console.log(req.query);
+  // console.log(req.query);
 
   const query = await setReadRegions(req.query, req.session.userId, true);
 
