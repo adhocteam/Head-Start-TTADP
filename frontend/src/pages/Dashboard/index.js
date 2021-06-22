@@ -5,11 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
-
+import DashboardOverview from '../../widgets/DashboardOverview';
 import './index.css';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
-import DashboardOverview from './components/DashboardOverview';
 
 function Dashboard({ user }) {
   const [appliedRegion, updateAppliedRegion] = useState(0);
@@ -126,6 +125,7 @@ function Dashboard({ user }) {
           filters={filters}
           region={appliedRegion}
           allRegions={regions}
+          dateRange={dateRange}
           skipLoading
         />
 

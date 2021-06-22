@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChartBar, faDollarSign, faUserFriends, faUser, faClock,
 } from '@fortawesome/free-solid-svg-icons';
-import withWidgetData from '../../../widgets/withWidgetData';
+import withWidgetData from './withWidgetData';
 import './DashboardOverview.css';
 
 function Field({
