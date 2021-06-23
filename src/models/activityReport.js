@@ -268,10 +268,14 @@ export default (sequelize, DataTypes) => {
     modelName: 'ActivityReport',
     hooks: {
       beforeCreate: (report) => {
+        console.log('[AR beforeCreate hook]');
         copyStatus(report);
+        console.log('- [AR beforeCreate hook] stored calculatedStatus', report.calculatedStatus);
       },
       beforeUpdate: (report) => {
+        console.log('[AR beforeUpdate hook]');
         copyStatus(report);
+        console.log('- [AR beforeUpdate hook] stored calculatedStatus', report.calculatedStatus);
       },
     },
   });

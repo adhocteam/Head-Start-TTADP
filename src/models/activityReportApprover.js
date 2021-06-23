@@ -33,10 +33,12 @@ module.exports = (sequelize, DataTypes) => {
     activityReportId: {
       allowNull: false,
       type: DataTypes.INTEGER,
+      unique: 'reportApprover',
     },
     userId: {
       allowNull: false,
       type: DataTypes.INTEGER,
+      unique: 'reportApprover',
     },
     status: {
       allowNull: true,
@@ -48,20 +50,24 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     hooks: {
-      afterCreate: async (instance, options) => {
-        const { transaction } = options;
-        const report = await sequelize.models.ActivityReport.findByPk(
-          instance.activityReportId,
-          { transaction },
-        );
+      // I'll need an afterCreate hook too
+      afterUpsert: async (instances, options) => {
+        console.log('[Approver afterUpsert]');
+        const instance = instances[0]; // we'll need to loop here
+        const report = await sequelize.models.ActivityReport.findOne({
+          where: { id: instance.activityReportId },
+          transaction: options.transaction,
+        });
 
         let calculatedStatus;
         switch (instance.status) {
           case APPROVER_STATUSES.NEEDS_ACTION: {
+            console.log('- [Approver afterUpsert hook] got NEEDS_ACTION');
             calculatedStatus = REPORT_STATUSES.NEEDS_ACTION;
             break;
           }
           case APPROVER_STATUSES.APPROVED: {
+            console.log('- [Approver afterUpsert hook] got APPROVED');
             const approverStatuses = await sequelize.models.ActivityReportApprover.findAll(
               {
                 attributes: ['status'],
@@ -69,13 +75,14 @@ module.exports = (sequelize, DataTypes) => {
                 where: {
                   activityReportId: instance.activityReportId,
                 },
+                transaction: options.transaction,
               },
-              { transaction },
             ).map((a) => a.status);
             calculatedStatus = calculateStatus(approverStatuses);
             break;
           }
           default: {
+            console.log('- [Approver afterUpsert hook] got something else');
             calculatedStatus = REPORT_STATUSES.SUBMITTED;
             break;
           }
@@ -83,6 +90,7 @@ module.exports = (sequelize, DataTypes) => {
 
         report.calculatedStatus = calculatedStatus;
         await report.save();
+        console.log('- [Approver afterUpsert hook] stored calculateStatus', report.calculatedStatus);
       },
     },
     sequelize,

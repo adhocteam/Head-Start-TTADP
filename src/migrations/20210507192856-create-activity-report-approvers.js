@@ -48,6 +48,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+    }, {
+      uniqueKeys: {
+        actions_unique: {
+          fields: ['activityReportId', 'userId'],
+        },
+      },
     });
     await queryInterface.addConstraint('ActivityReportApprovers', ['activityReportId', 'userId'], {
       type: 'unique',

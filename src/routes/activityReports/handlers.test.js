@@ -110,6 +110,16 @@ const report = {
   displayId: 'mockreport-1',
 };
 
+const approvedReport = {
+  ...report,
+  calculatedStatus: REPORT_STATUSES.APPROVED,
+};
+
+const needsActionReport = {
+  ...report,
+  calculatedStatus: REPORT_STATUSES.NEEDS_ACTION,
+};
+
 describe('Activity Report handlers', () => {
   beforeAll(async () => {
     await UserModel.create(mockManager);
@@ -202,7 +212,14 @@ describe('Activity Report handlers', () => {
     };
     userById.mockResolvedValue({});
 
-    it('returns the new approved status', async () => {
+    it('returns the new approved status', async () => { // here
+      const mockApproverRecord = {
+        id: 1,
+        userId: approvedReportRequest.session.userId,
+        activityReportId: approvedReportRequest.params.activityReportId,
+        status: approvedReportRequest.body.status,
+        note: approvedReportRequest.body.note,
+      };
       activityReportById.mockResolvedValue({
         calculatedStatus: REPORT_STATUSES.APPROVED,
         activityRecipientType: 'grantee',
@@ -213,13 +230,6 @@ describe('Activity Report handlers', () => {
       ActivityReport.mockImplementationOnce(() => ({
         canReview: () => true,
       }));
-      const mockApproverRecord = {
-        id: 1,
-        userId: approvedReportRequest.session.userId,
-        activityReportId: approvedReportRequest.params.activityReportId,
-        status: approvedReportRequest.body.status,
-        note: approvedReportRequest.body.note,
-      };
       upsertApprover.mockResolvedValue(mockApproverRecord);
       const approvalNotification = jest.spyOn(mailer, 'reportApprovedNotification').mockImplementation();
 
@@ -228,7 +238,14 @@ describe('Activity Report handlers', () => {
       expect(approvalNotification).toHaveBeenCalled();
       expect(copyGoalsToGrants).toHaveBeenCalled();
     });
-    it('returns the new needs action status', async () => {
+    it('returns the new needs action status', async () => { // here
+      const mockApproverRecord = {
+        id: 1,
+        userId: needsActionReportRequest.session.userId,
+        activityReportId: needsActionReportRequest.params.activityReportId,
+        status: needsActionReportRequest.body.status,
+        note: needsActionReportRequest.body.note,
+      };
       activityReportById.mockResolvedValue({
         calculatedStatus: REPORT_STATUSES.NEEDS_ACTION,
         activityRecipientType: 'grantee',
@@ -239,13 +256,7 @@ describe('Activity Report handlers', () => {
       ActivityReport.mockImplementationOnce(() => ({
         canReview: () => true,
       }));
-      const mockApproverRecord = {
-        id: 1,
-        userId: needsActionReportRequest.session.userId,
-        activityReportId: needsActionReportRequest.params.activityReportId,
-        status: needsActionReportRequest.body.status,
-        note: needsActionReportRequest.body.note,
-      };
+
       upsertApprover.mockResolvedValue(mockApproverRecord);
       const changesRequestedNotification = jest.spyOn(mailer, 'changesRequestedNotification').mockImplementation();
 

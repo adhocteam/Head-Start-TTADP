@@ -1,4 +1,6 @@
-import db, { ActivityReport, ActivityReportApprover, User } from '../models';
+import db, {
+  ActivityReport, ActivityReportApprover, User, sequelize,
+} from '../models';
 import { upsertApprover } from './activityReportApprovers';
 import { REPORT_STATUSES } from '../constants';
 
@@ -26,10 +28,10 @@ const secondMockManger = {
   hsesUserId: '3000',
 };
 
-const draftReport = {
+const submittedReport = {
   userId: mockUser.id,
   regionId: 1,
-  submissionStatus: REPORT_STATUSES.DRAFT,
+  submissionStatus: REPORT_STATUSES.SUBMITTED,
   numberOfParticipants: 1,
   deliveryMethod: 'method',
   duration: 0,
@@ -43,17 +45,6 @@ const draftReport = {
   participants: ['participants'],
   topics: ['topics'],
   ttaType: ['type'],
-};
-
-const singleApproverSubmittedReport = {
-  ...draftReport,
-  submissionStatus: REPORT_STATUSES.SUBMITTED,
-  oldApprovingManagerId: mockManger.id,
-};
-
-const multiApproverSubmittedReport = {
-  ...draftReport,
-  submissionStatus: REPORT_STATUSES.SUBMITTED,
 };
 
 describe('Activity Reports Approvers', () => {
@@ -72,94 +63,68 @@ describe('Activity Reports Approvers', () => {
     await db.sequelize.close();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('upsertApprover upserts approvers, updates calculatedStatus', () => {
-    describe('when manager assigned by old "single approver" method', () => {
-      it('creates new "needs action" review', async () => {
-        const report = await ActivityReport.create(singleApproverSubmittedReport);
+    it('calculatedStatus is "needs action" if any approver "needs_action"', async () => {
+      const report = await ActivityReport.create(submittedReport);
+      // One approved
+      await ActivityReportApprover.create({
+        activityReportId: report.id,
+        userId: mockManger.id,
+        status: REPORT_STATUSES.APPROVED,
+      });
+      // One pending
+      await ActivityReportApprover.create({
+        activityReportId: report.id,
+        userId: secondMockManger.id,
+      });
+      await sequelize.transaction(async (transaction) => {
+        // Pending updated to needs_action
         const approver = await upsertApprover({
           status: REPORT_STATUSES.NEEDS_ACTION,
-          note: 'notes',
-        }, {
           activityReportId: report.id,
-          userId: report.oldApprovingManagerId,
-        });
+          userId: secondMockManger.id,
+        }, transaction);
         expect(approver.status).toEqual(REPORT_STATUSES.NEEDS_ACTION);
         const updatedReport = await ActivityReport.findByPk(report.id);
+        expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
         expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.NEEDS_ACTION);
-      });
-      it('creates new "approved" review', async () => {
-        const report = await ActivityReport.create(singleApproverSubmittedReport);
-        const approver = await upsertApprover({
-          status: REPORT_STATUSES.APPROVED,
-          note: 'notes',
-        }, {
-          activityReportId: report.id,
-          userId: report.oldApprovingManagerId,
-        });
-        const updatedReport = await ActivityReport.findByPk(report.id);
-        expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
-        expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.APPROVED);
       });
     });
-    describe('when manager assigned by new "multi approver" method', () => {
-      it('updates review to "needs action"', async () => {
-        const report = await ActivityReport.create(multiApproverSubmittedReport);
-        await ActivityReportApprover.create({
-          activityReportId: report.id,
-          userId: mockManger.id,
-        });
-        const approver = await upsertApprover({
-          status: REPORT_STATUSES.NEEDS_ACTION,
-          note: 'notes',
-        }, {
-          activityReportId: report.id,
-          userId: mockManger.id,
-        });
-        expect(approver.status).toEqual(REPORT_STATUSES.NEEDS_ACTION);
-        const updatedReport = await ActivityReport.findByPk(report.id);
-        expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
-        expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.NEEDS_ACTION);
+    it('calculatedStatus is "approved" if all approvers approve', async () => {
+      const report = await ActivityReport.create(submittedReport);
+      // One pending
+      await ActivityReportApprover.create({
+        activityReportId: report.id,
+        userId: mockManger.id,
       });
-      it('updates review to "approved"', async () => {
-        const report = await ActivityReport.create(multiApproverSubmittedReport);
-        await ActivityReportApprover.create({
-          userId: mockManger.id,
-          activityReportId: report.id,
-        });
-        const approver = await upsertApprover({
-          status: REPORT_STATUSES.APPROVED,
-          note: 'notes',
-        }, {
-          activityReportId: report.id,
-          userId: mockManger.id,
-        });
-        expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
-        const updatedReport = await ActivityReport.findByPk(report.id);
-        expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
-        expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.APPROVED);
+      // Pending updated to approved
+      const approver = await upsertApprover({
+        activityReportId: report.id,
+        userId: mockManger.id,
+        status: REPORT_STATUSES.APPROVED,
       });
-      it('updates review to "approved", but knows report is awaiting review', async () => {
-        const report = await ActivityReport.create(singleApproverSubmittedReport);
-        await ActivityReportApprover.create({
-          userId: secondMockManger.id,
-          activityReportId: report.id,
-        });
-        const approver = await upsertApprover({
-          status: REPORT_STATUSES.APPROVED,
-          note: 'notes',
-        }, {
-          activityReportId: report.id,
-          userId: secondMockManger.id,
-        });
-        expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
-        const updatedReport = await ActivityReport.findByPk(report.id);
-        expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
-        expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.SUBMITTED);
+      expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
+      const updatedReport = await ActivityReport.findByPk(report.id);
+      expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
+      expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.APPROVED);
+    });
+    it('calculatedStatus is "submitted" if approver is pending', async () => {
+      const report = await ActivityReport.create(submittedReport);
+      // One approved
+      await ActivityReportApprover.create({
+        activityReportId: report.id,
+        userId: mockManger.id,
+        status: REPORT_STATUSES.APPROVED,
       });
+      // One pending
+      const approver = await upsertApprover({
+        activityReportId: report.id,
+        userId: secondMockManger.id,
+      });
+      expect(approver.status).toBeNull();
+      const updatedReport = await ActivityReport.findByPk(report.id);
+      expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
+      expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.SUBMITTED);
     });
   });
 });

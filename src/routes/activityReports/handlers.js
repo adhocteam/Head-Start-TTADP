@@ -1,6 +1,7 @@
 import stringify from 'csv-stringify/lib/sync';
 import handleErrors from '../../lib/apiErrorHandler';
 import SCOPES from '../../middleware/scopeConstants';
+import { sequelize } from '../../models';
 import ActivityReport from '../../policies/activityReport';
 import User from '../../policies/user';
 import {
@@ -157,15 +158,21 @@ export async function reviewReport(req, res) {
       return;
     }
 
-    const savedApprover = upsertApprover({
-      status,
-      note,
-    }, {
-      activityReportId,
-      userId,
+    await sequelize.transaction(async (transaction) => {
+      const savedApprover = upsertApprover({
+        status,
+        note,
+      }, {
+        activityReportId,
+        userId,
+      },
+      transaction);
     });
 
+    console.log('savedApprover >', savedApprover);
+
     const reviewedReport = await activityReportById(activityReportId);
+    console.log('reviewedReport.calculatedStatus >', reviewedReport.calculatedStatus);
 
     if (reviewedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
       if (reviewedReport.activityRecipientType === 'grantee') {
