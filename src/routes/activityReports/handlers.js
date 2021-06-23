@@ -6,6 +6,7 @@ import User from '../../policies/user';
 import {
   possibleRecipients,
   activityReportById,
+  reportPlusRelatedData,
   createOrUpdate,
   review,
   activityReports,
@@ -271,6 +272,29 @@ export async function getReport(req, res) {
   }
 
   res.json(report);
+}
+
+/**
+ * Alt Retrieve an activity report
+ *
+ * @param {*} req - request
+ * @param {*} res - response
+ */
+export async function getReportAlt(req, res) {
+  const { activityReportId } = req.params;
+  const results = await reportPlusRelatedData(activityReportId);
+  if (!results || !results.length) {
+    res.sendStatus(404);
+    return;
+  }
+  // const user = await userById(req.session.userId);
+  // const authorization = new ActivityReport(user, report);
+
+  // if (!authorization.canGet()) {
+  //   res.sendStatus(403);
+  //   return;
+  // }
+  res.json(results[0]);
 }
 
 /**

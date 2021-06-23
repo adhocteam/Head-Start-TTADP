@@ -5,6 +5,7 @@ import {
   saveReport,
   createReport,
   getReport,
+  getReportAlt,
   getReports,
   getReportAlerts,
   getActivityRecipients,
@@ -36,6 +37,7 @@ router.get('/legacy/:legacyReportId', getLegacyReport);
 router.get('/download', downloadReports);
 router.get('/download-all', downloadAllReports);
 router.put('/legacy/:legacyReportId', userAdminAccessMiddleware, updateLegacyFields);
+router.get('/alt/:activityReportId', getReportAlt);
 router.get('/:activityReportId', getReport);
 router.get('/', getReports);
 router.put('/:activityReportId', saveReport);
