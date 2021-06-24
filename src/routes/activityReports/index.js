@@ -18,6 +18,7 @@ import {
   downloadAllReports,
   downloadAllAlerts,
 } from './handlers';
+import checkActivityReportIdMiddleware from '../../middleware/checkActivityReportIdMiddleware';
 import userAdminAccessMiddleware from '../../middleware/userAdminAccessMiddleware';
 
 const router = express.Router();
@@ -26,7 +27,6 @@ const router = express.Router();
  * API for activity reports
  */
 
-router.use(checkActivityReportIdMiddleware);
 router.post('/', createReport);
 router.get('/approvers', getApprovers);
 router.get('/activity-recipients', getActivityRecipients);
@@ -37,12 +37,12 @@ router.get('/legacy/:legacyReportId', getLegacyReport);
 router.get('/download', downloadReports);
 router.get('/download-all', downloadAllReports);
 router.put('/legacy/:legacyReportId', userAdminAccessMiddleware, updateLegacyFields);
-router.get('/:activityReportId', getReport);
+router.get('/:activityReportId', checkActivityReportIdMiddleware, getReport);
 router.get('/', getReports);
-router.put('/:activityReportId', saveReport);
-router.delete('/:activityReportId', softDeleteReport);
-router.put('/:activityReportId/reset', resetToDraft);
-router.put('/:activityReportId/review', reviewReport);
-router.post('/:activityReportId/submit', submitReport);
+router.put('/:activityReportId', checkActivityReportIdMiddleware, saveReport);
+router.delete('/:activityReportId', checkActivityReportIdMiddleware, softDeleteReport);
+router.put('/:activityReportId/reset', checkActivityReportIdMiddleware, resetToDraft);
+router.put('/:activityReportId/review', checkActivityReportIdMiddleware, reviewReport);
+router.post('/:activityReportId/submit', checkActivityReportIdMiddleware, submitReport);
 
 export default router;
