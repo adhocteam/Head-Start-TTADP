@@ -21,6 +21,9 @@ const RenderDateRangePicker = ({
   />
 );
 
+const today = moment().format('dddd[,] MMMM D[,] YYYY');
+const tomorrow = moment().add(1, 'days').format('dddd[,] MMMM D[,] YYYY');
+
 describe('DateRangePicker', () => {
   describe('query parsing', () => {
     it('parses both dates', async () => {
@@ -60,18 +63,16 @@ describe('DateRangePicker', () => {
     await waitFor(() => expect(onUpdateFilter).toHaveBeenCalledWith('query', '-2022/02/02'));
   });
 
-  it('handles focus correctly', async () => {
+  it('handles changing focus', async () => {
     const onUpdateFilter = jest.fn();
     render(<RenderDateRangePicker onUpdateFilter={onUpdateFilter} />);
 
     const calendarButton = await screen.findByRole('button', { name: /open calendar"/i });
     fireEvent.click(calendarButton);
 
-    const today = moment().format('dddd[,] MMMM D[,] YYYY');
     const todaysButton = screen.getByRole('button', { name: `Choose ${today} for the earliest date` });
     fireEvent.click(todaysButton);
 
-    const tomorrow = moment().add(1, 'days').format('dddd[,] MMMM D[,] YYYY');
     const tomorrowsButton = screen.getByRole('button', { name: `Choose ${tomorrow} for the latest date` });
     fireEvent.click(tomorrowsButton);
 
