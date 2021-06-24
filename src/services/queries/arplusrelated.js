@@ -31,15 +31,29 @@ recipients AS (
 GROUP BY
     t."activityReportId"
 ),
-goals as (
-    SELECT
-    DISTINCT ON ("Goals"."id")
-        "Goals".*,
-        o.id AS "objectiveId"
+goalsObjectives AS (
+    SELECT DISTINCT ON (g.id)
+        a."activityReportId",
+        g.*,
+        jsonb_agg(o) AS "objectives"
     FROM
-        "Goals"
-        LEFT JOIN "Objectives" as o
-    ON "Goals"."id" = o."goalId"
+        "Objectives" AS o
+        LEFT OUTER JOIN "ActivityReportObjectives" AS a ON a."objectiveId" = o."id"
+        LEFT OUTER JOIN "Goals" AS g ON o."goalId" = g.id
+    GROUP BY
+        a."activityReportId",
+        g.id
+),
+activityReportGoals AS (
+    SELECT
+        "activityReportId",
+        jsonb_agg(goalsObjectives) FILTER (WHERE goalsObjectives.id IS NOT NULL) AS "goals"
+    FROM
+        goalsObjectives
+    WHERE
+        "activityReportId" = $1
+    GROUP BY
+        "activityReportId"
 ),
 objectives AS (
     SELECT
@@ -65,18 +79,16 @@ objectivesWithoutGoals AS (
     WHERE
         objectives."goalId" IS NULL
 ),
-actitvityReportObjectives AS (
+activityReportObjectives AS (
     SELECT
         a."activityReportId",
         -- aggregate objectivesWithGoals and objectivesWithoutGoals, FILTER out null values
         jsonb_agg(objectivesWithGoals) FILTER (WHERE objectivesWithGoals.id IS NOT NULL) AS "objectivesWithGoals",
-        jsonb_agg(objectivesWithoutGoals) FILTER (WHERE objectivesWithoutGoals.id IS NOT NULL) AS "objectivesWithoutGoals",
-        jsonb_agg(goals) FILTER (WHERE goals.id IS NOT NULL) AS "goals"
+        jsonb_agg(objectivesWithoutGoals) FILTER (WHERE objectivesWithoutGoals.id IS NOT NULL) AS "objectivesWithoutGoals"
     FROM
         "ActivityReportObjectives" AS a
         LEFT JOIN objectivesWithGoals ON objectivesWithGoals."id" = a."objectiveId"
         LEFT JOIN objectivesWithoutGoals ON objectivesWithoutGoals."id" = a."objectiveId"
-        LEFT JOIN goals ON goals."objectiveId" = a."objectiveId"
     WHERE
         a."activityReportId" = $1
     GROUP BY
@@ -158,7 +170,8 @@ FROM
     "ActivityReports"
     LEFT OUTER JOIN collaborators ON "ActivityReports".id = collaborators."activityReportId"
     LEFT OUTER JOIN recipients ON "ActivityReports".id = recipients."activityReportId"
-    LEFT OUTER JOIN actitvityReportObjectives ON "ActivityReports".id = actitvityReportObjectives."activityReportId"
+    LEFT OUTER JOIN activityReportObjectives ON "ActivityReports".id = activityReportObjectives."activityReportId"
+    LEFT OUTER JOIN activityReportGoals ON "ActivityReports".id = activityReportGoals."activityReportId"
     LEFT OUTER JOIN author ON "ActivityReports".id = author."activityReportId"
     LEFT OUTER JOIN attachments ON "ActivityReports".id = attachments."activityReportId"
     LEFT OUTER JOIN specialistNextSteps ON "ActivityReports".id = specialistNextSteps."activityReportId"
