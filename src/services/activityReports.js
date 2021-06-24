@@ -24,6 +24,7 @@ import {
 } from './goals';
 
 import { saveObjectivesForReport } from './objectives';
+import AR_PLUS_RELATED_QUERY from './queries/arplusrelated';
 
 async function saveReportCollaborators(activityReportId, collaborators, transaction) {
   const newCollaborators = collaborators.map((collaborator) => ({
@@ -292,6 +293,15 @@ export function activityReportById(activityReportId) {
       [{ model: Objective, as: 'objectivesWithGoals' }, 'id', 'ASC'],
     ],
   });
+}
+/**
+ * Fetch an ActivityReport, plus many related objects
+ * @param {number} activityReportId
+ * @returns {Promise<[results, metadata]>}
+ */
+export function reportPlusRelatedData(activityReportId) {
+  return sequelize.query(AR_PLUS_RELATED_QUERY,
+    { bind: [activityReportId], type: sequelize.QueryTypes.SELECT });
 }
 
 /**
