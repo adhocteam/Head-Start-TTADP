@@ -26,6 +26,7 @@ const router = express.Router();
  * API for activity reports
  */
 
+router.use(checkActivityReportIdMiddleware);
 router.post('/', createReport);
 router.get('/approvers', getApprovers);
 router.get('/activity-recipients', getActivityRecipients);
