@@ -123,22 +123,10 @@ export async function getUserReadRegions(userId) {
 export async function setReadRegions(query, userId, useFirstReadRegion = false) {
   const readRegions = await getUserReadRegions(userId);
 
-  if (readRegions.length === 4) {
-    console.log('[Test] query', query);
-    console.log('[Test] query[region.in] is array', Array.isArray(query['region.in']));
-    console.log('[Test] query[region.in]', query['region.in']);
-    console.log('[Test] region.in in query', 'region.in' in query);
-    console.log('[Test] readRegions', readRegions);
-    console.log('[Test] query[region.in][0]', query['region.in'][0]);
-  }
-
   // if region.in is part of query (user has requested specific regions)
   if ('region.in' in query && Array.isArray(query['region.in']) && query['region.in'][0]) {
     // first check to see if "all regions (central office)" is selected
     // if so, return all regions has access to
-
-    console.log('[Test] query[region.in].length', query['region.in'].length);
-    console.log('[Test] parseInt(query[region.in][0], DECIMAL_BASE)', parseInt(query['region.in'][0], DECIMAL_BASE));
 
     if (query['region.in'].length === 1 && parseInt(query['region.in'][0], DECIMAL_BASE) === 14) {
       return {

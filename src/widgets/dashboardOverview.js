@@ -79,9 +79,6 @@ export default async function dashboardOverview(scopes, region, date) {
             as: 'grant',
             attributes: [],
             required: false,
-            where: {
-              [Op.and]: [scopes],
-            },
           },
           {
             model: NonGrantee,
