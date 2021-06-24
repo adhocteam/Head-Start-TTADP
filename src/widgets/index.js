@@ -1,6 +1,6 @@
 import example from './example';
 import overview from './overview';
-import dashboardOverview from './dashboardOverview';
+import reasonList from './reasonList';
 
 /*
   All widgets need to be added to this object
@@ -8,5 +8,5 @@ import dashboardOverview from './dashboardOverview';
 export default {
   example,
   overview,
-  dashboardOverview,
+  reasonList,
 };
