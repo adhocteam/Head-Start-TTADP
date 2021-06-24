@@ -13,13 +13,11 @@ function Field({
 }) {
   return (
     <div className="smart-hub--dashboard-overview-field flex-1 display-flex bg-white shadow-2 padding-2 margin-1">
-      {icon ? (
-        <span className="smart-hub--dashboard-overview-field-icon flex-1 display-flex flex-justify-center flex-align-center">
-          <span className="smart-hub--dashboard-overview-field-icon-background display-flex flex-justify-center flex-align-center" style={{ backgroundColor }}>
-            <FontAwesomeIcon color={iconColor} icon={icon} />
-          </span>
+      <span className="smart-hub--dashboard-overview-field-icon flex-1 display-flex flex-justify-center flex-align-center">
+        <span className="smart-hub--dashboard-overview-field-icon-background display-flex flex-justify-center flex-align-center" style={{ backgroundColor }}>
+          <FontAwesomeIcon color={iconColor} icon={icon} />
         </span>
-      ) : null }
+      </span>
       <span className="smart-hub--dashboard-overview-field-label display-flex flex-2 flex-column flex-justify-center">
         <span className="text-bold smart-hub--overview-font-size">{data}</span>
         {label}
@@ -43,12 +41,12 @@ Field.defaultProps = {
   labelExt: '',
 };
 
-function DashboardOverview({ data }) {
+export function DashboardOverviewWidget({ data }) {
   return (
     <div className="smart-hub--dashboard-overview">
       <Grid row className="smart-hub--dashboard-overview-data flex-wrap">
         <Field icon={faChartBar} iconColor="#148439" backgroundColor="#F0FCF4" label="Activity reports" data={data.numReports} />
-        <Field icon={faBuilding} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served" labelExt={`(of ${data.numGrants})`} data={data.numGrants} />
+        <Field icon={faBuilding} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served" data={data.numGrants} labelExt={`(of ${data.numTotalGrants})`} />
         <Field icon={faUserFriends} iconColor="#264A64" backgroundColor="#ECEEF1" label="Non-grantees served" data={data.nonGrantees} />
         <Field icon={faClock} iconColor="#E29F4D" backgroundColor="#FFF1E0" label="Hours of TTA" data={data.sumDuration} />
         <Field icon={faUser} iconColor="#A12854" backgroundColor="#FFE8F0" label="In-person activities" data={data.inPerson} />
@@ -57,20 +55,16 @@ function DashboardOverview({ data }) {
   );
 }
 
-// To Do - Clean Up This
-DashboardOverview.propTypes = {
+// To Do - Clean This Up
+DashboardOverviewWidget.propTypes = {
   data: PropTypes.shape({
-    granteeRequests: PropTypes.string,
     nonGrantees: PropTypes.string,
     numReports: PropTypes.string,
     numGrants: PropTypes.string,
     numTotalGrants: PropTypes.string,
-    numParticipants: PropTypes.string,
-    sumTrainingDuration: PropTypes.string,
-    sumTaDuration: PropTypes.string,
     sumDuration: PropTypes.string,
     inPerson: PropTypes.string,
   }).isRequired,
 };
 
-export default withWidgetData(DashboardOverview, 'dashboardOverview');
+export default withWidgetData(DashboardOverviewWidget, 'dashboardOverview');
