@@ -45,7 +45,7 @@ const reportObject = {
   ],
   approvingManagerId: 1,
   numberOfParticipants: 11,
-  deliveryMethod: 'method',
+  deliveryMethod: 'in-person',
   duration: 1,
   endDate: '2000-01-01T12:00:00Z',
   startDate: '2000-01-01T12:00:00Z',
@@ -65,14 +65,15 @@ const regionOneReport = {
 
 const regionTwoReport = {
   ...reportObject,
-  regionId: 2,
+  regionId: 18,
 };
 
 const reportWithNewDate = {
   ...reportObject,
   startDate: '2021-06-01T12:00:00Z',
   endDate: '2021-06-02T12:00:00Z',
-  regionId: 5,
+  regionId: 17,
+  deliveryMethod: 'method',
 };
 
 describe('Overview widget', () => {
@@ -92,6 +93,19 @@ describe('Overview widget', () => {
       },
     });
     await NonGrantee.findOrCreate({ where: { id: GRANTEE_ID, name: 'nonGrantee' } });
+
+    const reportOne = await ActivityReport.findOne({ where: { duration: 1 } });
+    await createOrUpdate(regionOneReport, reportOne);
+    const reportTwo = await ActivityReport.findOne({ where: { duration: 2 } });
+    await createOrUpdate({ ...regionOneReport, duration: 2 }, reportTwo);
+    const reportFour = await ActivityReport.findOne({ where: { duration: 4, ttaType: ['training'] } });
+    await createOrUpdate({ ...regionOneReport, duration: 4, ttaType: ['training'] }, reportFour);
+    const reportFive = await ActivityReport.findOne({ where: { duration: 5, ttaType: ['training', 'technical-assistance'] } });
+    await createOrUpdate({ ...regionOneReport, duration: 5, ttaType: ['training', 'technical-assistance'] }, reportFive);
+    const reportOneR2 = await ActivityReport.findOne({ where: { duration: 1.5 } });
+    await createOrUpdate({ ...regionTwoReport, duration: 1.5 }, reportOneR2);
+    const newDateReport = await ActivityReport.findOne({ where: { duration: 6 } });
+    await createOrUpdate({ ...reportWithNewDate }, newDateReport);
   });
 
   afterAll(async () => {
@@ -114,37 +128,38 @@ describe('Overview widget', () => {
     jest.clearAllMocks();
   });
 
-  it('retrieves data correctly', async () => {
-    const reportOne = await ActivityReport.findOne({ where: { duration: 1 } });
-    await createOrUpdate(regionOneReport, reportOne);
-    const reportTwo = await ActivityReport.findOne({ where: { duration: 2 } });
-    await createOrUpdate({ ...regionOneReport, duration: 2 }, reportTwo);
-    const reportFour = await ActivityReport.findOne({ where: { duration: 4, ttaType: ['training'] } });
-    await createOrUpdate({ ...regionOneReport, duration: 4, ttaType: ['training'] }, reportFour);
-    const reportFive = await ActivityReport.findOne({ where: { duration: 5, ttaType: ['training', 'technical-assistance'] } });
-    await createOrUpdate({ ...regionOneReport, duration: 5, ttaType: ['training', 'technical-assistance'] }, reportFive);
-    const reportOneR2 = await ActivityReport.findOne({ where: { duration: 1.5 } });
-    await createOrUpdate({ ...regionTwoReport, duration: 1.5 }, reportOneR2);
-    const newDateReport = await ActivityReport.findOne({ where: { duration: 6 } });
-    await createOrUpdate({ ...reportWithNewDate }, newDateReport);
-
+  it('retrieves data', async () => {
     const scopes = filtersToScopes({ 'region.in': ['17'] });
     const data = await dashboardOverview(scopes, 17, ['01/01/2000', '01/01/2000']);
 
     expect(data.numReports).toBe('4');
     expect(data.numGrants).toBe('2');
-    expect(data.numGrantees).toBe('100');
-    expect(data.inPerson).toBe('100');
-    expect(data.numParticipants).toBe('44');
-    expect(data.sumDuration).toBe('5.0');
+    expect(data.numTotalGrants).toBe('2');
+    expect(data.inPerson).toBe('12.0');
+    expect(data.sumDuration).toBe('13.0');
+    // nonGrantees need to be tested here
+  });
 
-    const secondData = await dashboardOverview(scopes, 5, ['06/01/2021', '06/01/2021']);
+  it('accounts for different date ranges', async () => {
+    const scopes = filtersToScopes({ 'region.in': ['17'] });
+    const data = await dashboardOverview(scopes, 17, ['06/01/2021', '06/01/2021']);
 
-    expect(secondData.numReports).toBe('4');
-    expect(secondData.numGrants).toBe('2');
-    expect(secondData.numGrantees).toBe('100');
-    expect(secondData.inPerson).toBe('100');
-    expect(secondData.numParticipants).toBe('44');
-    expect(secondData.sumDuration).toBe('5.0');
+    expect(data.numReports).toBe('1');
+    expect(data.numGrants).toBe('2');
+    expect(data.numTotalGrants).toBe('2');
+    expect(data.inPerson).toBe('12.0');
+    expect(data.sumDuration).toBe('13.0');
+    // nonGrantees need to be tested here
+  });
+  it('accounts for different regions', async () => {
+    const scopes = filtersToScopes({ 'region.in': ['18'] });
+    const data = await dashboardOverview(scopes, 18, ['01/01/2000', '01/01/2000']);
+
+    expect(data.numReports).toBe('1');
+    expect(data.numGrants).toBe('2');
+    expect(data.numTotalGrants).toBe('0');
+    expect(data.inPerson).toBe('1.5');
+    // nonGrantees need to be tested here
+    expect(data.sumDuration).toBe('1.5');
   });
 });
