@@ -110,16 +110,6 @@ const report = {
   displayId: 'mockreport-1',
 };
 
-const approvedReport = {
-  ...report,
-  calculatedStatus: REPORT_STATUSES.APPROVED,
-};
-
-const needsActionReport = {
-  ...report,
-  calculatedStatus: REPORT_STATUSES.NEEDS_ACTION,
-};
-
 describe('Activity Report handlers', () => {
   beforeAll(async () => {
     await UserModel.create(mockManager);

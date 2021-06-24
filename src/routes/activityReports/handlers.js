@@ -147,9 +147,12 @@ export async function reviewReport(req, res) {
     const { status, note } = req.body;
     const { userId } = req.session;
 
+    if (!Number.isInteger(activityReportId)) {
+      res.sendStatus(400);
+      return;
+    }
+
     const user = await userById(userId);
-    // Need activity report to check if authorization to review
-    // was granted by old 'single approver' method
     const report = await activityReportById(activityReportId);
     const authorization = new ActivityReport(user, report);
 
@@ -158,16 +161,13 @@ export async function reviewReport(req, res) {
       return;
     }
 
-    await sequelize.transaction(async (transaction) => {
-      const savedApprover = upsertApprover({
-        status,
-        note,
-      }, {
-        activityReportId,
-        userId,
-      },
-      transaction);
-    });
+    const transaction = sequelize.transaction(async (t) => t);
+    const savedApprover = await upsertApprover({
+      status,
+      note,
+      activityReportId,
+      userId,
+    }, transaction);
 
     console.log('savedApprover >', savedApprover);
 
@@ -267,11 +267,13 @@ export async function submitReport(req, res) {
 
     // Save Approvers and notify
     const savedApprovers = [];
-    userIds.forEach((userId) => {
-      const savedApprover = upsertApprover({}, {
+    userIds.forEach(async (userId) => {
+      const transaction = sequelize.transaction(async (t) => t);
+      const savedApprover = await upsertApprover({
         activityReportId,
         userId,
-      });
+      }, transaction);
+
       savedApprovers.push(savedApprover);
     });
     approverAssignedNotification(savedReport, savedApprovers);
