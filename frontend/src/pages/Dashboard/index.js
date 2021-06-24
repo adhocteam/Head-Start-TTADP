@@ -43,7 +43,7 @@ function Dashboard({ user }) {
       },
       {
         id: uuidv4(),
-        topic: 'dateRange',
+        topic: 'startDate',
         condition: 'Is within',
         query: dateRange,
       },
