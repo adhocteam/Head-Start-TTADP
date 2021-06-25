@@ -16,7 +16,7 @@ export async function getWidget(req, res) {
   const query = await setReadRegions(req.query, req.session.userId, true);
 
   const region = ('region.in' in query && Array.isArray(query['region.in']) && query['region.in'][0]) ? parseInt(query['region.in'][0], DECIMAL_BASE) : 0;
-  const date = req.query.date ? req.query.date.split('-') : false;
+  const date = req.query['startDate.win'] ? req.query['startDate.win'].split('-') : false;
 
   const scopes = filtersToScopes(query);
   const widgetData = await getWidgetData(scopes, region, date);
