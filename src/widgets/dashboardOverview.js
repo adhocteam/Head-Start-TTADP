@@ -5,32 +5,45 @@ import {
 } from '../models';
 import { REPORT_STATUSES } from '../constants';
 
-export default async function dashboardOverview(scopes, region) {
-  // we pass the selected date range into the sequelize findAll
-  // (if nothing is selected, we get the last thirty days)
-  // const DATE_FORMAT = 'YYYY-MM-DD';
-  // const dateRange = date && date.length > 1 ? date.map((day) => day.replace('/', '-')) :
-  // [moment().subtract(30, 'days').format(DATE_FORMAT), moment().format(DATE_FORMAT)];
-  // Filter by region and status (only approved reports)
-  const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${region})`;
+export default async function dashboardOverview(scopes, query) {
+  const { region } = query;
 
-  const inPersonDuration = await ActivityReport.findAll({
+  let regions = region ? [region] : [0];
+
+  if ('region.in' in query) {
+    if (Array.isArray(query['region.in'])) {
+      const regionsFromQuery = query['region.in'];
+      regions = regionsFromQuery.join(',');
+    }
+  }
+
+  const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${regions})`;
+
+  const duration = await ActivityReport.findAll({
     attributes: [
-      [sequelize.fn('SUM', sequelize.col('duration')), 'sumDuration'],
+      'duration',
+      'deliveryMethod',
     ],
     where: {
+      [Op.and]: [scopes],
       status: REPORT_STATUSES.APPROVED,
-      deliveryMethod: {
-        [Op.eq]: 'in-person',
-      },
+
     },
     raw: true,
-    // without 'includeIgnoreAttributes' the attributes from the join table
-    // "activityReportObjectives" are included which causes postgres to error when
-    // those attributes are not aggregated or used in a group by (since all the
-    // other DB fields are aggregated)
     includeIgnoreAttributes: false,
   });
+
+  // eslint-disable-next-line max-len
+  const sumDuration = duration.reduce((acc, report) => acc + (report.duration ? parseFloat(report.duration) : 0), 0)
+    .toFixed(1)
+    .toString();
+
+  const inPerson = duration.filter((report) => report.deliveryMethod === 'in-person')
+    .reduce((acc, report) => (
+      acc + parseFloat(report.duration)
+    ), 0)
+    .toFixed(1)
+    .toString();
 
   const res = await ActivityReport.findAll({
     attributes: [
@@ -39,17 +52,13 @@ export default async function dashboardOverview(scopes, region) {
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"ActivityReport".id'))), 'numReports'],
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"activityRecipients->grant"."id"'))), 'numGrants'],
       [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('"activityRecipients->nonGrantee"."id"'))), 'nonGrantees'],
-      [sequelize.fn('SUM', sequelize.col('duration')), 'sumDuration'],
     ],
     where: {
       [Op.and]: [scopes],
       status: REPORT_STATUSES.APPROVED,
     },
+    logging: console.log,
     raw: true,
-    // without 'includeIgnoreAttributes' the attributes from the join table
-    // "activityReportObjectives" are included which causes postgres to error when
-    // those attributes are not aggregated or used in a group by (since all the
-    // other DB fields are aggregated)
     includeIgnoreAttributes: false,
     include: [
       {
@@ -63,6 +72,9 @@ export default async function dashboardOverview(scopes, region) {
             as: 'grant',
             attributes: [],
             required: false,
+            where: {
+              [Op.and]: [scopes],
+            },
           },
           {
             model: NonGrantee,
@@ -77,6 +89,8 @@ export default async function dashboardOverview(scopes, region) {
 
   return {
     ...res[0],
-    inPerson: inPersonDuration[0].sumDuration,
+    // inPerson: inPersonDuration[0].sum,
+    inPerson,
+    sumDuration,
   };
 }
