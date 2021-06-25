@@ -57,7 +57,6 @@ export default async function dashboardOverview(scopes, query) {
       [Op.and]: [scopes],
       status: REPORT_STATUSES.APPROVED,
     },
-    logging: console.log,
     raw: true,
     includeIgnoreAttributes: false,
     include: [
@@ -72,6 +71,9 @@ export default async function dashboardOverview(scopes, query) {
             as: 'grant',
             attributes: [],
             required: false,
+            where: {
+              [Op.and]: [scopes],
+            },
           },
           {
             model: NonGrantee,
