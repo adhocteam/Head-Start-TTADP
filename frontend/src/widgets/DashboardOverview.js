@@ -42,6 +42,10 @@ Field.defaultProps = {
 };
 
 export function DashboardOverviewWidget({ data }) {
+  if (!data) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="smart-hub--dashboard-overview">
       <Grid row className="smart-hub--dashboard-overview-data flex-wrap">
