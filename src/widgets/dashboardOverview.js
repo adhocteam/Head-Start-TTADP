@@ -13,11 +13,11 @@ export default async function dashboardOverview(scopes, query) {
   if ('region.in' in query) {
     if (Array.isArray(query['region.in'])) {
       const regionsFromQuery = query['region.in'];
-      regions = regionsFromQuery.join(',');
+      regions = regionsFromQuery;
     }
   }
 
-  const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${regions})`;
+  const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${regions.join(',')})`;
 
   const duration = await ActivityReport.findAll({
     attributes: [
@@ -72,9 +72,6 @@ export default async function dashboardOverview(scopes, query) {
             as: 'grant',
             attributes: [],
             required: false,
-            where: {
-              [Op.and]: [scopes],
-            },
           },
           {
             model: NonGrantee,
