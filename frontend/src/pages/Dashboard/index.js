@@ -6,6 +6,7 @@ import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
+import ArGraph from '../../widgets/ArGraph';
 import './index.css';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
@@ -92,46 +93,53 @@ function Dashboard({ user }) {
 
   return (
     <div className="ttahub-dashboard">
-      <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
+      <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard">
+        { /* todo - adjust content security policy to allow this */}
+        <script crossOrigin src="https://cdn.plot.ly/plotly-latest.min.js" />
+      </Helmet>
 
-      <>
-        <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
+      <div className={appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom` : mainClassNames}>
 
-        <div className={appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom` : mainClassNames}>
-
-          <RegionDisplay
-            regions={regions}
-            appliedRegion={appliedRegion}
-            onApplyRegion={onApplyRegion}
-            hasCentralOffice={hasCentralOffice}
-          />
-
-          <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
-            <DateRangeSelect
-              onApply={onApplyDateRange}
-            />
-
-            <DateSelect
-              dateRange={dateRange}
-              updateDateRange={updateDateRange}
-              selectedDateRangeOption={selectedDateRangeOption}
-              gainFocus={gainFocus}
-            />
-          </div>
-
-        </div>
-
-        <DashboardOverview
-          filters={filters}
-          region={appliedRegion}
-          allRegions={regions}
-          dateRange={dateRange}
-          skipLoading
+        <RegionDisplay
+          regions={regions}
+          appliedRegion={appliedRegion}
+          onApplyRegion={onApplyRegion}
+          hasCentralOffice={hasCentralOffice}
         />
 
-      </>
+        <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
+          <DateRangeSelect
+            onApply={onApplyDateRange}
+          />
+
+          <DateSelect
+            dateRange={dateRange}
+            updateDateRange={updateDateRange}
+            selectedDateRangeOption={selectedDateRangeOption}
+            gainFocus={gainFocus}
+          />
+        </div>
+
+      </div>
+
+      <DashboardOverview
+        filters={filters}
+        region={appliedRegion}
+        allRegions={regions}
+        dateRange={dateRange}
+        skipLoading
+      />
+
+      <ArGraph
+        filters={filters}
+        region={appliedRegion}
+        allRegions={regions}
+        dateRange={dateRange}
+        skipLoading
+      />
 
     </div>
+
   );
 }
 
