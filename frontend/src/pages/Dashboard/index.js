@@ -10,6 +10,8 @@ import './index.css';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
+import ReasonList from '../../widgets/ReasonList';
+
 function Dashboard({ user }) {
   const [appliedRegion, updateAppliedRegion] = useState(0);
   const [regions, updateRegions] = useState([]);
@@ -118,6 +120,15 @@ function Dashboard({ user }) {
               gainFocus={gainFocus}
             />
           </div>
+
+
+          <ReasonList
+            filters={filters}
+            region={appliedRegion}
+            allRegions={getUserRegions(user)}
+            skipLoading />
+
+
 
         </div>
 

@@ -1,0 +1,37 @@
+.smart-hub--overview-border {
+    border: 3px solid #0166ab;
+    width: 509px;
+    height: 409px;
+
+    min-width: 509px;
+    min-height: 409px;
+
+    max-width: 509px;
+    max-height: 409px;
+  }
+
+.smart-hub--reason-list-table {
+    width: 509px;
+    height: 409px;
+
+    min-width: 509px;
+    min-height: 409px;
+
+    max-width: 509px;
+    max-height: 409px;
+}
+
+.smart-hub--reason-list-heading {
+    font-family: Source Sans Pro Web, Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
+    font-size: 20px;
+    color: #21272d;
+    font-weight: bold;
+    line-height: 24px;
+  }
+
+  .padding-5 {
+
+    padding: 10px;
+  }
+
+
