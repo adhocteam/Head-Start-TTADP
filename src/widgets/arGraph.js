@@ -1,87 +1,84 @@
+// eslint-disable-next-line no-unused-vars
 export default async function arGraph(scopes, query) {
-  return {
-    data: [
-      {
-        reason: 'Behavioral / Mental Health / Trauma',
-        count: 5,
-      },
+  return [
+    {
+      reason: 'Behavioral / Mental Health / Trauma',
+      count: 5,
+    },
 
-      {
-        reason: 'Child Assessment, Development, Screening',
-        count: 9,
-      },
+    {
+      reason: 'Child Assessment, Development, Screening',
+      count: 9,
+    },
 
-      {
-        reason: 'CLASS: Classroom Management',
-        count: 10,
-      },
+    {
+      reason: 'CLASS: Classroom Management',
+      count: 10,
+    },
 
-      {
-        reason: 'CLASS: Emotional Support',
-        count: 4,
-      },
+    {
+      reason: 'CLASS: Emotional Support',
+      count: 4,
+    },
 
-      // CLASS: Instructional Support
+    // CLASS: Instructional Support
 
-      // Coaching
+    // Coaching
 
-      // Communication
+    // Communication
 
-      // Community and Self-Assessment
+    // Community and Self-Assessment
 
-      // Curriculum (Early Childhood or Parenting)
+    // Curriculum (Early Childhood or Parenting)
 
-      // Data and Evaluation
+    // Data and Evaluation
 
-      // Environmental Health and Safety
+    // Environmental Health and Safety
 
-      // Equity, Culture & Language
+    // Equity, Culture & Language
 
-      // ERSEA
+    // ERSEA
 
-      // Facilities
+    // Facilities
 
-      // Family Support Services
+    // Family Support Services
 
-      // Fiscal / Budget
+    // Fiscal / Budget
 
-      // Five-Year Grant
+    // Five-Year Grant
 
-      // Human Resources
+    // Human Resources
 
-      // Leadership / Governance
+    // Leadership / Governance
 
-      // Learning Environments
+    // Learning Environments
 
-      // Nutrition
+    // Nutrition
 
-      // Oral Health
+    // Oral Health
 
-      // Parent and Family Engagement
+    // Parent and Family Engagement
 
-      // Partnerships and Community Engagement
+    // Partnerships and Community Engagement
 
-      // Physical Health and Screenings
+    // Physical Health and Screenings
 
-      // Pregnancy Services / Expectant Families
+    // Pregnancy Services / Expectant Families
 
-      // Program Planning and Services
+    // Program Planning and Services
 
-      // QIP
+    // QIP
 
-      // Recordkeeping and Reporting
+    // Recordkeeping and Reporting
 
-      // Safety Practices
+    // Safety Practices
 
-      // Teaching Practices / Teacher-Child Interactions
+    // Teaching Practices / Teacher-Child Interactions
 
-      // Technology and Information Systems
+    // Technology and Information Systems
 
-      // Transition Practices
+    // Transition Practices
 
-      // Transportation
-    ],
-    ...query,
-    ...scopes,
-  };
+    // Transportation
+  ];
 }

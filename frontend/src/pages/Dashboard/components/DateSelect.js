@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DateRangePicker from '../../../components/DateRangePicker';
-import { formatDateRange, CUSTOM_DATE_RANGE } from '../constants';
+import { CUSTOM_DATE_RANGE } from '../constants';
 
 export default function DateSelect(props) {
   const {
-    selectedDateRangeOption, dateRange, updateDateRange, gainFocus,
+    selectedDateRangeOption, dateRange, updateDateRange, gainFocus, dateTime,
   } = props;
 
   // just a check to see if the "custom date range" option is selected
@@ -29,21 +29,10 @@ export default function DateSelect(props) {
         classNames={['display-flex']}
         gainFocus={gainFocus}
       />
-
     );
   }
 
-  /**
-     *
-     * otherwise format the date range for display
-     */
-
-  const dateInExpectedFormat = formatDateRange(selectedDateRangeOption, { forDateTime: true });
-  const prettyPrintedQuery = formatDateRange(selectedDateRangeOption, { withSpaces: true });
-
-  return (
-    <time className="display-flex flex-align-center" dateTime={dateInExpectedFormat}>{prettyPrintedQuery}</time>
-  );
+  return dateTime;
 }
 
 DateSelect.propTypes = {
@@ -51,6 +40,7 @@ DateSelect.propTypes = {
   dateRange: PropTypes.string,
   updateDateRange: PropTypes.func,
   gainFocus: PropTypes.bool,
+  dateTime: PropTypes.func.isRequired,
 };
 
 DateSelect.defaultProps = {

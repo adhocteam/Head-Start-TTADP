@@ -19,6 +19,7 @@ function Dashboard({ user }) {
   const [hasCentralOffice, updateHasCentralOffice] = useState(false);
   const [dateRange, updateDateRange] = useState('');
   const [gainFocus, setGainFocus] = useState(false);
+  const [dateTime, setDateTime] = useState(<></>);
 
   /*
     *    the idea is that this filters variable, which roughly matches
@@ -28,6 +29,39 @@ function Dashboard({ user }) {
 
   /* eslint-disable-next-line */
   const [filters, updateFilters] = useState([]);
+
+  useEffect(() => {
+    if (appliedRegion === 0) {
+      if (hasCentralOffice) {
+        updateAppliedRegion(14);
+      } else if (regions[0]) {
+        updateAppliedRegion(regions[0]);
+      }
+    }
+  }, [appliedRegion, hasCentralOffice, regions]);
+
+  useEffect(() => {
+    if (!regionsFetched && regions.length < 1) {
+      updateRegionsFetched(true);
+      updateRegions(getUserRegions(user));
+    }
+  }, [regions, regionsFetched, user]);
+
+  useEffect(() => {
+    updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
+  }, [user]);
+
+  useEffect(() => {
+  /**
+     *
+     * format the date range for display
+     */
+
+    const dateInExpectedFormat = formatDateRange(selectedDateRangeOption, { forDateTime: true });
+    const prettyPrintedQuery = formatDateRange(selectedDateRangeOption, { withSpaces: true });
+
+    setDateTime(<time className="display-flex flex-align-center" dateTime={dateInExpectedFormat}>{prettyPrintedQuery}</time>);
+  }, [selectedDateRangeOption]);
 
   useEffect(() => {
     if (!user) {
@@ -50,22 +84,8 @@ function Dashboard({ user }) {
       },
     ];
 
-    if (!regionsFetched && regions.length < 1) {
-      updateRegionsFetched(true);
-      updateRegions(getUserRegions(user));
-    }
-
     updateFilters(filtersToApply);
-    updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
-
-    if (appliedRegion === 0) {
-      if (hasCentralOffice) {
-        updateAppliedRegion(14);
-      } else if (regions[0]) {
-        updateAppliedRegion(regions[0]);
-      }
-    }
-  }, [appliedRegion, dateRange, hasCentralOffice, regions, user, regionsFetched]);
+  }, [appliedRegion, dateRange, user]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
@@ -93,10 +113,7 @@ function Dashboard({ user }) {
 
   return (
     <div className="ttahub-dashboard">
-      <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard">
-        { /* todo - adjust content security policy to allow this */}
-        <script crossOrigin src="https://cdn.plot.ly/plotly-latest.min.js" />
-      </Helmet>
+      <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
 
       <div className={appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom` : mainClassNames}>
 
@@ -117,6 +134,7 @@ function Dashboard({ user }) {
             updateDateRange={updateDateRange}
             selectedDateRangeOption={selectedDateRangeOption}
             gainFocus={gainFocus}
+            dateTime={dateTime}
           />
         </div>
 
@@ -136,6 +154,7 @@ function Dashboard({ user }) {
         allRegions={regions}
         dateRange={dateRange}
         skipLoading
+        dateTime={dateTime}
       />
 
     </div>
