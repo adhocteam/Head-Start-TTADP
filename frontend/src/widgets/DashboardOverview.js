@@ -59,7 +59,6 @@ export function DashboardOverviewWidget({ data }) {
   );
 }
 
-// To Do - Clean This Up
 DashboardOverviewWidget.propTypes = {
   data: PropTypes.shape({
     nonGrantees: PropTypes.string,
