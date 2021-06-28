@@ -119,7 +119,6 @@ export async function getUserReadRegions(userId) {
   Make sure the user has read permissions to the regions requested. If no regions
   are explicitly requested default to all regions which the user has access to.
 */
-// todo - maybe rename that last variable for clarity
 export async function setReadRegions(query, userId, useFirstReadRegion = false) {
   const readRegions = await getUserReadRegions(userId);
 
