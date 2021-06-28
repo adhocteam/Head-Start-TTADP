@@ -114,9 +114,11 @@ function RegionalSelect(props) {
   };
 
   CustomOption.propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    data: PropTypes.object.isRequired,
-    // innerRef: PropTypes.string.isRequired,
+    data: PropTypes.shape({
+      value: PropTypes.number,
+      label: PropTypes.string,
+    }).isRequired,
+    innerRef: PropTypes.func.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     innerProps: PropTypes.object.isRequired,
   };
