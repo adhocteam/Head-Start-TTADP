@@ -17,7 +17,7 @@ export default async function dashboardOverview(scopes, query) {
     }
   }
 
-  const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${regions.join(',')})`;
+  const grantsWhere = `WHERE "regionId" in (${regions.join(',')})`;
 
   const duration = await ActivityReport.findAll({
     attributes: [

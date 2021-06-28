@@ -4,7 +4,8 @@ import { get } from './index';
 const fetchWidget = async (widgetId, region, dateRange = '', query = '') => {
   const queryStr = query ? `?${query}&` : '?&';
   const dateRangeStr = dateRange !== '' ? `&startDate.win=${dateRange}` : '';
-  const res = await get(join('/', 'api', 'widgets', `${widgetId}${queryStr}region.in[]=${region}${dateRangeStr}`));
+  const regionStr = region ? `region.in[]=${region}` : '';
+  const res = await get(join('/', 'api', 'widgets', widgetId, queryStr, regionStr, dateRangeStr));
   return res.json();
 };
 
