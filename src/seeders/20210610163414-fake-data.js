@@ -1,7 +1,5 @@
 const faker = require('faker');
 
-const fakeRegionId = 404;
-
 function generateFakeGoal() {
   return {
     name: faker.lorem.sentence(),
@@ -24,9 +22,9 @@ function generateFakeObjective({ goalId = null } = {}) {
   };
 }
 
-function generateFakeActivityReport({ regionId = fakeRegionId, status = 'draft' } = {}) {
+function generateFakeActivityReport({ regionId = 1, status = 'draft' } = {}) {
   return {
-    userId: null,
+    userId: 1,
     lastUpdatedById: null,
     approvingManagerId: null,
     ECLKCResourcesUsed: [Array.from({ length: 10 }).map(() => faker.internet.url())],
@@ -48,12 +46,6 @@ function generateFakeActivityReport({ regionId = fakeRegionId, status = 'draft' 
 
 module.exports = {
   up: async (queryInterface) => {
-    const fakeRegion = {
-      id: fakeRegionId,
-      name: 'Fake Region',
-    };
-    await queryInterface.bulkInsert('Regions', [fakeRegion]);
-
     // Generate fake goals
     const fakeGoals = Array.from({ length: 300 }).map(generateFakeGoal);
     const savedGoals = await queryInterface.bulkInsert('Goals', fakeGoals, { returning: true });
@@ -83,8 +75,6 @@ module.exports = {
   // down: async (queryInterface, Sequelize) => {
   //   /**
   //    * Add commands to revert seed here.
-  //    *
-  //    * Delete anything in fakeRegion?
   //    *
   //    * Example:
   //    * await queryInterface.bulkDelete('People', null, {});
