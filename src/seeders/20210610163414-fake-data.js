@@ -22,7 +22,7 @@ function generateFakeObjective({ goalId = null } = {}) {
   };
 }
 
-function generateFakeActivityReport({ regionId = 1, status = 'draft' } = {}) {
+function generateFakeActivityReport({ regionId = 1, status = 'draft', isGrantee = true } = {}) {
   return {
     userId: 1,
     lastUpdatedById: null,
@@ -35,7 +35,7 @@ function generateFakeActivityReport({ regionId = 1, status = 'draft' } = {}) {
     duration: faker.datatype.number({ min: 0.5, max: 40.0, precision: 0.01 }),
     endDate: faker.date.future(0.25), // date in near future
     startDate: faker.date.past(0.25), // date in recent past
-    activityRecipientType: faker.random.arrayElement(['grantee', 'non-grantee']),
+    activityRecipientType: isGrantee ? 'grantee' : 'non-grantee', // This affects and is affected by ActivityRecipient records
     requester: faker.random.arrayElement(['grantee', 'regionalOffice']),
     regionId,
     status,
@@ -72,8 +72,16 @@ module.exports = {
       const randomObjectives = faker.random.arrayElements(savedObjectives, numObjectives);
       return randomObjectives.map((o) => ({ objectiveId: o.id, activityReportId: ar.id }));
     });
-    const savedARObjectives = await queryInterface.bulkInsert('ActivityReportObjectives', fakeARObjectives, { returning: true });
-    return savedARObjectives;
+    await queryInterface.bulkInsert('ActivityReportObjectives', fakeARObjectives);
+
+    const grantIdResults = await queryInterface.sequelize.query('SELECT id FROM "Grants" LIMIT 1000;', { type: queryInterface.sequelize.QueryTypes.SELECT });
+    const grantIds = grantIdResults.map((g) => g.id);
+    const fakeARRecipients = savedARs.flatMap((ar) => {
+      const numRecipients = faker.datatype.number({ min: 1, max: 500 });
+      const randomGrantIds = faker.random.arrayElements(grantIds, numRecipients);
+      return randomGrantIds.map((id) => ({ grantId: id, activityReportId: ar.id }));
+    });
+    await queryInterface.bulkInsert('ActivityRecipients', fakeARRecipients);
   },
 
   // down: async (queryInterface, Sequelize) => {
