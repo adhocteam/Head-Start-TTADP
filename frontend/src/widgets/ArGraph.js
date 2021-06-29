@@ -44,7 +44,7 @@ function returnReasonsWithLineBreaks(reason) {
 export const DropdownIndicator = (props) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
   <components.DropdownIndicator {...props}>
-    <img alt="" style={{ width: '8px' }} src={arrowBoth} />
+    <img aria-hidden="true" alt="" style={{ width: '8px' }} src={arrowBoth} />
   </components.DropdownIndicator>
 );
 
@@ -60,17 +60,9 @@ const styles = {
     return {
       ...provided,
       outline,
+      height: '40px',
     };
   },
-  groupHeading: (provided) => ({
-    ...provided,
-    fontWeight: 'bold',
-    fontFamily: 'SourceSansPro',
-    textTransform: 'capitalize',
-    fontSize: '14px',
-    color: '#21272d',
-    lineHeight: '22px',
-  }),
   control: (provided, state) => ({
     height: '40px',
     ...provided,
@@ -84,12 +76,18 @@ const styles = {
     opacity: state.isDisabled ? '0.7' : '1',
     width: '180px',
   }),
+  menu: (provided) => ({
+    ...provided,
+    marginTop: 0,
+    top: 'auto',
+  }),
   indicatorsContainer: (provided) => ({
     ...provided,
     // The arrow dropdown icon is too far to the right, this pushes it back to the left
     marginRight: '4px',
   }),
   indicatorSeparator: () => ({ display: 'none' }),
+  valueContainer: (provided) => ({ ...provided, height: '40px' }),
 };
 
 function ArGraph({ data, dateTime }) {
@@ -107,10 +105,25 @@ function ArGraph({ data, dateTime }) {
       return;
     }
 
-    // todo - here is where we can filter array for participants
+    // here is where we can filter array for participants
+    const filteredData = data.filter((dataPoint) => {
+      if (selectedSpecialists.length > 0) {
+        let include = false;
+
+        // eslint-disable-next-line consistent-return
+        selectedSpecialists.forEach((specialist) => {
+          if (dataPoint.participants.includes(specialist.label)) {
+            include = true;
+          }
+        });
+
+        return include;
+      }
+      return true;
+    });
 
     // sort the api response based on the dropdown choices
-    data.sort((a, b) => {
+    filteredData.sort((a, b) => {
       if (order === 'desc') {
         return b.count - a.count;
       }
@@ -122,7 +135,7 @@ function ArGraph({ data, dateTime }) {
     const counts = [];
     let dpParticipants = [];
 
-    data.forEach((dataPoint) => {
+    filteredData.forEach((dataPoint) => {
       reasons.push(dataPoint.reason);
       counts.push(dataPoint.count);
       dpParticipants = [...dpParticipants, ...dataPoint.participants];
@@ -134,19 +147,31 @@ function ArGraph({ data, dateTime }) {
       type: 'bar',
       x: reasons.map((reason) => returnReasonsWithLineBreaks(reason)),
       y: counts,
+      hoverinfo: 'y',
     };
+
+    const width = reasons.length > 10 ? reasons.length * 100 : 'auto';
 
     const layout = {
       height: 480,
-      width: 4000,
+      hoverlabel: {
+        bgcolor: '#000',
+      },
+      width,
+      margin: {
+        l: 0,
+        // pad: 100,
+      },
       xaxis: {
         automargin: true,
         tickangle: 0,
       },
+      // hovermode: 'y',
     };
 
+    // draw the plot
     Plotly.newPlot(bars.current, [trace], layout, { displayModeBar: false });
-  }, [data, order]);
+  }, [data, order, selectedSpecialists]);
 
   if (!data) {
     return <p>Loading...</p>;
@@ -187,10 +212,11 @@ function ArGraph({ data, dateTime }) {
             components={DropdownIndicator}
             options={options}
             tabSelectsValue={false}
-            isClearable
             placeholder="Select specialists"
             isMulti
+            isClearable={false}
             styles={styles}
+            defaultMenuIsOpen
           />
         </Grid>
       </Grid>
