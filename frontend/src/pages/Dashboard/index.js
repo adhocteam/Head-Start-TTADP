@@ -64,7 +64,18 @@ function Dashboard({ user }) {
         updateAppliedRegion(regions[0]);
       }
     }
-  }, [appliedRegion, dateRange, hasCentralOffice, regions, user, regionsFetched]);
+
+    updateDateRange(formatDateRange(selectedDateRangeOption, { forDateTime: true }));
+  },
+  [
+    appliedRegion,
+    dateRange,
+    hasCentralOffice,
+    regions,
+    user,
+    regionsFetched,
+    selectedDateRangeOption,
+  ]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
@@ -73,6 +84,7 @@ function Dashboard({ user }) {
 
   const onApplyDateRange = (range) => {
     const rangeId = range ? range.value : selectedDateRangeOption;
+    console.log(rangeId);
     updateSelectedDateRangeOption(rangeId);
 
     if (selectedDateRangeOption !== CUSTOM_DATE_RANGE) {
@@ -108,6 +120,7 @@ function Dashboard({ user }) {
 
           <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
             <DateRangeSelect
+              selectedDateRangeOption={selectedDateRangeOption}
               onApply={onApplyDateRange}
             />
 
