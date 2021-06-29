@@ -94,6 +94,13 @@ const mockManager = {
   homeRegionId: 1,
   email: 'mockManager1843@test.gov',
 };
+const secondMockManager = {
+  id: 1222,
+  hsesUserId: '1222',
+  hsesUsername: 'user1222',
+  homeRegionId: 1,
+  email: 'mockManager1222@test.gov',
+};
 const mockUser = {
   id: 1844,
   hsesUserId: '1844',
@@ -272,24 +279,40 @@ describe('Activity Report handlers', () => {
   });
 
   describe('submitReport', () => {
-    beforeAll(async () => {
-    });
     const request = {
       ...mockRequest,
       params: { activityReportId: 1 },
-      body: { approvingManagerId: mockManager.id, additionalNotes: 'notes' },
+      body: { userIds: [mockManager.id, secondMockManager.id], additionalNotes: 'notes' },
     };
+    const approvers = [{
+      activityReportId: 1,
+      userId: mockManager.id,
+    }, {
+      activityReportId: 1,
+      userId: secondMockManager.id,
+    }];
 
-    it('returns the report', async () => {
+    it('returns the approver records', async () => { // this
       ActivityReport.mockImplementationOnce(() => ({
         canUpdate: () => true,
       }));
-      createOrUpdate.mockResolvedValue(report);
-      userById.mockResolvedValue({
-        id: mockUser.id,
+      activityReportById.mockResolvedValue(report);
+      upsertApprover.mockResolvedValueOnce({
+        activityReportId: 1,
+        userId: mockManager.id,
       });
+      upsertApprover.mockResolvedValueOnce({
+        activityReportId: 1,
+        userId: secondMockManager.id,
+      });
+      const assignedNotification = jest.spyOn(mailer, 'approverAssignedNotification').mockImplementation();
       await submitReport(request, mockResponse);
-      expect(mockResponse.json).toHaveBeenCalledWith(report);
+      expect(createOrUpdate).toHaveBeenCalledWith({
+        additionalNotes: 'notes', submissionStatus: REPORT_STATUSES.SUBMITTED,
+      }, report);
+      expect(assignedNotification).toHaveBeenCalled();
+      expect(upsertApprover).toHaveBeenCalledTimes(2);
+      expect(mockResponse.json).toHaveBeenCalledWith(approvers);
     });
 
     it('handles unauthorizedRequests', async () => {

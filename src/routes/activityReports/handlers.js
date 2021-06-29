@@ -169,10 +169,7 @@ export async function reviewReport(req, res) {
       userId,
     }, transaction);
 
-    console.log('savedApprover >', savedApprover);
-
     const reviewedReport = await activityReportById(activityReportId);
-    console.log('reviewedReport.calculatedStatus >', reviewedReport.calculatedStatus);
 
     if (reviewedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
       if (reviewedReport.activityRecipientType === 'grantee') {
@@ -266,16 +263,15 @@ export async function submitReport(req, res) {
     }, report);
 
     // Save Approvers and notify
-    const savedApprovers = [];
-    userIds.forEach(async (userId) => {
-      const transaction = sequelize.transaction(async (t) => t);
-      const savedApprover = await upsertApprover({
+    const approverPromises = userIds.map(async (userId) => {
+      const transaction = await sequelize.transaction(async (t) => t);
+      return upsertApprover({
         activityReportId,
         userId,
       }, transaction);
-
-      savedApprovers.push(savedApprover);
     });
+    const savedApprovers = await Promise.all(approverPromises);
+
     approverAssignedNotification(savedReport, savedApprovers);
 
     res.json(savedApprovers);
