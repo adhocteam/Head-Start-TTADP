@@ -121,14 +121,12 @@ function Dashboard({ user }) {
             />
           </div>
 
-
           <ReasonList
             filters={filters}
             region={appliedRegion}
             allRegions={getUserRegions(user)}
-            skipLoading />
-
-
+            skipLoading
+          />
 
         </div>
 

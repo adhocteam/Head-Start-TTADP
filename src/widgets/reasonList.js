@@ -12,9 +12,6 @@ import { REPORT_STATUSES } from '../constants';
   If adding a new widget be sure to add the widget to ./index.js
 */
 export default async function reasonList(scopes) {
-
-  console.log('Before Query!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-
   // Query Database for all Reason's within the scope.
   const res = await ActivityReport.findAll({
     attributes: [
@@ -29,8 +26,6 @@ export default async function reasonList(scopes) {
     raw: true,
     includeIgnoreAttributes: false,
   });
-
-  console.log('After Query!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',res);
 
   // Get counts for each reason.
   const reasons = [];
@@ -47,8 +42,6 @@ export default async function reasonList(scopes) {
 
   // Sort By Reason Count largest to smallest.
   reasons.sort((r1, r2) => r2.count - r1.count);
-
-  console.log('After ARRAY!!!!!!!!!!!!!!!!!!!!', reasons.slice(0, 13));
 
   // Return only top 14.
   return reasons.slice(0, 13);
