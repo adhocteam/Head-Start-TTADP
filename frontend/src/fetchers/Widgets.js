@@ -1,11 +1,10 @@
 import join from 'url-join';
 import { get } from './index';
 
-const fetchWidget = async (widgetId, region, dateRange = '', query = '') => {
-  const queryStr = query ? `?${query}&` : '?&';
+const fetchWidget = async (widgetId, region, dateRange = '') => {
+  const regionStr = region ? `&region.in[]=${region}` : '';
   const dateRangeStr = dateRange !== '' ? `&startDate.win=${dateRange}` : '';
-  const regionStr = region ? `region.in[]=${region}` : '';
-  const res = await get(join('/', 'api', 'widgets', widgetId, queryStr, regionStr, dateRangeStr));
+  const res = await get(join('/', 'api', 'widgets', widgetId, '?', regionStr, dateRangeStr));
   return res.json();
 };
 

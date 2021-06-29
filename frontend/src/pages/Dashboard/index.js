@@ -6,7 +6,6 @@ import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
-import './index.css';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
@@ -18,6 +17,7 @@ function Dashboard({ user }) {
   const [hasCentralOffice, updateHasCentralOffice] = useState(false);
   const [dateRange, updateDateRange] = useState('');
   const [gainFocus, setGainFocus] = useState(false);
+  const [dateRangeLoaded, setDateRangeLoaded] = useState(false);
 
   /*
     *    the idea is that this filters variable, which roughly matches
@@ -65,7 +65,10 @@ function Dashboard({ user }) {
       }
     }
 
-    updateDateRange(formatDateRange(selectedDateRangeOption, { forDateTime: true }));
+    if (!dateRangeLoaded) {
+      updateDateRange(formatDateRange(selectedDateRangeOption, { forDateTime: true }));
+      setDateRangeLoaded(true);
+    }
   },
   [
     appliedRegion,
@@ -75,6 +78,7 @@ function Dashboard({ user }) {
     user,
     regionsFetched,
     selectedDateRangeOption,
+    dateRangeLoaded,
   ]);
 
   const onApplyRegion = (region) => {
