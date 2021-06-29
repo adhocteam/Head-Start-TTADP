@@ -4,7 +4,6 @@ import db, {
 import { filtersToScopes } from '../scopes/activityReport';
 import { REPORT_STATUSES } from '../constants';
 import { createOrUpdate } from '../services/activityReports';
-import { formatQuery } from '../routes/widgets/utils';
 import arGraph, { BASE_REASONS } from './arGraph';
 
 const GRANTEE_ID = 30;
@@ -35,9 +34,9 @@ const reportObject = {
   requester: 'requester',
   programTypes: ['type'],
   targetPopulations: ['pop'],
-  reason: ['Program Planning and Services'],
+  reason: ['reason'],
   participants: ['participants', 'genies'],
-  topics: ['topics'],
+  topics: ['Program Planning and Services'],
   ttaType: ['technical-assistance'],
 };
 
@@ -51,7 +50,6 @@ const regionOneReportDistinctDate = {
   startDate: '2000-06-01T12:00:00Z',
   endDate: '2000-06-02T12:00:00Z',
   regionId: 17,
-  reason: ['Technology and Information Systems', 'Program Planning and Services'],
 };
 
 const regionTwoReport = {
@@ -75,10 +73,10 @@ describe('AR Graph widget', () => {
     await createOrUpdate(regionOneReport, reportOne);
 
     const reportTwo = await ActivityReport.findOne({ where: { duration: 2 } });
-    await createOrUpdate({ ...regionOneReportDistinctDate, duration: 2, reason: ['Program Planning and Services', 'Recordkeeping and Reporting'] }, reportTwo);
+    await createOrUpdate({ ...regionOneReportDistinctDate, duration: 2, topics: ['Program Planning and Services', 'Recordkeeping and Reporting'] }, reportTwo);
 
-    const reportFour = await ActivityReport.findOne({ where: { duration: 3 } });
-    await createOrUpdate({ ...regionTwoReport, duration: 3 }, reportFour);
+    const reportThree = await ActivityReport.findOne({ where: { duration: 3 } });
+    await createOrUpdate({ ...regionTwoReport, duration: 3 }, reportThree);
   });
 
   afterAll(async () => {
@@ -109,7 +107,7 @@ describe('AR Graph widget', () => {
   it('returns data in the correct format', async () => {
     const query = { 'region.in': [17], 'startDate.win': '2000/01/01-2000/01/01' };
     const scopes = filtersToScopes(query);
-    const data = await arGraph(scopes, formatQuery(query));
+    const data = await arGraph(scopes);
 
     const reasons = [...BASE_REASONS];
     const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');
@@ -117,19 +115,15 @@ describe('AR Graph widget', () => {
     reasonToModify.count = 1;
     reasonToModify.participants = ['participants', 'genies'];
 
-    const secondReasonToModify = reasons.find((reason) => reason.reason === 'Technology and Information Systems');
-    secondReasonToModify.count = 1;
-    secondReasonToModify.participants = ['participants', 'genies'];
-
     expect(data).toStrictEqual(reasons);
   });
 
   it('respects the region scope', async () => {
     const query = { 'region.in': [18], 'startDate.win': '2000/01/01-2000/01/01' };
     const scopes = filtersToScopes(query);
-    const data = await arGraph(scopes, formatQuery(query));
+    const data = await arGraph(scopes);
     const reasons = [...BASE_REASONS];
-    const reasonToModify = reasons.find((reason) => reason.reason === 'Recordkeeping and Reporting');
+    const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');
     reasonToModify.count = 1;
     reasonToModify.participants = ['participants', 'genies'];
 
@@ -139,7 +133,7 @@ describe('AR Graph widget', () => {
   it('respects the date scope', async () => {
     const query = { 'region.in': [17], 'startDate.win': '2000/01/01-2000/06/02' };
     const scopes = filtersToScopes(query);
-    const data = await arGraph(scopes, formatQuery(query));
+    const data = await arGraph(scopes);
 
     const reasons = [...BASE_REASONS];
     const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');
@@ -153,4 +147,6 @@ describe('AR Graph widget', () => {
 
     expect(data).toStrictEqual(reasons);
   });
+
+  // todo - write test with dummy reason
 });
