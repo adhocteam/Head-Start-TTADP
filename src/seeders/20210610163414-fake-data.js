@@ -60,7 +60,6 @@ module.exports = {
     // Generate fake ARs
     const fakeActivityReports = Array.from({ length: 100 }).map(generateFakeActivityReport);
     const savedARs = await queryInterface.bulkInsert('ActivityReports', fakeActivityReports, { returning: true });
-    console.log(`Created ${savedARs.length} Activity Reports`);
 
     // Attach some objectives to ARs
     const fakeARObjectives = savedARs.flatMap((ar) => {
