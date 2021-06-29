@@ -178,7 +178,7 @@ describe('Dashboard overview widget', () => {
     expect(data.numReports).toBe('1');
     expect(data.numGrants).toBe('1');
     expect(data.numTotalGrants).toBe('0');
-    expect(data.inPerson).toBe('1.5');
+    expect(data.inPerson).toBe('1');
     expect(data.nonGrantees).toBe('0');
     expect(data.sumDuration).toBe('1.5');
   });
