@@ -10,13 +10,11 @@ export const BASE_REASONS = [
     count: 0,
     participants: [],
   },
-
   {
     reason: 'Child Assessment, Development, Screening',
     count: 0,
     participants: [],
   },
-
   {
     reason: 'CLASS: Classroom Management',
     count: 0,
@@ -179,9 +177,7 @@ export const BASE_REASONS = [
   },
 ];
 
-// eslint-disable-next-line no-unused-vars
 export default async function arGraph(scopes) {
-  // eslint-disable-next-line no-unused-vars
   const topicsAndParticipants = await ActivityReport.findAll({
     attributes: [
       'topics',
@@ -196,5 +192,32 @@ export default async function arGraph(scopes) {
     includeIgnoreAttributes: false,
   });
 
-  return BASE_REASONS;
+  // new instance of base reasons so we aren't mutating the const
+  const reasons = [...BASE_REASONS].map((reason) => ({
+    reason: reason.reason,
+    count: 0,
+    participants: [],
+  }));
+
+  topicsAndParticipants.forEach((topicAndParticipant) => {
+    topicAndParticipant.topics.forEach((topic) => {
+      // filter our array for our 1 matching reason
+      const selectedReason = reasons.find((reason) => reason.reason === topic);
+
+      // assuming it's a reason we know what to do with
+      if (selectedReason) {
+        // increment the count
+        selectedReason.count += 1;
+
+        // add that reason to the participants
+        selectedReason.participants = [...selectedReason.participants,
+          ...topicAndParticipant.participants];
+
+        // remove dupes from the participants
+        selectedReason.participants = Array.from(new Set(selectedReason.participants));
+      }
+    });
+  });
+
+  return reasons;
 }

@@ -1,11 +1,11 @@
 import db, {
-  ActivityReport, ActivityRecipient, User, Grantee, NonGrantee, Grant, NextStep, Region,
+  ActivityReport, ActivityRecipient, User, Grantee, Grant, NextStep, Region,
 } from '../models';
 import { filtersToScopes } from '../scopes/activityReport';
 import { REPORT_STATUSES } from '../constants';
 import { createOrUpdate } from '../services/activityReports';
 import { formatQuery } from '../routes/widgets/utils';
-import arGraph from './arGraph';
+import arGraph, { BASE_REASONS } from './arGraph';
 
 const GRANTEE_ID = 30;
 
@@ -35,8 +35,8 @@ const reportObject = {
   requester: 'requester',
   programTypes: ['type'],
   targetPopulations: ['pop'],
-  reason: ['reason'],
-  participants: ['participants'],
+  reason: ['Program Planning and Services'],
+  participants: ['participants', 'genies'],
   topics: ['topics'],
   ttaType: ['technical-assistance'],
 };
@@ -51,6 +51,7 @@ const regionOneReportDistinctDate = {
   startDate: '2000-06-01T12:00:00Z',
   endDate: '2000-06-02T12:00:00Z',
   regionId: 17,
+  reason: ['Technology and Information Systems', 'Program Planning and Services'],
 };
 
 const regionTwoReport = {
@@ -74,7 +75,7 @@ describe('AR Graph widget', () => {
     await createOrUpdate(regionOneReport, reportOne);
 
     const reportTwo = await ActivityReport.findOne({ where: { duration: 2 } });
-    await createOrUpdate({ ...regionOneReportDistinctDate, duration: 2, reason: ['shopping', 'reason'] }, reportTwo);
+    await createOrUpdate({ ...regionOneReportDistinctDate, duration: 2, reason: ['Program Planning and Services', 'Recordkeeping and Reporting'] }, reportTwo);
 
     const reportFour = await ActivityReport.findOne({ where: { duration: 3 } });
     await createOrUpdate({ ...regionTwoReport, duration: 3 }, reportFour);
@@ -88,7 +89,6 @@ describe('AR Graph widget', () => {
     await ActivityRecipient.destroy({ where: { activityReportId: ids } });
     await ActivityReport.destroy({ where: { id: ids } });
     await User.destroy({ where: { id: [mockUser.id] } });
-    await NonGrantee.destroy({ where: { id: [GRANTEE_ID] } });
     await Grant.destroy({
       where:
       { id: [GRANTEE_ID] },
@@ -111,43 +111,46 @@ describe('AR Graph widget', () => {
     const scopes = filtersToScopes(query);
     const data = await arGraph(scopes, formatQuery(query));
 
-    expect(data).toBe([
-      {
-        reason: 'reason',
-        count: 1,
-        participants: ['participants'],
-      },
-    ]);
-  });
+    const reasons = [...BASE_REASONS];
+    const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');
 
-  it('respects the date scope', async () => {
-    const query = { 'region.in': [18], 'startDate.win': '2000/01/01-2000/01/01' };
-    const scopes = filtersToScopes(query);
-    const data = await arGraph(scopes, formatQuery(query));
-    expect(data).toBe([
-      {
-        reason: 'reason',
-        count: 1,
-        participants: ['participants'],
-      },
-    ]);
+    reasonToModify.count = 1;
+    reasonToModify.participants = ['participants', 'genies'];
+
+    const secondReasonToModify = reasons.find((reason) => reason.reason === 'Technology and Information Systems');
+    secondReasonToModify.count = 1;
+    secondReasonToModify.participants = ['participants', 'genies'];
+
+    expect(data).toStrictEqual(reasons);
   });
 
   it('respects the region scope', async () => {
+    const query = { 'region.in': [18], 'startDate.win': '2000/01/01-2000/01/01' };
+    const scopes = filtersToScopes(query);
+    const data = await arGraph(scopes, formatQuery(query));
+    const reasons = [...BASE_REASONS];
+    const reasonToModify = reasons.find((reason) => reason.reason === 'Recordkeeping and Reporting');
+    reasonToModify.count = 1;
+    reasonToModify.participants = ['participants', 'genies'];
+
+    expect(data).toStrictEqual(reasons);
+  });
+
+  it('respects the date scope', async () => {
     const query = { 'region.in': [17], 'startDate.win': '2000/01/01-2000/06/02' };
     const scopes = filtersToScopes(query);
     const data = await arGraph(scopes, formatQuery(query));
-    expect(data).toBe([
-      {
-        reason: 'reason',
-        count: 2,
-        participants: ['participants'],
-      },
-      {
-        reason: 'shopping',
-        count: 1,
-        participants: ['participants'],
-      },
-    ]);
+
+    const reasons = [...BASE_REASONS];
+    const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');
+
+    reasonToModify.count = 2;
+    reasonToModify.participants = ['participants', 'genies'];
+
+    const secondReasonToModify = reasons.find((reason) => reason.reason === 'Recordkeeping and Reporting');
+    secondReasonToModify.count = 1;
+    secondReasonToModify.participants = ['participants', 'genies'];
+
+    expect(data).toStrictEqual(reasons);
   });
 });
