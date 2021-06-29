@@ -38,11 +38,11 @@ export default async function dashboardOverview(scopes, query) {
     .toFixed(1)
     .toString();
 
-  const inPerson = duration.filter((report) => report.deliveryMethod === 'in-person')
-    .reduce((acc, report) => (
-      acc + parseFloat(report.duration)
-    ), 0)
-    .toFixed(1)
+  const inPerson = duration.filter((report) => report.deliveryMethod === 'in-person').length
+    // .reduce((acc, report) => (
+    //   acc + parseFloat(report.duration)
+    // ), 0)
+    // .toFixed(1)
     .toString();
 
   const res = await ActivityReport.findAll({
