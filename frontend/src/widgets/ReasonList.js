@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from '@trussworks/react-uswds';
 import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
 import './ReasonList.css';
+import 'uswds/dist/css/uswds.css';
+import DateSelect from '../pages/Dashboard/components/DateSelect';
 
 /*
   Widgets only have to worry about presenting data. Filtering of the data happens at a
@@ -13,32 +15,68 @@ import './ReasonList.css';
   API. Note the `example` passed as a 2nd parameter to `withWidgetData` must match the widget
   id in the backend `src/widgets/index.js` file or you will get 404s.
 */
+
+
+/*
+     <DateSelect
+                        dateRange={dateRange}
+                        updateDateRange={updateDateRange}
+                        selectedDateRangeOption={selectedDateRangeOption}
+                        gainFocus={gainFocus}
+                    />
+*/
+
 function ReasonList({ data, region }) {
-    return (
-        <Container className="">
-            <Table class="usa-table usa-table--borderless smart-hub--reason-list-table">
-            <caption>
-                    <span className="smart-hub--reason-list-heading">Reasons in Activity Report</span>
-                  </caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Reason</th>
-                        <th scope="col"># of Activities</th>
+
+    const renderReasonList = (data) => {
+
+        if (data && Array.isArray(data) && data.length > 0) {
+
+            return data.map((reason) => {
+                console.log('VALUE', reason.name);
+                return (
+                    <tr key={`reason_list_row_${reason.name}`}>
+                        <td>
+                            {reason.name}
+                        </td>
+                        <td>
+                            {reason.count}
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </Table>
+                );
+            });
+        }
+        return null;
+    }
+
+    return (
+        <Container className="reason-list smart-hub--reason-list-container">
+            <div className="usa-table-container--scrollable">
+                <Table className="smart-hub--reason-list-table" fullWidth>
+                    <caption className="smart-hub--reason-list-caption">
+                        <span className="smart-hub--reason-list-heading">Reasons in Activity Report </span>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" className="text-left">Reason</th>
+                            <th scope="col" className="text-left"># of Activities</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            renderReasonList(data)
+                        }
+                    </tbody>
+                </Table>
+            </div>
         </Container>
     );
 }
 
 ReasonList.propTypes = {
-    data: PropTypes.shape({
-        name: PropTypes.string,
-        count: PropTypes.number,
-    }).isRequired,
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
     region: PropTypes.number.isRequired,
 };
+
 
 export default withWidgetData(ReasonList, 'reasonList');
