@@ -47,7 +47,7 @@ function ReasonList({ data }) {
       <div className="usa-table-container--scrollable">
         <Table className="smart-hub--reason-list-table" fullWidth>
           <caption className="smart-hub--reason-list-caption">
-            <span className="smart-hub--reason-list-heading">Reasons in Activity Report </span>
+            <span className="smart-hub--reason-list-heading">Reasons in Activity Report</span>
           </caption>
           <thead>
             <tr>
