@@ -137,6 +137,14 @@ function Dashboard({ user }) {
             />
           </div>
 
+          <DashboardOverview
+            filters={filters}
+            region={appliedRegion}
+            allRegions={regions}
+            dateRange={dateRange}
+            skipLoading
+          />
+
           <ReasonList
             filters={filters}
             region={appliedRegion}
@@ -145,14 +153,6 @@ function Dashboard({ user }) {
           />
 
         </div>
-
-        <DashboardOverview
-          filters={filters}
-          region={appliedRegion}
-          allRegions={regions}
-          dateRange={dateRange}
-          skipLoading
-        />
 
       </>
 
