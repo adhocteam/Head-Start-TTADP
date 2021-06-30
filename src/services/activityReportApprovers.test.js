@@ -2,6 +2,7 @@ import db, {
   ActivityReport, ActivityReportApprover, User, sequelize,
 } from '../models';
 import { upsertApprover } from './activityReportApprovers';
+import { activityReportById } from './activityReports';
 import { REPORT_STATUSES } from '../constants';
 
 const mockUser = {
@@ -86,7 +87,7 @@ describe('Activity Reports Approvers', () => {
           userId: secondMockManger.id,
         }, transaction);
         expect(approver.status).toEqual(REPORT_STATUSES.NEEDS_ACTION);
-        const updatedReport = await ActivityReport.findByPk(report.id);
+        const updatedReport = await activityReportById(report.id);
         expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
         expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.NEEDS_ACTION);
       });
@@ -105,7 +106,7 @@ describe('Activity Reports Approvers', () => {
         status: REPORT_STATUSES.APPROVED,
       });
       expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
-      const updatedReport = await ActivityReport.findByPk(report.id);
+      const updatedReport = await activityReportById(report.id);
       expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
       expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.APPROVED);
     });
@@ -123,7 +124,7 @@ describe('Activity Reports Approvers', () => {
         userId: secondMockManger.id,
       });
       expect(approver.status).toBeNull();
-      const updatedReport = await ActivityReport.findByPk(report.id);
+      const updatedReport = await activityReportById(report.id);
       expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
       expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.SUBMITTED);
     });

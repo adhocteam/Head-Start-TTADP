@@ -162,6 +162,19 @@ export function activityReportByLegacyId(legacyId) {
         as: 'attachments',
         required: false,
       },
+      {
+        model: ActivityReportApprover,
+        attributes: ['userId', 'status', 'note'],
+        as: 'approvers',
+        required: false,
+        separate: true,
+        include: [
+          {
+            model: User,
+            attributes: ['name'],
+          },
+        ],
+      },
     ],
   });
 }
@@ -257,13 +270,14 @@ export function activityReportById(activityReportId) {
       },
       {
         model: ActivityReportApprover,
-        attributes: ['id', 'userId', 'status', 'note'],
+        attributes: ['userId', 'status', 'note'],
         as: 'approvers',
         required: false,
+        separate: true,
         include: [
           {
             model: User,
-            attributes: ['id', 'name', 'role', 'fullName'],
+            attributes: ['name'],
           },
         ],
       },

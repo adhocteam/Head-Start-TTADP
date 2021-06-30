@@ -1,14 +1,29 @@
 import { Op } from 'sequelize';
+import { upsertApprover } from './activityReportApprovers'
 import { userByEmail } from './users';
+import REPORT_STATUSES from '../constants'
 import { ActivityReport, ActivityReportCollaborator } from '../models';
 import { auditLogger, logger } from '../logger';
 import newQueue from '../lib/queue';
+
+// Do I need to add a reconcile status field? Is that something we're getting and updating? Or will the new
+// approvals give us a correct calculated status?
+
+function determineApproverStatus(status) {
+  if (status === REPORT_STATUSES.DRAFT
+    || status === REPORT_STATUSES.SUBMITTED) {
+    return null
+  } else {
+    return status
+  }
+}
+
 
 /*
 * Returns all legacy reports that either:
 *  1. are missing an author
 *  2. are missing an approving manager
-*  3. have colloborators in the imported field
+*  3. have collaborators in the imported field
 * These are the only reports that might need reconciliation
 */
 const getLegacyReports = async () => {
@@ -26,7 +41,7 @@ const getLegacyReports = async () => {
             [Op.eq]: null,
           },
         },
-        {
+        { // Should we be looking for approvers too?
           approvingManagerId: {
             [Op.eq]: null,
           },
@@ -54,7 +69,9 @@ export const reconcileApprovingManagers = async (report) => {
   try {
     const user = await userByEmail(report.imported.manager);
     if (user) {
-      await ActivityReport.update({ approvingManagerId: user.id }, { where: { id: report.id } });
+      // Is this right?
+      const status = determineApproverStatus(report.status)
+      await upsertApprover({ userId: user.id, activityReportId: report.id, status: status})
       logger.info(`Updated approvingManager for report ${report.displayId} to user Id ${user.id}`);
     }
   } catch (err) {

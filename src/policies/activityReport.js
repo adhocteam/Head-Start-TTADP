@@ -17,7 +17,8 @@ export default class ActivityReport {
   }
 
   canReview() {
-    return this.isApprovingManager();
+    // Ability to review is meant to be independent of report status per acceptance criteria
+    return this.isApprovingManager() && this.canApproveInRegion();
   }
 
   canCreate() {
@@ -31,6 +32,8 @@ export default class ActivityReport {
   }
 
   canReset() {
+    console.log('this.activityReport.calculatedStatus', this.activityReport.calculatedStatus);
+    console.log(this.activityReport.calculatedStatus === REPORT_STATUSES.SUBMITTED);
     return (this.isAuthor() || this.isCollaborator())
       && this.activityReport.calculatedStatus === REPORT_STATUSES.SUBMITTED;
   }
@@ -56,6 +59,14 @@ export default class ActivityReport {
     }
 
     return false;
+  }
+
+  canApproveInRegion() {
+    const permissions = _.find(this.user.permissions,
+      (permission) => (
+        permission.scopeId === SCOPES.APPROVE_REPORTS
+        && permission.regionId === this.activityReport.regionId));
+    return !_.isUndefined(permissions);
   }
 
   canWriteInRegion() {
@@ -92,16 +103,11 @@ export default class ActivityReport {
   }
 
   isApprovingManager() {
-    if (this.activityReport.activityReportApprovals) {
-      // eslint-disable-next-line consistent-return
-      this.activityReport.activityReportApprovals.forEach((approval) => {
-        if (approval.userId === this.user.id) {
-          return true;
-        }
-      });
+    if (!this.activityReport.approvers) {
+      return false;
     }
-
-    return false;
+    const approverUserIds = this.activityReport.approvers.map((approval) => approval.userId);
+    return approverUserIds.includes(this.user.id);
   }
 
   reportHasEditableStatus() {

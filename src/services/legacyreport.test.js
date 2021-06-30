@@ -10,7 +10,7 @@ import { activityReportByLegacyId } from './activityReports';
 
 const report1 = {
   activityRecipientType: 'grantee',
-  submissionStatus: REPORT_STATUSES.DRAFT,
+  status: REPORT_STATUSES.DRAFT, // would this be status?
   regionId: 1,
   ECLKCResourcesUsed: ['test'],
   legacyId: 'legacy-1',
@@ -23,7 +23,7 @@ const report1 = {
 
 const report2 = {
   activityRecipientType: 'grantee',
-  submissionStatus: REPORT_STATUSES.DRAFT,
+  status: REPORT_STATUSES.DRAFT, // would this be status?
   regionId: 1,
   ECLKCResourcesUsed: ['test'],
   legacyId: 'legacy-2',
@@ -110,7 +110,7 @@ describe('reconcile legacy reports', () => {
   it('adds an approvingManager if there is one', async () => {
     await reconcileApprovingManagers(mockReport1);
     const ret = await activityReportByLegacyId(report1.legacyId);
-    expect(ret.approvingManagerId).toBe(manager.id);
+    expect(ret.approvers[0].userId).toBe(manager.id);
   });
   it('adds collaborators', async () => {
     await reconcileCollaborators(mockReport1);
@@ -123,7 +123,7 @@ describe('reconcile legacy reports', () => {
     await reconcileLegacyReports();
     const ret = await activityReportByLegacyId(report2.legacyId);
     expect(ret.userId).toBe(user2.id);
-    expect(ret.approvingManagerId).toBe(manager.id);
+    expect(ret.approvers[0].userId).toBe(manager.id);
     const collaborators = await ActivityReportCollaborator.findAll({
       where: { activityReportId: ret.id },
     });
