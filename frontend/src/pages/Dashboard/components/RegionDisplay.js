@@ -29,7 +29,7 @@ export default function RegionDisplay({
 
 RegionDisplay.propTypes = {
   appliedRegion: PropTypes.number,
-  regions: PropTypes.arrayOf(PropTypes.string),
+  regions: PropTypes.arrayOf(PropTypes.number),
   onApplyRegion: PropTypes.func,
   hasCentralOffice: PropTypes.bool,
 };
