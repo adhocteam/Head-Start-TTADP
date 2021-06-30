@@ -57,7 +57,7 @@ module.exports = {
 
     // For each Goal, generate some objectives
     const fakeObjectives = savedGoals.flatMap((goal) => {
-      const num = faker.datatype.number({ min: 1, max: 10 });
+      const num = faker.datatype.number({ min: 1, max: 50 });
       return Array.from({ length: num }).map(() => generateFakeObjective({ goalId: goal.id }));
     });
     const savedObjectives = await queryInterface.bulkInsert('Objectives', fakeObjectives, { returning: true });
@@ -68,7 +68,7 @@ module.exports = {
 
     // Attach some objectives to ARs
     const fakeARObjectives = savedARs.flatMap((ar) => {
-      const numObjectives = faker.datatype.number({ min: 1, max: 10 });
+      const numObjectives = faker.datatype.number({ min: 1, max: 100 });
       const randomObjectives = faker.random.arrayElements(savedObjectives, numObjectives);
       return randomObjectives.map((o) => ({ objectiveId: o.id, activityReportId: ar.id }));
     });
