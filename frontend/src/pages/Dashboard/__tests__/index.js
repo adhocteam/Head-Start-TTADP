@@ -57,4 +57,11 @@ describe('Dashboard page', () => {
     renderDashboard(null);
     expect(screen.getByText(/loading\.\.\./i)).toBeInTheDocument();
   });
+
+  it('shows the reason list widget', async () => {
+    renderDashboard(user);
+    expect(screen.getByText(/reasons in activity report/i)).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
+  });
 });
