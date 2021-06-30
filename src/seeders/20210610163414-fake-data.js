@@ -58,7 +58,7 @@ module.exports = {
     // For each Goal, generate some objectives
     const fakeObjectives = savedGoals.flatMap((goal) => {
       const num = faker.datatype.number({ min: 1, max: 10 });
-      return Array.from({ length: num }).map(() => generateFakeObjective(goal.id));
+      return Array.from({ length: num }).map(() => generateFakeObjective({ goalId: goal.id }));
     });
     const savedObjectives = await queryInterface.bulkInsert('Objectives', fakeObjectives, { returning: true });
 
