@@ -12,7 +12,7 @@ describe('Reason List Widget', () => {
     const data = [];
     renderReasonList({ data });
 
-    expect(screen.getByText(/reasons in activity report/i)).toBeInTheDocument();
+    expect(screen.getByText(/reasons in activity reports/i)).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
   });
@@ -24,7 +24,7 @@ describe('Reason List Widget', () => {
     ];
     renderReasonList({ data });
 
-    expect(screen.getByText(/reasons in activity report/i)).toBeInTheDocument();
+    expect(screen.getByText(/reasons in activity reports/i)).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: /reason one/i })).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe('Reason List Widget', () => {
     ];
     renderReasonList({ data });
 
-    expect(screen.getByText(/reasons in activity report/i)).toBeInTheDocument();
+    expect(screen.getByText(/reasons in activity reports/i)).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: /reason 10 is a very very very long reason and should not cut off the text/i })).toBeInTheDocument();

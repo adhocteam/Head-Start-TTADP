@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from '@trussworks/react-uswds';
+import moment from 'moment';
 import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
 import './ReasonList.css';
 import 'uswds/dist/css/uswds.css';
-// import DateSelect from '../pages/Dashboard/components/DateSelect';
+
+// import { DATE_FMT } from '../Constants';
 
 /*
   Widgets only have to worry about presenting data. Filtering of the data happens at a
@@ -16,16 +18,30 @@ import 'uswds/dist/css/uswds.css';
   id in the backend `src/widgets/index.js` file or you will get 404s.
 */
 
-/*
-     <DateSelect
-                        dateRange={dateRange}
-                        updateDateRange={updateDateRange}
-                        selectedDateRangeOption={selectedDateRangeOption}
-                        gainFocus={gainFocus}
-                    />
-*/
+function ReasonList({ data, dateRange }) {
+  const [dateHeaderRangeValue, setHeaderDateRangeValue] = useState('');
 
-function ReasonList({ data }) {
+  useEffect(() => {
+    if (dateRange) {
+      const dates = dateRange.split('-');
+      let startDate;
+      let endDate;
+
+      if (dates && Array.isArray(dates)) {
+        if (dates.length > 0) {
+          startDate = moment(dates[0]).format('MM/DD/yyyy');
+        }
+
+        if (dates.length > 1) {
+          endDate = moment(dates[1]).format('MM/DD/yyyy');
+        }
+      }
+
+      setHeaderDateRangeValue(`${startDate} to ${endDate}`);
+    }
+  },
+  [dateRange]);
+
   const renderReasonList = () => {
     if (data && Array.isArray(data) && data.length > 0) {
       return data.map((reason) => (
@@ -47,7 +63,8 @@ function ReasonList({ data }) {
       <div className="usa-table-container--scrollable">
         <Table className="smart-hub--reason-list-table" fullWidth>
           <caption className="smart-hub--reason-list-caption">
-            <span className="smart-hub--reason-list-heading">Reasons in Activity Report</span>
+            <span className="smart-hub--reason-list-heading">Reasons in Activity Reports</span>
+            <span className="smart-hub--reason-list-heading-date-range">{dateHeaderRangeValue}</span>
           </caption>
           <thead>
             <tr>
@@ -57,8 +74,8 @@ function ReasonList({ data }) {
           </thead>
           <tbody>
             {
-                            renderReasonList(data)
-                        }
+              renderReasonList(data)
+            }
           </tbody>
         </Table>
       </div>
@@ -71,6 +88,7 @@ ReasonList.propTypes = {
     name: PropTypes.string,
     count: PropTypes.number,
   })).isRequired,
+  dateRange: PropTypes.string.isRequired,
 };
 
 export default withWidgetData(ReasonList, 'reasonList');

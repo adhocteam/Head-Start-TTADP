@@ -151,6 +151,7 @@ function Dashboard({ user }) {
                   filters={filters}
                   region={appliedRegion}
                   allRegions={getUserRegions(user)}
+                  dateRange={dateRange}
                   skipLoading
                 />
               </Grid>

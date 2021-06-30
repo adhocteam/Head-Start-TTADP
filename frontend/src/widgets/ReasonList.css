@@ -87,6 +87,20 @@
   line-height: 24px;
 }
 
+.smart-hub--reason-list-heading-date-range {
+  margin-left: 18px;
+  font-weight: normal;
+  font-size: 14px;
+  background-color: #f8f8f8;
+  padding-left: 9px;
+  padding-right: 9px;
+  padding-top: 7px;
+  padding-bottom: 4px;
+  line-height: 24px;
+  height: 151px;
+  width: 13px;
+}
+
 .reason-list .padding-5 {
   padding-left: 24px;
   padding-top: 28px;
