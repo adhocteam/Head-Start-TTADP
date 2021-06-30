@@ -130,6 +130,6 @@ describe('AR Graph Widget', () => {
 
   it('correctly inserts line breaks', () => {
     const formattedReason = reasonsWithLineBreaks('Equity, Culture &amp; Language');
-    expect(formattedReason).toBe('Equity,<br />Culture<br />&amp;<br />Language');
+    expect(formattedReason).toBe(' Equity,<br />Culture<br />&amp;<br />Language');
   });
 });
