@@ -8,6 +8,34 @@ import Container from '../components/Container';
 import arrowBoth from '../images/arrow-both.svg';
 import DateTime from '../components/DateTime';
 
+export function filterData(data, selectedSpecialists) {
+  return data.filter((dataPoint) => {
+    if (selectedSpecialists.length > 0) {
+      let include = false;
+
+      // eslint-disable-next-line consistent-return
+      selectedSpecialists.forEach((specialist) => {
+        if (dataPoint.participants.includes(specialist.label)) {
+          include = true;
+        }
+      });
+
+      return include;
+    }
+    return true;
+  });
+}
+
+export function sortData(data, order) {
+  data.sort((a, b) => {
+    if (order === 'desc') {
+      return b.count - a.count;
+    }
+
+    return a.count - b.count;
+  });
+}
+
 /**
  *
  * Takes a string, a reason (or topic, if you prefer)
@@ -106,30 +134,10 @@ export function ArGraphWidget({ data, dateTime }) {
     }
 
     // here is where we can filter array for participants
-    const filteredData = data.filter((dataPoint) => {
-      if (selectedSpecialists.length > 0) {
-        let include = false;
-
-        // eslint-disable-next-line consistent-return
-        selectedSpecialists.forEach((specialist) => {
-          if (dataPoint.participants.includes(specialist.label)) {
-            include = true;
-          }
-        });
-
-        return include;
-      }
-      return true;
-    });
+    const filteredData = filterData(data, selectedSpecialists);
 
     // sort the api response based on the dropdown choices
-    filteredData.sort((a, b) => {
-      if (order === 'desc') {
-        return b.count - a.count;
-      }
-
-      return a.count - b.count;
-    });
+    sortData(filteredData, order);
 
     const reasons = [];
     const counts = [];
@@ -174,12 +182,12 @@ export function ArGraphWidget({ data, dateTime }) {
   }, [data, order, selectedSpecialists]);
 
   if (!data) {
-    return <p>Loading...</p>;
+    return <p>Loading...</p>; // test
   }
 
   // handle the order select
   const handleSelect = (e) => {
-    setOrder(e.target.value);
+    setOrder(e.target.value); // test
   };
 
   // options for the multiselect
@@ -208,7 +216,7 @@ export function ArGraphWidget({ data, dateTime }) {
             id="arGraphSpecialists"
             value={selectedSpecialists}
             onChange={(selected) => {
-              setSelectedSpecialists(selected);
+              setSelectedSpecialists(selected); // test
             }}
             className="margin-top-1 ttahub-dashboard--participant-select"
             components={DropdownIndicator}

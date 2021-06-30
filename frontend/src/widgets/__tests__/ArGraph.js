@@ -1,7 +1,9 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { ArGraphWidget, reasonsWithLineBreaks } from '../ArGraph';
+import { render, screen } from '@testing-library/react';
+import {
+  ArGraphWidget, reasonsWithLineBreaks, filterData, sortData,
+} from '../ArGraph';
 
 const TEST_DATA = [{
   reason: 'CLASS: Instructional Support',
@@ -9,48 +11,8 @@ const TEST_DATA = [{
   participants: [],
 },
 {
-  reason: 'Coaching',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'Communication',
-  count: 0,
-  participants: [],
-},
-{
   reason: 'Community and Self-Assessment',
   count: 155,
-  participants: [],
-},
-{
-  reason: 'Curriculum (Early Childhood or Parenting)',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'Data and Evaluation',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'Environmental Health and Safety',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'Equity, Culture & Language',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'ERSEA',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'Facilities',
-  count: 0,
   participants: [],
 },
 {
@@ -72,26 +34,6 @@ const TEST_DATA = [{
   reason: 'Human Resources',
   count: 0,
   participants: ['Gene'],
-},
-{
-  reason: 'Leadership / Governance',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'Learning Environments',
-  count: 6,
-  participants: [],
-},
-{
-  reason: 'Nutrition',
-  count: 0,
-  participants: [],
-},
-{
-  reason: 'Oral Health',
-  count: 0,
-  participants: [],
 }];
 
 const renderArGraphOverview = async (props) => (
@@ -106,26 +48,113 @@ describe('AR Graph Widget', () => {
 
     const graphTitle = screen.getByText(/Topics in Activity Report by Frequency/i);
     await expect(graphTitle).toBeInTheDocument();
-
-    // screen.logTestingPlaygroundURL();
-
-    expect(true).toBe(false);
+    await expect(document.querySelector('svg')).toBeInTheDocument();
   });
 
-  it('allows changing of the order', async () => {
-    renderArGraphOverview({ data: TEST_DATA });
+  it('correctly filters data', () => {
+    const data = [...TEST_DATA];
+    const filteredData = filterData(data, [{ label: 'Gene' }]);
 
-    const select = screen.getByRole('combobox', {
-      name: /change topic data order/i,
-    });
+    expect(filteredData).toStrictEqual([
+      {
+        reason: 'Human Resources',
+        count: 0,
+        participants: ['Gene'],
+      },
+    ]);
+  });
 
-    fireEvent.change(select, { target: { value: 'asc' } });
+  it('correctly sorts data', () => {
+    const data = [...TEST_DATA];
+    // const filteredData = filterData(data, [{ label: 'Gene' }]);
+    sortData(data, 'asc');
 
-    screen.logTestingPlaygroundURL();
+    expect(data).toStrictEqual([
+      {
+        reason: 'Fiscal / Budget',
+        count: 0,
+        participants: [
+          'Louise',
+        ],
+      },
+      {
+        reason: 'Human Resources',
+        count: 0,
+        participants: [
+          'Gene',
+        ],
+      },
+      {
+        reason: 'CLASS: Instructional Support',
+        count: 12,
+        participants: [],
+      },
+      {
+        reason: 'Five-Year Grant',
+        count: 33,
+        participants: [
+          'Bob',
+        ],
+      },
+      {
+        reason: 'Family Support Services',
+        count: 53,
+        participants: [],
+      },
+      {
+        reason: 'Community and Self-Assessment',
+        count: 155,
+        participants: [],
+      },
+    ]);
 
-    // jest.spyOn()
+    sortData(data, 'desc');
 
-    expect(true).toBe(false);
+    expect(data).toStrictEqual([
+      {
+        reason: 'Community and Self-Assessment',
+        count: 155,
+        participants: [],
+      },
+      {
+        reason: 'Family Support Services',
+        count: 53,
+        participants: [],
+      },
+      {
+        reason: 'Five-Year Grant',
+        count: 33,
+        participants: [
+          'Bob',
+        ],
+      },
+      {
+        reason: 'CLASS: Instructional Support',
+        count: 12,
+        participants: [],
+      },
+      {
+        reason: 'Fiscal / Budget',
+        count: 0,
+        participants: [
+          'Louise',
+        ],
+      },
+      {
+        reason: 'Human Resources',
+        count: 0,
+        participants: [
+          'Gene',
+        ],
+      },
+    ]);
+  });
+
+  it('handles null data', async () => {
+    const data = null;
+    renderArGraphOverview({ data });
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('correctly inserts line breaks', () => {
