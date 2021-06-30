@@ -4,7 +4,6 @@
 }
 
 .smart-hub--reason-list-container {
-  border: 3px solid #0166ab;
   width: 509px;
   height: 409px;
   min-width: 509px;
@@ -105,4 +104,5 @@
   padding-left: 24px;
   padding-top: 28px;
   padding-right: 6px;
+  background-color: white;
 }

@@ -14,7 +14,7 @@
 .dashboard-overview--widget-grid-row-one {
   height: 430px;
   min-height: 430px;
-  padding-bottom: 40px;
+  padding-bottom: 0px;
 }
 
 .dashboard-overview--widget-grid-row-one-col-one {
@@ -24,8 +24,11 @@
 }
 
 .dashboard-overview--widget-grid-row-one-col-two {
+  background-color: white;
   width: 640px;
   max-width: 640px;
+  height: 438px;
+  max-height: 438px;
 }
 
 .dashboard-overview--widget-grid-row-two {
@@ -53,7 +56,6 @@
 }
 
 .dashboard-overview--widget-grid-coming-soon-one {
-  border: 3px solid #0166ab;
   height: 409px;
   background-color: white;
 }
@@ -65,7 +67,6 @@
 }
 
 .dashboard-overview--widget-grid-coming-soon-two {
-  border: 3px solid #0166ab;
   height: 409px;
   width: 1160px;
   max-width: 1160px;
@@ -79,7 +80,6 @@
 }
 
 .dashboard-overview--widget-grid-coming-soon-three {
-  border: 3px solid #0166ab;
   height: 409px;
   background-color: white;
   width: 1160px;
