@@ -88,7 +88,6 @@ function Dashboard({ user }) {
 
   const onApplyDateRange = (range) => {
     const rangeId = range ? range.value : selectedDateRangeOption;
-    console.log(rangeId);
     updateSelectedDateRangeOption(rangeId);
 
     if (selectedDateRangeOption !== CUSTOM_DATE_RANGE) {
