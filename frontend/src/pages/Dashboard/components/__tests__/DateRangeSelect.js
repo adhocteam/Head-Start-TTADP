@@ -14,7 +14,7 @@ describe('DateRangeSelect', () => {
     const onApplyDateRange = jest.fn();
     renderDateRangeSelect(onApplyDateRange);
     const button = screen.getByRole('button', { name: /open date range options menu/i });
-    expect(button).toHaveTextContent('Select Date Range');
+    expect(button).toHaveTextContent('Last 30 Days');
   });
 
   it('opens the list of options', () => {
