@@ -26,14 +26,14 @@ export function reasonsWithLineBreaks(reason) {
 
     // we don't want slashes on their own lines
     if (currentValue === '/') {
-      return `${accumulator} ${currentValue}`.trim();
+      return `${accumulator} ${currentValue}`;
     }
 
     if (accumulator.length > allowedLength) {
-      return `${accumulator}<br />${currentValue}`.trim();
+      return `${accumulator}<br />${currentValue}`;
     }
 
-    return `${accumulator} ${currentValue}`.trim();
+    return `${accumulator} ${currentValue}`;
   }, '');
 }
 
@@ -160,7 +160,7 @@ export function ArGraphWidget({ data, dateTime }) {
       width,
       margin: {
         l: 0,
-        // pad: 100,
+        pad: 20,
       },
       xaxis: {
         automargin: true,
@@ -218,7 +218,6 @@ export function ArGraphWidget({ data, dateTime }) {
             isMulti
             isClearable={false}
             styles={styles}
-            defaultMenuIsOpen
           />
         </Grid>
       </Grid>
