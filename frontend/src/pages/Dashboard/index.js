@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { v4 as uuidv4 } from 'uuid';
+import { Grid, GridContainer } from '@trussworks/react-uswds';
 import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
-
 import ReasonList from '../../widgets/ReasonList';
+import './index.css';
 
 function Dashboard({ user }) {
   const [appliedRegion, updateAppliedRegion] = useState(0);
@@ -113,22 +114,18 @@ function Dashboard({ user }) {
 
       <>
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
-
         <div className={appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom` : mainClassNames}>
-
           <RegionDisplay
             regions={regions}
             appliedRegion={appliedRegion}
             onApplyRegion={onApplyRegion}
             hasCentralOffice={hasCentralOffice}
           />
-
           <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
             <DateRangeSelect
               selectedDateRangeOption={selectedDateRangeOption}
               onApply={onApplyDateRange}
             />
-
             <DateSelect
               dateRange={dateRange}
               updateDateRange={updateDateRange}
@@ -136,26 +133,52 @@ function Dashboard({ user }) {
               gainFocus={gainFocus}
             />
           </div>
-
-          <ReasonList
-            filters={filters}
-            region={appliedRegion}
-            allRegions={getUserRegions(user)}
-            skipLoading
-          />
-
+          <div>
+            <DashboardOverview
+              filters={filters}
+              region={appliedRegion}
+              allRegions={regions}
+              dateRange={dateRange}
+              skipLoading
+            />
+          </div>
         </div>
+        <div className="dashboard-overview--widget-grid-parent-div">
+          <GridContainer className="dashboard-overview--widget-grid-container">
+            <Grid row className="dashboard-overview--widget-grid-row-one">
+              <Grid className="dashboard-overview--widget-grid-row-one-col-one" tablet={{ col: true }}>
+                <ReasonList
+                  filters={filters}
+                  region={appliedRegion}
+                  allRegions={getUserRegions(user)}
+                  skipLoading
+                />
+              </Grid>
+              <Grid className="dashboard-overview--widget-grid-row-one-col-two" tablet={{ col: true }}>
+                <div className="dashboard-overview--widget-grid-coming-soon-one">
+                  <h3>Coming Soon...</h3>
+                </div>
+              </Grid>
+            </Grid>
 
-        <DashboardOverview
-          filters={filters}
-          region={appliedRegion}
-          allRegions={regions}
-          dateRange={dateRange}
-          skipLoading
-        />
+            <Grid row className="dashboard-overview--widget-grid-row-two">
+              <Grid className="dashboard-overview--widget-grid-row-two-col-one" tablet={{ col: 12 }}>
+                <div className="dashboard-overview--widget-grid-coming-soon-two">
+                  <h3>Coming Soon...</h3>
+                </div>
+              </Grid>
+            </Grid>
 
+            <Grid row className="dashboard-overview--widget-grid-row-three">
+              <Grid className="dashboard-overview--widget-grid-row-three-col-one" tablet={{ col: 12 }}>
+                <div className="dashboard-overview--widget-grid-coming-soon-three">
+                  <h3>Coming Soon...</h3>
+                </div>
+              </Grid>
+            </Grid>
+          </GridContainer>
+        </div>
       </>
-
     </div>
   );
 }
