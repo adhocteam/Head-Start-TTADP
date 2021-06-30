@@ -48,7 +48,9 @@ function Dashboard({ user }) {
   }, [regions, regionsFetched, user]);
 
   useEffect(() => {
-    updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
+    if (user) {
+      updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
+    }
   }, [user]);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ function Dashboard({ user }) {
     const dateInExpectedFormat = formatDateRange(selectedDateRangeOption, { forDateTime: true });
     const prettyPrintedQuery = formatDateRange(selectedDateRangeOption, { withSpaces: true });
 
-    setDateTime(<time className="display-flex flex-align-center" dateTime={dateInExpectedFormat}>{prettyPrintedQuery}</time>);
+    setDateTime(['display-flex flex-align-center', dateInExpectedFormat, prettyPrintedQuery]);
   }, [selectedDateRangeOption]);
 
   useEffect(() => {

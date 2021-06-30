@@ -6,6 +6,7 @@ import Select, { components } from 'react-select';
 import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
 import arrowBoth from '../images/arrow-both.svg';
+import DateTime from '../components/DateTime';
 
 /**
  *
@@ -16,7 +17,7 @@ import arrowBoth from '../images/arrow-both.svg';
  * @param {string} reason
  * @returns string with line breaks
  */
-function returnReasonsWithLineBreaks(reason) {
+export function reasonsWithLineBreaks(reason) {
   const arrayOfReasons = reason.split(' ');
 
   return arrayOfReasons.reduce((accumulator, currentValue) => {
@@ -25,14 +26,14 @@ function returnReasonsWithLineBreaks(reason) {
 
     // we don't want slashes on their own lines
     if (currentValue === '/') {
-      return `${accumulator} ${currentValue}`;
+      return `${accumulator} ${currentValue}`.trim();
     }
 
     if (accumulator.length > allowedLength) {
-      return `${accumulator}<br />${currentValue}`;
+      return `${accumulator}<br />${currentValue}`.trim();
     }
 
-    return `${accumulator} ${currentValue}`;
+    return `${accumulator} ${currentValue}`.trim();
   }, '');
 }
 
@@ -89,7 +90,7 @@ const styles = {
   valueContainer: (provided) => ({ ...provided, height: '40px' }),
 };
 
-function ArGraph({ data, dateTime }) {
+export function ArGraphWidget({ data, dateTime }) {
   // the order the data is displayed in the chart
   const [order, setOrder] = useState('desc');
   // this is for populating the select box
@@ -144,7 +145,7 @@ function ArGraph({ data, dateTime }) {
 
     const trace = {
       type: 'bar',
-      x: reasons.map((reason) => returnReasonsWithLineBreaks(reason)),
+      x: reasons.map((reason) => reasonsWithLineBreaks(reason)),
       y: counts,
       hoverinfo: 'y',
     };
@@ -191,7 +192,9 @@ function ArGraph({ data, dateTime }) {
     <Container className="overflow-x-scroll">
       <Grid row>
         <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
-        <Grid col="auto" className="display-flex padding-x-2">{dateTime}</Grid>
+        <Grid col="auto" className="display-flex padding-x-2">
+          <DateTime classNames={dateTime[0]} timestamp={dateTime[1]} label={dateTime[2]} />
+        </Grid>
         <Grid col="auto" className="display-flex padding-x-2">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label className="usa-label sr-only" htmlFor="arGraphOrder">Change topic data order</label>
@@ -224,8 +227,10 @@ function ArGraph({ data, dateTime }) {
   );
 }
 
-ArGraph.propTypes = {
-  dateTime: PropTypes.func.isRequired,
+ArGraphWidget.propTypes = {
+  dateTime: PropTypes.arrayOf(
+    PropTypes.string,
+  ),
   data: PropTypes.arrayOf(
     PropTypes.shape({
       reason: PropTypes.string,
@@ -235,4 +240,8 @@ ArGraph.propTypes = {
   ).isRequired,
 };
 
-export default withWidgetData(ArGraph, 'arGraph');
+ArGraphWidget.defaultProps = {
+  dateTime: ['', '', ''],
+};
+
+export default withWidgetData(ArGraphWidget, 'arGraph');

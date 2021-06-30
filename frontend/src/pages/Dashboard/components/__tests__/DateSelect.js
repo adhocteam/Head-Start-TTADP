@@ -8,18 +8,19 @@ import DateSelect from '../DateSelect';
 import { formatDateRange } from '../../constants';
 
 describe('DateSelect', () => {
-  const renderSelect = (selectedDateRangeOption, updateDateRange) => {
+  const renderSelect = (selectedDateRangeOption, updateDateRange, dateLabel = '') => {
     render(<DateSelect
       updateDateRange={updateDateRange}
       selectedDateRangeOption={selectedDateRangeOption}
+      dateTime={['', '', dateLabel]}
     />);
   };
 
   it('shows a non interactive label when custom is not selected', () => {
     const selectedDateRangeOption = 1;
     const onUpdateFilter = jest.fn();
-    renderSelect(selectedDateRangeOption, onUpdateFilter);
     const thirtyDays = formatDateRange(selectedDateRangeOption, { withSpaces: true });
+    renderSelect(selectedDateRangeOption, onUpdateFilter, thirtyDays);
     expect(screen.getByText(thirtyDays)).toBeInTheDocument();
   });
 

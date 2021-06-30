@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DateRangePicker from '../../../components/DateRangePicker';
 import { CUSTOM_DATE_RANGE } from '../constants';
+import DateTime from '../../../components/DateTime';
 
 export default function DateSelect(props) {
   const {
@@ -32,7 +33,7 @@ export default function DateSelect(props) {
     );
   }
 
-  return dateTime;
+  return <DateTime classNames={dateTime[0]} timestamp={dateTime[1]} label={dateTime[2]} />;
 }
 
 DateSelect.propTypes = {
@@ -40,7 +41,7 @@ DateSelect.propTypes = {
   dateRange: PropTypes.string,
   updateDateRange: PropTypes.func,
   gainFocus: PropTypes.bool,
-  dateTime: PropTypes.func.isRequired,
+  dateTime: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 DateSelect.defaultProps = {
