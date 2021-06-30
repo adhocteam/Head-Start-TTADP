@@ -5,7 +5,6 @@ import { Grid } from '@trussworks/react-uswds';
 import Select, { components } from 'react-select';
 import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
-import './ArGraph.css';
 import arrowBoth from '../images/arrow-both.svg';
 
 /**
