@@ -153,7 +153,7 @@ describe('Dashboard overview widget', () => {
     expect(data.numReports).toBe('4');
     expect(data.numGrants).toBe('2');
     expect(data.numTotalGrants).toBe('2');
-    expect(data.inPerson).toBe('12.0');
+    expect(data.inPerson).toBe('4');
     expect(data.sumDuration).toBe('12.0');
     expect(data.nonGrantees).toBe('0');
   });
@@ -166,7 +166,7 @@ describe('Dashboard overview widget', () => {
     expect(data.numReports).toBe('1');
     expect(data.numGrants).toBe('0');
     expect(data.numTotalGrants).toBe('2');
-    expect(data.inPerson).toBe('0.0');
+    expect(data.inPerson).toBe('0');
     expect(data.sumDuration).toBe('6.0');
     expect(data.nonGrantees).toBe('0');
   });
