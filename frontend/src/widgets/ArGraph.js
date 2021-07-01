@@ -200,8 +200,8 @@ export function ArGraphWidget({ data, dateTime }) {
     <Container className="overflow-x-scroll">
       <Grid row>
         <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
-        <Grid col="auto" className="display-flex padding-x-2">
-          <DateTime classNames="display-flex flex-align-center" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />
+        <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
+          <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />
         </Grid>
         <Grid col="auto" className="display-flex padding-x-2">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -235,9 +235,9 @@ export function ArGraphWidget({ data, dateTime }) {
 }
 
 ArGraphWidget.propTypes = {
-  dateTime: PropTypes.arrayOf(
-    PropTypes.string,
-  ),
+  dateTime: PropTypes.shape({
+    dateInExpectedFormat: PropTypes.string, prettyPrintedQuery: PropTypes.string,
+  }),
   data: PropTypes.arrayOf(
     PropTypes.shape({
       reason: PropTypes.string,
@@ -248,7 +248,7 @@ ArGraphWidget.propTypes = {
 };
 
 ArGraphWidget.defaultProps = {
-  dateTime: ['', '', ''],
+  dateTime: { dateInExpectedFormat: '', prettyPrintedQuery: '' },
 };
 
 export default withWidgetData(ArGraphWidget, 'arGraph');

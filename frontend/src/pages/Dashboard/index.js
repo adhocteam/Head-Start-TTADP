@@ -19,6 +19,7 @@ function Dashboard({ user }) {
   const [dateRange, updateDateRange] = useState('');
   const [gainFocus, setGainFocus] = useState(false);
   const [dateTime, setDateTime] = useState({ dateInExpectedFormat: '', prettyPrintedQuery: '' });
+  const [dateRangeLoaded, setDateRangeLoaded] = useState(false);
 
   /*
     *    the idea is that this filters variable, which roughly matches
@@ -61,14 +62,27 @@ function Dashboard({ user }) {
     const dateInExpectedFormat = formatDateRange({
       lastThirtyDays: selectedDateRangeOption === 1,
       forDateTime: true,
+      string: dateRange,
     });
     const prettyPrintedQuery = formatDateRange({
       lastThirtyDays: selectedDateRangeOption === 1,
       withSpaces: true,
+      string: dateRange,
     });
 
     setDateTime({ dateInExpectedFormat, prettyPrintedQuery });
-  }, [selectedDateRangeOption]);
+  }, [selectedDateRangeOption, dateRange]);
+
+  useEffect(() => {
+    if (!dateRangeLoaded) {
+      updateDateRange(formatDateRange({
+        lastThirtyDays: selectedDateRangeOption === 1,
+        forDateTime: true,
+      }));
+
+      setDateRangeLoaded(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -121,7 +135,9 @@ function Dashboard({ user }) {
 
     const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
 
-    updateDateRange(formatDateRange({ lastThirtyDays: !isCustom, forDateTime: true }));
+    if (!isCustom) {
+      updateDateRange(formatDateRange({ lastThirtyDays: true, forDateTime: true }));
+    }
 
     if (isCustom) {
       // set focus to DateRangePicker 1st input

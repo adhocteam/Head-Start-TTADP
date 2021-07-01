@@ -27,7 +27,7 @@ export function formatDateRange(format = {
     sep = '-';
   }
 
-  if (format.lastThirtyDays === 1) {
+  if (format.lastThirtyDays) {
     const today = moment();
     const thirtyDaysAgo = moment().subtract(30, 'days');
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './DateTime.css';
 
 export default function DateTime(props) {
   const { classNames, timestamp, label } = props;

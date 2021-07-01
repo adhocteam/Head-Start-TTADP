@@ -3,7 +3,7 @@ import { formatDateRange } from '../constants';
 describe('format date function', () => {
   it('returns a formatted date string', () => {
     const str = formatDateRange({
-      lastThirtyDays: true,
+      lastThirtyDays: false,
       string: '2021/06/07-2021/06/08',
       withSpaces: true,
     });
