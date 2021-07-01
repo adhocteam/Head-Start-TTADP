@@ -82,7 +82,7 @@ function Dashboard({ user }) {
 
       setDateRangeLoaded(true);
     }
-  }, []);
+  }, [dateRangeLoaded, selectedDateRangeOption]);
 
   useEffect(() => {
     if (!user) {
