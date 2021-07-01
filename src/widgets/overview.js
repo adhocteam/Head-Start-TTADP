@@ -15,7 +15,7 @@ import { REPORT_STATUSES } from '../constants';
 export default async function overview(scopes, query) {
   const { region } = query;
   const startDte = '2020-09-15';
-  const grantsWhere = `WHERE "regionId" in (${region !== undefined ? region : '0'}) and "endDate" >= ${startDte}`;
+  const grantsWhere = `WHERE "regionId" in (${region !== undefined ? region : '0'}) and "endDate" >= '${startDte}'`;
   const baseWhere = `${grantsWhere} AND "status" = '${REPORT_STATUSES.APPROVED}' AND "startDate" >= '${startDte}'`;
   // There could be a better way, but using sequelize.literal was the only way I could get correct
   // numbers for SUM
