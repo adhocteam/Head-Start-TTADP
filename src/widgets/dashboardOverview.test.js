@@ -164,7 +164,7 @@ describe('Dashboard overview widget', () => {
     const data = await dashboardOverview(scopes, formatQuery(query));
 
     expect(data.numReports).toBe('1');
-    expect(data.numGrants).toBe('0');
+    expect(data.numGrants).toBe('2');
     expect(data.numTotalGrants).toBe('2');
     expect(data.inPerson).toBe('0');
     expect(data.sumDuration).toBe('6.0');
