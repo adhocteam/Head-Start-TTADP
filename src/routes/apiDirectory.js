@@ -7,6 +7,7 @@ import adminUsersRouter from './admin/user';
 import filesRouter from './files';
 import activityReportsRouter from './activityReports';
 import usersRouter from './users';
+import widgetsRouter from './widgets';
 import { userById } from '../services/users';
 import { auditLogger } from '../logger';
 import handleErrors from '../lib/apiErrorHandler';
@@ -24,11 +25,9 @@ router.use('/admin/users', adminUsersRouter);
 router.use('/admin', adminRouter);
 router.use('/activity-reports', activityReportsRouter);
 router.use('/users', usersRouter);
+router.use('/widgets', widgetsRouter);
 
 router.use('/files', filesRouter);
-router.use('/hello', (req, res) => {
-  res.send('Hello from ttadp');
-});
 
 router.get('/user', async (req, res) => {
   const { userId } = req.session;

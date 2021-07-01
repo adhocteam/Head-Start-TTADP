@@ -24,11 +24,6 @@
   vertical-align: bottom;
 }
 
-.landing .smart-hub--filter-button {
-  margin-left: 0px;
-  font-size: 14px;
-}
-
 .smart-hub--filter-menu-button:hover {
   color: black;
   text-decoration: none;
@@ -78,7 +73,7 @@
 }
 
 .smart-hub--filter .DateInput_input {
-  height: 18px;
+  max-height: 22px;
 }
 
 .smart-hub--filter .DateRangePickerInput {
@@ -92,7 +87,7 @@
     height: 22px;
   }
   .smart-hub--filter .DateInput_input {
-    height: 20px;
+    height: 22px;
     padding-top: 1px;
     padding-bottom: 1px;
     padding-right: 2px;

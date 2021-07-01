@@ -8,6 +8,12 @@ import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
 import { DATE_FMT, EARLIEST_FILTER_DATE } from '../constants';
 
+const phrases = {
+  focusStartDate: 'Interact with the calendar and add the dates for your date range',
+  chooseAvailableStartDate: ({ date }) => `Choose ${date} for the earliest date`,
+  chooseAvailableEndDate: ({ date }) => `Choose ${date} for the latest date`,
+};
+
 function DateRangePicker({
   query, onUpdateFilter, id,
 }) {
@@ -36,6 +42,7 @@ function DateRangePicker({
     <span id={id}>
       <DateRange
         small
+        phrases={phrases}
         focusedInput={focusedInput}
         startDateId={startDateId}
         endDateId={endDateId}
@@ -62,7 +69,7 @@ function DateRangePicker({
         onClick={() => { updateOpened(true); updateFocused('startDate'); }}
         aria-label={'open calendar"'}
         type="button"
-        className="margin-top-auto margin-bottom-auto smart-hub--filter-button smart-hub--filter-date-picker-button"
+        className="margin-top-auto margin-bottom-auto font-sans-xs margin-left-1 smart-hub--filter-date-picker-button"
         unstyled
       >
         <FontAwesomeIcon size="1x" color="gray" icon={faCalendar} />

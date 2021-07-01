@@ -4,7 +4,7 @@
   "description": "Office of Head Start Training & Technical Assistance Data Platform\r =============================================",
   "main": "index.js",
   "engines": {
-    "node": "14.16.0"
+    "node": "14.16.1"
   },
   "scripts": {
     "axe:ci": "axe --exit --load-delay 1000 `cat axe-urls` --dir ./reports/ --chromedriver-path=\"node_modules/chromedriver/bin/chromedriver\"",
@@ -67,7 +67,9 @@
     "import:hses:local": "./node_modules/.bin/babel-node ./src/tools/importGrantGranteesCLI.js --skipdownload",
     "import:hses": "node ./build/server/tools/importGrantGranteesCLI.js",
     "reconcile:legacy": "node ./build/server/tools/reconcileLegacyReports.js",
-    "reconcile:legacy:local": "./node_modules/.bin/babel-node ./src/tools/reconcileLegacyReports.js"
+    "reconcile:legacy:local": "./node_modules/.bin/babel-node ./src/tools/reconcileLegacyReports.js",
+    "populateLegacyNonGrantees": "node ./build/server/tools/populateLegacyNonGranteesCLI.js",
+    "populateLegacyNonGrantees:local": "./node_modules/.bin/babel-node ./src/tools/populateLegacyNonGranteesCLI.js"
   },
   "repository": {
     "type": "git",

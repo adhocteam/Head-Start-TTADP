@@ -62,7 +62,7 @@ const renderActivityReport = (id, location = 'activity-summary', showLastUpdated
 };
 
 const recipients = {
-  grants: [{ name: 'grantee', grants: [{ activityRecipientId: 1, name: 'grant' }] }],
+  grants: [{ name: 'grantee', grants: [{ activityRecipientId: 1, name: 'Grantee Name' }] }],
   nonGrantees: [{ activityRecipientId: 1, name: 'nonGrantee' }],
 };
 
@@ -151,7 +151,7 @@ describe('ActivityReport', () => {
       const grantee = within(information).getByLabelText('Grantee');
       fireEvent.click(grantee);
       const granteeSelectbox = await screen.findByRole('textbox', { name: 'Grantee name(s) (Required)' });
-      await reactSelectEvent.select(granteeSelectbox, ['grant']);
+      await reactSelectEvent.select(granteeSelectbox, ['Grantee Name']);
 
       const button = await screen.findByRole('button', { name: 'Save draft' });
       userEvent.click(button);
@@ -178,7 +178,7 @@ describe('ActivityReport', () => {
         fireEvent.click(grantee);
         const granteeSelectbox = await screen.findByRole('textbox', { name: 'Grantee name(s) (Required)' });
         reactSelectEvent.openMenu(granteeSelectbox);
-        expect(await screen.findByText(withText('grant'))).toBeVisible();
+        expect(await screen.findByText(withText('Grantee Name'))).toBeVisible();
       });
 
       it('Non-grantee', async () => {
@@ -194,13 +194,53 @@ describe('ActivityReport', () => {
 
     it('clears selection when non-grantee is selected', async () => {
       renderActivityReport('new');
-      const enabled = await screen.findByRole('textbox', { name: 'Grantee name(s) (Required)' });
-      expect(enabled).toBeDisabled();
-      const information = await screen.findByRole('group', { name: 'Who was the activity for?' });
+      let information = await screen.findByRole('group', { name: 'Who was the activity for?' });
+
       const grantee = within(information).getByLabelText('Grantee');
-      fireEvent.click(grantee);
-      const disabled = await screen.findByRole('textbox', { name: 'Grantee name(s) (Required)' });
-      expect(disabled).not.toBeDisabled();
+      await fireEvent.click(grantee);
+
+      let granteeSelectbox = await screen.findByRole('textbox', { name: 'Grantee name(s) (Required)' });
+      reactSelectEvent.openMenu(granteeSelectbox);
+      await reactSelectEvent.select(granteeSelectbox, ['Grantee Name']);
+      expect(await screen.findByText(withText('Grantee Name'))).toBeVisible();
+
+      information = await screen.findByRole('group', { name: 'Who was the activity for?' });
+      const nonGrantee = within(information).getByLabelText('Non-Grantee');
+      await fireEvent.click(nonGrantee);
+      await fireEvent.click(grantee);
+
+      granteeSelectbox = await screen.findByLabelText(/grantee name\(s\)/i);
+      expect(within(granteeSelectbox).queryByText('Grantee Name')).toBeNull();
+    });
+
+    it('allows you to pick the same start and end date', async () => {
+      // render a new activity report
+      renderActivityReport('new');
+
+      // we need to wait for the page to render, that's what this is for
+      const dateSection = await screen.findByRole('group', { name: 'Activity date' });
+
+      // get the start date text box and type in a date
+      const startDate = within(dateSection).getByRole('textbox', { name: /start date \(required\), month\/day\/year, edit text/i });
+      userEvent.type(startDate, '12/25/1967');
+
+      // then type in a different date in the end date box
+      const endDate = within(dateSection).getByRole('textbox', { name: /end date \(required\), month\/day\/year, edit text/i });
+      userEvent.type(endDate, '12/26/1967');
+
+      // then change the start date to a date after the end date
+      userEvent.clear(startDate);
+      userEvent.type(startDate, '12/28/1967');
+
+      // expect an error
+      expect(endDate).toBeDisabled();
+
+      // then change the start date to a date after the end date
+      userEvent.clear(startDate);
+      userEvent.type(startDate, '12/26/1967');
+
+      // expect everything to be ok
+      expect(endDate).toBeEnabled();
     });
   });
 });
