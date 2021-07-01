@@ -19,6 +19,8 @@ function DateRangePicker({
 }) {
   const [focusedInput, updateFocused] = useState(null);
   const [opened, updateOpened] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const startDateId = `${id}-start`;
   const endDateId = `${id}-end`;
@@ -34,25 +36,38 @@ function DateRangePicker({
     }
   }, [gainFocus, startDateId]);
 
-  let startDate;
-  let endDate;
-  if (query) {
-    const dateStrings = query.split('-');
-    startDate = dateStrings[0] ? moment(dateStrings[0], DATE_FMT) : null;
-    endDate = dateStrings[1] ? moment(dateStrings[1], DATE_FMT) : null;
-  }
+  useEffect(() => {
+    if (!startDate && !endDate && query) {
+      const dateStrings = query.split('-');
+      setStartDate(dateStrings[0] ? moment(dateStrings[0], DATE_FMT) : null);
+      setEndDate(dateStrings[1] ? moment(dateStrings[1], DATE_FMT) : null);
+    }
+  }, [endDate, query, startDate]);
 
   const onChange = (selectedStartDate, selectedEndDate) => {
+    setStartDate(selectedStartDate);
+    setEndDate(selectedEndDate);
     const startDateStr = selectedStartDate ? selectedStartDate.format(DATE_FMT) : '';
     const endDateStr = selectedEndDate ? selectedEndDate.format(DATE_FMT) : '';
     const date = `${startDateStr}-${endDateStr}`;
+
     onUpdateFilter('query', date);
+  };
+
+  const handleBlur = () => {
+    if (startDate === null) {
+      setStartDate(EARLIEST_FILTER_DATE);
+    }
   };
 
   const cssClasses = `ttahub-date-range-picker ${classNames.join(' ')}`;
 
   return (
-    <span id={id} className={cssClasses}>
+    <span
+      id={id}
+      className={cssClasses}
+      onBlur={handleBlur}
+    >
       <DateRange
         small
         phrases={phrases}
@@ -71,9 +86,10 @@ function DateRangePicker({
           }
         }}
         onDatesChange={({ startDate: selectedStartDate, endDate: selectedEndDate }) => {
+          const input = document.getElementById(startDateId);
+
           onChange(selectedStartDate, selectedEndDate);
           if (opened && selectedEndDate) {
-            const input = document.getElementById(startDateId);
             if (input) input.focus();
           }
         }}
