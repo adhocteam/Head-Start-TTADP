@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import DateRangePicker from '../../../components/DateRangePicker';
 import { CUSTOM_DATE_RANGE } from '../constants';
+
 import DateTime from '../../../components/DateTime';
 
 export default function DateSelect(props) {
@@ -29,11 +31,12 @@ export default function DateSelect(props) {
         onUpdateFilter={onUpdateFilter}
         classNames={['display-flex']}
         gainFocus={gainFocus}
+
       />
     );
   }
 
-  return <DateTime classNames={dateTime[0]} timestamp={dateTime[1]} label={dateTime[2]} />;
+  return <DateTime classNames="display-flex flex-align-center" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />;
 }
 
 DateSelect.propTypes = {
@@ -41,11 +44,18 @@ DateSelect.propTypes = {
   dateRange: PropTypes.string,
   updateDateRange: PropTypes.func,
   gainFocus: PropTypes.bool,
-  dateTime: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dateTime: PropTypes.shape({
+    dateInExpectedFormat: PropTypes.string,
+    prettyPrintedQuery: PropTypes.string,
+  }),
 };
 
 DateSelect.defaultProps = {
   dateRange: '',
+  dateTime: {
+    dateInExpectedFormat: '',
+    prettyPrintedQuery: '',
+  },
   selectedDateRangeOption: 0,
   gainFocus: false,
   updateDateRange: () => {},

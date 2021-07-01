@@ -12,14 +12,14 @@ describe('DateSelect', () => {
     render(<DateSelect
       updateDateRange={updateDateRange}
       selectedDateRangeOption={selectedDateRangeOption}
-      dateTime={['', '', dateLabel]}
+      dateTime={{ prettyPrintedQuery: dateLabel }}
     />);
   };
 
   it('shows a non interactive label when custom is not selected', () => {
     const selectedDateRangeOption = 1;
     const onUpdateFilter = jest.fn();
-    const thirtyDays = formatDateRange(selectedDateRangeOption, { withSpaces: true });
+    const thirtyDays = formatDateRange({ lastThirtyDays: true, withSpaces: true });
     renderSelect(selectedDateRangeOption, onUpdateFilter, thirtyDays);
     expect(screen.getByText(thirtyDays)).toBeInTheDocument();
   });

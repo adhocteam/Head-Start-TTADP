@@ -201,7 +201,7 @@ export function ArGraphWidget({ data, dateTime }) {
       <Grid row>
         <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
         <Grid col="auto" className="display-flex padding-x-2">
-          <DateTime classNames={dateTime[0]} timestamp={dateTime[1]} label={dateTime[2]} />
+          <DateTime classNames="display-flex flex-align-center" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />
         </Grid>
         <Grid col="auto" className="display-flex padding-x-2">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
