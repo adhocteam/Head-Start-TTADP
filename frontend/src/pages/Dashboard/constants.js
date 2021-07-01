@@ -16,7 +16,7 @@ export const DATE_OPTIONS = [
 
 export const CUSTOM_DATE_RANGE = DATE_OPTIONS[1].value;
 
-export function formatDateRange(option = 0, format = {
+export function formatDateRange(lastThirtyDays = 0, format = {
   withSpaces: false, forDateTime: false, sep: '-', string: '',
 }) {
   const selectedFormat = format.forDateTime ? DATETIME_DATE_FORMAT : DATE_FORMAT;
@@ -27,7 +27,7 @@ export function formatDateRange(option = 0, format = {
     sep = '-';
   }
 
-  if (option === 1) {
+  if (lastThirtyDays === 1) {
     const today = moment();
     const thirtyDaysAgo = moment().subtract(30, 'days');
 
@@ -42,14 +42,11 @@ export function formatDateRange(option = 0, format = {
     const dates = format.string.split('-');
 
     if (dates && dates.length > 1) {
-      const firstDate = moment(dates[0]);
-      const secondDate = moment(dates[1]);
-
       if (format.withSpaces) {
-        return `${firstDate.format(selectedFormat)} ${sep} ${secondDate.format(selectedFormat)}`;
+        return `${moment(dates[0]).format(selectedFormat)} ${sep} ${moment(dates[1]).format(selectedFormat)}`;
       }
 
-      return `${firstDate.format(selectedFormat)}${sep}${firstDate.format(selectedFormat)}`;
+      return `${moment(dates[0]).format(selectedFormat)}${sep}${moment(dates[1]).format(selectedFormat)}`;
     }
   }
 
