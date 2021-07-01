@@ -117,6 +117,10 @@ const styles = {
   }),
   indicatorSeparator: () => ({ display: 'none' }),
   valueContainer: (provided) => ({ ...provided, height: '40px' }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: 'black',
+  }),
 };
 
 export function ArGraphWidget({ data, dateTime }) {
@@ -129,6 +133,11 @@ export function ArGraphWidget({ data, dateTime }) {
   // whether or not to show the tooltip
   // eslint-disable-next-line no-unused-vars
   const [showTooltip, setShowTooltip] = useState(false);
+  // set x position of tooltip
+  const [tooltipX, setTooltipX] = useState(0);
+  // set tooltip text
+  const [tooltipText, setTooltipText] = useState('1');
+
   // the dom el for drawing the chart
   const bars = useRef();
 
@@ -160,15 +169,22 @@ export function ArGraphWidget({ data, dateTime }) {
       x: reasons.map((reason) => reasonsWithLineBreaks(reason)),
       y: counts,
       hoverinfo: 'y',
+
     };
 
-    const width = reasons.length > 10 ? reasons.length * 100 : 'auto';
+    const width = reasons.length * 180;
 
     const layout = {
+      bargap: 0.5,
       height: 480,
       hoverlabel: {
-        bgcolor: '#000',
+        bgcolor: '#fff',
+        bordercolor: '#fff',
+        font: {
+          color: '#fff',
+        },
       },
+
       width,
       margin: {
         l: 50,
@@ -178,13 +194,23 @@ export function ArGraphWidget({ data, dateTime }) {
         automargin: true,
         tickangle: 0,
       },
+      hovermode: 'none',
     };
 
     // draw the plot
-    Plotly.newPlot(bars.current, [trace], layout, { displayModeBar: false });
+    Plotly.newPlot(bars.current, [trace], layout, { displayModeBar: false, hovermode: 'none' });
 
     bars.current.on('plotly_hover', (e) => {
-      console.log(e);
+      if (e.points && e.points[0]) {
+        const x = ((e.points[0].pointIndex + 1) * 180) - 60;
+        setShowTooltip(true);
+        setTooltipX(x);
+        setTooltipText(counts[e.points[0].pointIndex]);
+      }
+    });
+
+    bars.current.on('plotly_unhover', () => {
+      setShowTooltip(false);
     });
   }, [data, order, selectedSpecialists]);
 
@@ -206,7 +232,7 @@ export function ArGraphWidget({ data, dateTime }) {
   return (
     <Container className="ttahub--argraph overflow-x-scroll">
       <Grid row className="position-relative">
-        {showTooltip ? <span className="ttahub--argraph ttahub--aragraph-tooltip">1</span> : null }
+        {showTooltip ? <span className="ttahub--argraph ttahub--aragraph-tooltip" style={{ left: tooltipX }}>{tooltipText}</span> : null }
         <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
         <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
           <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />
@@ -230,7 +256,7 @@ export function ArGraphWidget({ data, dateTime }) {
             components={DropdownIndicator}
             options={options}
             tabSelectsValue={false}
-            placeholder="All specialists"
+            placeholder="All Specialists"
             isMulti
             isClearable={false}
             styles={styles}

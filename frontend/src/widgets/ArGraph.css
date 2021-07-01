@@ -6,15 +6,20 @@
     padding: .5em;
     position: absolute;
     text-align: center;    
+    top: 140px;
+    z-index: 2;
 }
 
 .ttahub--aragraph-tooltip::after {
-    border-color: transparent;
-    border-bottom-color: purple;
-    border-width: 10px;
+    border-top: 5px solid black;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
     height: 0;
     width: 0;
     content: '';
     position: absolute;
+    top: 100%;
+    left: 33%;
 
 }
