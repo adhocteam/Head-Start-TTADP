@@ -7,6 +7,7 @@ import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
 import arrowBoth from '../images/arrow-both.svg';
 import DateTime from '../components/DateTime';
+import './ArGraph.css';
 
 export function filterData(data, selectedSpecialists) {
   return data.filter((dataPoint) => {
@@ -96,7 +97,7 @@ const styles = {
     ...provided,
     borderColor: '#565c65',
     backgroundColor: 'white',
-    borderRadius: '0',
+    borderRadius: '5px',
     '&:hover': {
       borderColor: '#565c65',
     },
@@ -125,6 +126,9 @@ export function ArGraphWidget({ data, dateTime }) {
   const [participants, setParticipants] = useState([]);
   // this is the actual selected specialists to filter on
   const [selectedSpecialists, setSelectedSpecialists] = useState([]);
+  // whether or not to show the tooltip
+  // eslint-disable-next-line no-unused-vars
+  const [showTooltip, setShowTooltip] = useState(false);
   // the dom el for drawing the chart
   const bars = useRef();
 
@@ -167,18 +171,21 @@ export function ArGraphWidget({ data, dateTime }) {
       },
       width,
       margin: {
-        l: 0,
+        l: 50,
         pad: 20,
       },
       xaxis: {
         automargin: true,
         tickangle: 0,
       },
-      // hovermode: 'y',
     };
 
     // draw the plot
     Plotly.newPlot(bars.current, [trace], layout, { displayModeBar: false });
+
+    bars.current.on('plotly_hover', (e) => {
+      console.log(e);
+    });
   }, [data, order, selectedSpecialists]);
 
   if (!data) {
@@ -197,8 +204,9 @@ export function ArGraphWidget({ data, dateTime }) {
   }));
 
   return (
-    <Container className="overflow-x-scroll">
-      <Grid row>
+    <Container className="ttahub--argraph overflow-x-scroll">
+      <Grid row className="position-relative">
+        {showTooltip ? <span className="ttahub--argraph ttahub--aragraph-tooltip">1</span> : null }
         <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
         <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
           <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />
@@ -206,12 +214,12 @@ export function ArGraphWidget({ data, dateTime }) {
         <Grid col="auto" className="display-flex padding-x-2">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label className="usa-label sr-only" htmlFor="arGraphOrder">Change topic data order</label>
-          <select className="usa-select" id="arGraphOrder" name="arGraphOrder" value={order} onChange={handleSelect}>
+          <select className="usa-select radius-md" id="arGraphOrder" name="arGraphOrder" value={order} onChange={handleSelect}>
             <option value="desc">High To Low</option>
             <option value="asc">Low to High</option>
           </select>
         </Grid>
-        <Grid col="auto" className="display-flex padding-x-2">
+        <Grid col="auto" className="display-flex padding-x-2 ">
           <Select
             id="arGraphSpecialists"
             value={selectedSpecialists}
@@ -222,7 +230,7 @@ export function ArGraphWidget({ data, dateTime }) {
             components={DropdownIndicator}
             options={options}
             tabSelectsValue={false}
-            placeholder="Select specialists"
+            placeholder="All specialists"
             isMulti
             isClearable={false}
             styles={styles}
@@ -238,13 +246,15 @@ ArGraphWidget.propTypes = {
   dateTime: PropTypes.shape({
     dateInExpectedFormat: PropTypes.string, prettyPrintedQuery: PropTypes.string,
   }),
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      reason: PropTypes.string,
-      count: PropTypes.number,
-      participants: PropTypes.arrayOf(PropTypes.string),
-    }),
-  ).isRequired,
+  data: PropTypes.oneOfType([
+    PropTypes.arrayOf(
+      PropTypes.shape({
+        reason: PropTypes.string,
+        count: PropTypes.number,
+        participants: PropTypes.arrayOf(PropTypes.string),
+      }),
+    ), PropTypes.shape({}),
+  ]).isRequired,
 };
 
 ArGraphWidget.defaultProps = {

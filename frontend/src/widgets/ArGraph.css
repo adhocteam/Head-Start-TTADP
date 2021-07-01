@@ -1,0 +1,20 @@
+.ttahub--aragraph-tooltip {
+    background: black;
+    border-radius: 5px;
+    color: white;
+    min-width: 2rem;
+    padding: .5em;
+    position: absolute;
+    text-align: center;    
+}
+
+.ttahub--aragraph-tooltip::after {
+    border-color: transparent;
+    border-bottom-color: purple;
+    border-width: 10px;
+    height: 0;
+    width: 0;
+    content: '';
+    position: absolute;
+
+}
