@@ -17,7 +17,7 @@ export default async function dashboardOverview(scopes, query) {
     }
   }
 
-  const grantsWhere = `WHERE "status" = 'Active' AND "regionId" in (${regions.join(',')})`;
+  const grantsWhere = `WHERE "regionId" in (${regions.join(',')})`;
 
   const duration = await ActivityReport.findAll({
     attributes: [
@@ -38,11 +38,11 @@ export default async function dashboardOverview(scopes, query) {
     .toFixed(1)
     .toString();
 
-  const inPerson = duration.filter((report) => report.deliveryMethod === 'in-person')
-    .reduce((acc, report) => (
-      acc + parseFloat(report.duration)
-    ), 0)
-    .toFixed(1)
+  const inPerson = duration.filter((report) => report.deliveryMethod.toLowerCase() === 'in-person').length
+    // .reduce((acc, report) => (
+    //   acc + parseFloat(report.duration)
+    // ), 0)
+    // .toFixed(1)
     .toString();
 
   const res = await ActivityReport.findAll({
@@ -71,9 +71,6 @@ export default async function dashboardOverview(scopes, query) {
             as: 'grant',
             attributes: [],
             required: false,
-            where: {
-              [Op.and]: [scopes],
-            },
           },
           {
             model: NonGrantee,

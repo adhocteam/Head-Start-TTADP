@@ -7,7 +7,6 @@ import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
 import ArGraph from '../../widgets/ArGraph';
-import './index.css';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
@@ -19,7 +18,7 @@ function Dashboard({ user }) {
   const [hasCentralOffice, updateHasCentralOffice] = useState(false);
   const [dateRange, updateDateRange] = useState('');
   const [gainFocus, setGainFocus] = useState(false);
-  const [dateTime, setDateTime] = useState(<></>);
+  const [dateTime, setDateTime] = useState({ dateInExpectedFormat: '', prettyPrintedQuery: '' });
 
   /*
     *    the idea is that this filters variable, which roughly matches
@@ -54,15 +53,21 @@ function Dashboard({ user }) {
   }, [user]);
 
   useEffect(() => {
-  /**
+    /**
      *
      * format the date range for display
      */
 
-    const dateInExpectedFormat = formatDateRange(selectedDateRangeOption, { forDateTime: true });
-    const prettyPrintedQuery = formatDateRange(selectedDateRangeOption, { withSpaces: true });
+    const dateInExpectedFormat = formatDateRange({
+      lastThirtyDays: selectedDateRangeOption === 1,
+      forDateTime: true,
+    });
+    const prettyPrintedQuery = formatDateRange({
+      lastThirtyDays: selectedDateRangeOption === 1,
+      withSpaces: true,
+    });
 
-    setDateTime(['display-flex flex-align-center', dateInExpectedFormat, prettyPrintedQuery]);
+    setDateTime({ dateInExpectedFormat, prettyPrintedQuery });
   }, [selectedDateRangeOption]);
 
   useEffect(() => {
@@ -87,7 +92,23 @@ function Dashboard({ user }) {
     ];
 
     updateFilters(filtersToApply);
-  }, [appliedRegion, dateRange, user]);
+    updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
+
+    if (appliedRegion === 0) {
+      if (hasCentralOffice) {
+        updateAppliedRegion(14);
+      } else if (regions[0]) {
+        updateAppliedRegion(regions[0]);
+      }
+    }
+  },
+  [appliedRegion,
+    dateRange,
+    hasCentralOffice,
+    regions,
+    user,
+    regionsFetched,
+    selectedDateRangeOption]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
@@ -98,8 +119,11 @@ function Dashboard({ user }) {
     const rangeId = range ? range.value : selectedDateRangeOption;
     updateSelectedDateRangeOption(rangeId);
 
-    if (selectedDateRangeOption !== CUSTOM_DATE_RANGE) {
-      updateDateRange(formatDateRange(selectedDateRangeOption, { forDateTime: true }));
+    const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
+
+    updateDateRange(formatDateRange({ lastThirtyDays: !isCustom, forDateTime: true }));
+
+    if (isCustom) {
       // set focus to DateRangePicker 1st input
       setGainFocus(true);
     }
@@ -138,6 +162,7 @@ function Dashboard({ user }) {
             gainFocus={gainFocus}
             dateTime={dateTime}
           />
+
         </div>
 
       </div>

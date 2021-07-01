@@ -13,7 +13,10 @@ export default function DateRangeSelect(props) {
   const { onApply } = props;
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(0);
+  const [selectedItem, setSelectedItem] = useState({
+    label: 'Last 30 Days',
+    value: 1,
+  });
 
   const onApplyClick = () => {
     onApply(selectedItem);
@@ -29,7 +32,7 @@ export default function DateRangeSelect(props) {
   /**
    * Grab the label text from the DATE_OPTIONS constant
    */
-  const buttonText = selectedItem ? selectedItem.label : 'Select Date Range';
+  const buttonText = selectedItem.label ? selectedItem.label : 'Select Date Range';
 
   return (
     <div className="margin-left-1">
