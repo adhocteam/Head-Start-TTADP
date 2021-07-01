@@ -104,7 +104,7 @@ describe('Dashboard overview widget', () => {
     await createOrUpdate(regionOneReport, reportOne);
 
     const reportTwo = await ActivityReport.findOne({ where: { duration: 2 } });
-    await createOrUpdate({ ...regionOneReport, duration: 2 }, reportTwo);
+    await createOrUpdate({ ...regionOneReport, duration: 2, deliveryMethod: 'In-person' }, reportTwo);
 
     const reportFour = await ActivityReport.findOne({ where: { duration: 4 } });
     await createOrUpdate({ ...regionOneReport, duration: 4 }, reportFour);
