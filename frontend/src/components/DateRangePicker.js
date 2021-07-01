@@ -56,7 +56,7 @@ function DateRangePicker({
 
   const handleBlur = () => {
     if (startDate === null) {
-      setStartDate(EARLIEST_FILTER_DATE);
+      onChange(EARLIEST_FILTER_DATE.clone().add(1, 'day'), endDate);
     }
   };
 
