@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, screen /* fireEvent */ } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  ArGraphWidget, reasonsWithLineBreaks, filterData, sortData,
+  ArGraphWidget, reasonsWithLineBreaks, filterData, sortData, Tooltip,
 } from '../ArGraph';
 
 const TEST_DATA = [{
@@ -39,7 +39,7 @@ const TEST_DATA = [{
 
 const renderArGraphOverview = async (props) => (
   render(
-    <ArGraphWidget data={props.data} dateTime={['', '', '05/27/1967-08/21/1968']} />,
+    <ArGraphWidget data={props.data} dateTime={{ dateInExpectedFormat: '', prettyPrintedQuery: '05/27/1967-08/21/1968' }} />,
   )
 );
 
@@ -170,5 +170,29 @@ describe('AR Graph Widget', () => {
     userEvent.selectOptions(order, ['asc']);
 
     expect(order.value).toBe('asc');
+  });
+
+  it('tooltip props', () => {
+    render(<Tooltip x={0} text="Test" show />);
+
+    expect(screen.getByText(/test/i)).toBeInTheDocument();
+  });
+
+  it('select styles', () => {
+    renderArGraphOverview({ data: TEST_DATA });
+
+    const select = document.querySelector('.ar__control');
+
+    userEvent.click(select);
+
+    expect(select.classList.contains('ar__control--is-focused')).toBe(true);
+
+    let louise = screen.getByText(/louise/i);
+
+    userEvent.click(louise);
+
+    louise = screen.getByText(/louise/i);
+
+    expect(louise.classList.contains('ar__multi-value__label')).toBe(true);
   });
 });

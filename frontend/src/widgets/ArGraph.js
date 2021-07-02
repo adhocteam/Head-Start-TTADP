@@ -37,6 +37,17 @@ export function sortData(data, order) {
   });
 }
 
+export function Tooltip(props) {
+  const { show, x, text } = props;
+  return show ? <span className="ttahub--argraph ttahub--aragraph-tooltip" style={{ left: x }}>{text}</span> : null;
+}
+
+Tooltip.propTypes = {
+  show: PropTypes.bool.isRequired,
+  x: PropTypes.number.isRequired,
+  text: PropTypes.string.isRequired,
+};
+
 /**
  *
  * Takes a string, a reason (or topic, if you prefer)
@@ -92,7 +103,7 @@ const styles = {
       height: '40px',
     };
   },
-  control: (provided, state) => ({
+  control: (provided) => ({
     height: '40px',
     ...provided,
     borderColor: '#565c65',
@@ -101,8 +112,6 @@ const styles = {
     '&:hover': {
       borderColor: '#565c65',
     },
-    // Match uswds disabled style
-    opacity: state.isDisabled ? '0.7' : '1',
     width: '180px',
   }),
   menu: (provided) => ({
@@ -232,7 +241,7 @@ export function ArGraphWidget({ data, dateTime }) {
   return (
     <Container className="ttahub--argraph overflow-x-scroll">
       <Grid row className="position-relative">
-        {showTooltip ? <span className="ttahub--argraph ttahub--aragraph-tooltip" style={{ left: tooltipX }}>{tooltipText}</span> : null }
+        <Tooltip show={showTooltip} x={tooltipX} text={tooltipText} />
         <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
         <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
           <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />
@@ -247,6 +256,7 @@ export function ArGraphWidget({ data, dateTime }) {
         </Grid>
         <Grid col="auto" className="display-flex padding-x-2 ">
           <Select
+            classNamePrefix="ar"
             id="arGraphSpecialists"
             value={selectedSpecialists}
             onChange={(selected) => {
@@ -260,6 +270,7 @@ export function ArGraphWidget({ data, dateTime }) {
             isMulti
             isClearable={false}
             styles={styles}
+            data-testid="arGraphSpecialists"
           />
         </Grid>
       </Grid>
