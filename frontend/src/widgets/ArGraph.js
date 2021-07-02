@@ -45,7 +45,7 @@ export function Tooltip(props) {
 Tooltip.propTypes = {
   show: PropTypes.bool.isRequired,
   x: PropTypes.number.isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.number.isRequired,
 };
 
 /**
