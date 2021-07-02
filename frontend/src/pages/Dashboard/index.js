@@ -5,8 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
-
-import './index.css';
+import DashboardOverview from '../../widgets/DashboardOverview';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 
@@ -18,6 +17,7 @@ function Dashboard({ user }) {
   const [hasCentralOffice, updateHasCentralOffice] = useState(false);
   const [dateRange, updateDateRange] = useState('');
   const [gainFocus, setGainFocus] = useState(false);
+  const [dateRangeLoaded, setDateRangeLoaded] = useState(false);
 
   /*
     *    the idea is that this filters variable, which roughly matches
@@ -43,7 +43,7 @@ function Dashboard({ user }) {
       },
       {
         id: uuidv4(),
-        topic: 'dateRange',
+        topic: 'startDate',
         condition: 'Is within',
         query: dateRange,
       },
@@ -64,7 +64,22 @@ function Dashboard({ user }) {
         updateAppliedRegion(regions[0]);
       }
     }
-  }, [appliedRegion, dateRange, hasCentralOffice, regions, user, regionsFetched]);
+
+    if (!dateRangeLoaded) {
+      updateDateRange(formatDateRange(selectedDateRangeOption, { forDateTime: true }));
+      setDateRangeLoaded(true);
+    }
+  },
+  [
+    appliedRegion,
+    dateRange,
+    hasCentralOffice,
+    regions,
+    user,
+    regionsFetched,
+    selectedDateRangeOption,
+    dateRangeLoaded,
+  ]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
@@ -108,6 +123,7 @@ function Dashboard({ user }) {
 
           <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
             <DateRangeSelect
+              selectedDateRangeOption={selectedDateRangeOption}
               onApply={onApplyDateRange}
             />
 
@@ -120,6 +136,14 @@ function Dashboard({ user }) {
           </div>
 
         </div>
+
+        <DashboardOverview
+          filters={filters}
+          region={appliedRegion}
+          allRegions={regions}
+          dateRange={dateRange}
+          skipLoading
+        />
 
       </>
 

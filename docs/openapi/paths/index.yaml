@@ -42,3 +42,5 @@
   $ref: './activity-reports/reset.yaml'
 '/files':
   $ref: './files.yaml'
+'/widgets/dashboardOverview':
+  $ref: './widgets/dashboardOverview.yaml'
