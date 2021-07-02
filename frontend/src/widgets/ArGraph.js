@@ -215,7 +215,7 @@ export function ArGraphWidget({ data, dateTime }) {
   }, [data, order, selectedSpecialists]);
 
   if (!data) {
-    return <p>Loading...</p>; // test
+    return <p>Loading...</p>;
   }
 
   // handle the order select
@@ -263,7 +263,7 @@ export function ArGraphWidget({ data, dateTime }) {
           />
         </Grid>
       </Grid>
-      <div ref={bars} />
+      <div data-testid="bars" ref={bars} />
     </Container>
   );
 }

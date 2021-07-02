@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen /* fireEvent */ } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   ArGraphWidget, reasonsWithLineBreaks, filterData, sortData,
 } from '../ArGraph';
@@ -160,5 +161,14 @@ describe('AR Graph Widget', () => {
   it('correctly inserts line breaks', () => {
     const formattedReason = reasonsWithLineBreaks('Equity, Culture &amp; Language');
     expect(formattedReason).toBe(' Equity,<br />Culture<br />&amp;<br />Language');
+  });
+
+  it('shows current order', () => {
+    renderArGraphOverview({ data: TEST_DATA });
+
+    const order = screen.getByRole('combobox', { name: /change topic data order/i });
+    userEvent.selectOptions(order, ['asc']);
+
+    expect(order.value).toBe('asc');
   });
 });
