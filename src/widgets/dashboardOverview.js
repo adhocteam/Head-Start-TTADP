@@ -18,7 +18,7 @@ export default async function dashboardOverview(scopes, query) {
     }
   }
 
-  const grantsWhere = `WHERE "regionId" in (${regions.join(',')}) and "endDate" >= ${startDate}`;
+  const grantsWhere = `WHERE "regionId" in (${regions.join(',')}) and "endDate" >= '${startDate}'`;
 
   const duration = await ActivityReport.findAll({
     attributes: [
