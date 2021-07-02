@@ -65,6 +65,7 @@ describe('DateRangePicker', () => {
 
   it('handles changing focus', async () => {
     const onUpdateFilter = jest.fn();
+    jest.setTimeout(100000);
     render(<RenderDateRangePicker onUpdateFilter={onUpdateFilter} />);
 
     const calendarButton = await screen.findByRole('button', { name: /open calendar"/i });
