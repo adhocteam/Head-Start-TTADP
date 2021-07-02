@@ -84,11 +84,15 @@ function ReasonList({ data, dateRange }) {
 }
 
 ReasonList.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string,
-    count: PropTypes.number,
-  })).isRequired,
+  data: PropTypes.oneOfType([
+    PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        count: PropTypes.number,
+      }),
+    ), PropTypes.shape({}),
+  ]).isRequired,
+
   dateRange: PropTypes.string.isRequired,
 };
-
 export default withWidgetData(ReasonList, 'reasonList');
