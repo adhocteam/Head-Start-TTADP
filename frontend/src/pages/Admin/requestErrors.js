@@ -7,10 +7,6 @@ import {
   DateField,
   Show,
   SimpleShowLayout,
-  Edit,
-  TextInput,
-  SimpleForm,
-  DateInput,
   TopToolbar,
   ListButton,
 } from 'react-admin';
@@ -23,35 +19,17 @@ const RequestErrorShowActions = ({ basePath }) => (
 );
 
 const RequestErrorList = (props) => (
-  <List {...props}>
+  <List {...props} className="smart-hub--overflow-auto">
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="operation" />
       <TextField source="uri" />
       <TextField source="method" />
-      <TextField source="requestBody" />
-      <TextField source="responseBody" />
       <TextField source="responseCode" />
       <DateField source="createdAt" />
       <DateField source="updatedAt" />
     </Datagrid>
   </List>
-);
-
-export const RequestErrorEdit = (props) => (
-  <Edit {...props}>
-    <SimpleForm>
-      <TextInput source="id" />
-      <TextInput source="operation" />
-      <TextInput source="uri" />
-      <TextInput source="method" />
-      <TextInput source="requestBody.foo" />
-      <TextInput source="responseBody.error.foo" />
-      <DateInput source="responseCode" />
-      <DateInput source="createdAt" />
-      <DateInput source="updatedAt" />
-    </SimpleForm>
-  </Edit>
 );
 
 export const RequestErrorShow = (props) => (

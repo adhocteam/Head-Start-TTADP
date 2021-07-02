@@ -17,9 +17,11 @@ export default {
     const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
     const { headers, json } = await httpClient(url);
+    const total = headers.get('content-range') ? parseInt(headers.get('content-range').split('/').pop(), 10) : 0;
+
     return ({
       data: json,
-      total: parseInt(headers.get('content-range').split('/').pop(), 10),
+      total,
     });
   },
 

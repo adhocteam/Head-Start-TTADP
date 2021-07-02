@@ -8,13 +8,10 @@ import userAdminAccessMiddleware from '../../middleware/userAdminAccessMiddlewar
 
 const router = express.Router();
 
+router.use(userAdminAccessMiddleware);
 router.get('/requestErrors', getRequestErrors);
 router.get('/requestErrors/:id', getRequestError);
 router.delete('/requestErrors', deleteRequestErrors);
-
-// const router = express.Router();
-
-router.use(userAdminAccessMiddleware);
 router.use('/users', userRouter);
 router.use('/grantees', granteeRouter);
 router.use('/grants', grantRouter);
