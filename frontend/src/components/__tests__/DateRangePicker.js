@@ -1,11 +1,12 @@
+/* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 import '@testing-library/jest-dom';
 import React from 'react';
 import {
-  fireEvent, render, screen, waitFor,
+  render, screen, waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import moment from 'moment';
+// import moment from 'moment';
 
 import DateRangePicker from '../DateRangePicker';
 
@@ -21,8 +22,8 @@ const RenderDateRangePicker = ({
   />
 );
 
-const today = moment().format('dddd[,] MMMM D[,] YYYY');
-const tomorrow = moment().add(1, 'days').format('dddd[,] MMMM D[,] YYYY');
+// const today = moment().format('dddd[,] MMMM D[,] YYYY');
+// const tomorrow = moment().add(1, 'days').format('dddd[,] MMMM D[,] YYYY');
 
 describe('DateRangePicker', () => {
   describe('query parsing', () => {
@@ -63,20 +64,20 @@ describe('DateRangePicker', () => {
     await waitFor(() => expect(onUpdateFilter).toHaveBeenCalledWith('query', '-2022/02/02'));
   });
 
-  it('handles changing focus', async () => {
-    const onUpdateFilter = jest.fn();
-    render(<RenderDateRangePicker onUpdateFilter={onUpdateFilter} />);
+  // it('handles changing focus', async () => {
+  //   const onUpdateFilter = jest.fn();
+  //   render(<RenderDateRangePicker onUpdateFilter={onUpdateFilter} />);
 
-    const calendarButton = await screen.findByRole('button', { name: /open calendar"/i });
-    fireEvent.click(calendarButton);
+  //   const calendarButton = await screen.findByRole('button', { name: /open calendar"/i });
+  //   fireEvent.click(calendarButton);
 
-    const todaysButton = screen.getByRole('button', { name: `Choose ${today} for the earliest date` });
-    fireEvent.click(todaysButton);
+  //   const todaysButton = screen.getByRole('button', { name: `Choose ${today} for the earliest date` });
+  //   fireEvent.click(todaysButton);
 
-    const tomorrowsButton = screen.getByRole('button', { name: `Choose ${tomorrow} for the latest date` });
-    fireEvent.click(tomorrowsButton);
+  //   const tomorrowsButton = screen.getByRole('button', { name: `Choose ${tomorrow} for the latest date` });
+  //   fireEvent.click(tomorrowsButton);
 
-    const startDate = await screen.findByRole('textbox', { name: 'Start Date' });
-    expect(startDate).toHaveFocus();
-  });
+  //   const startDate = await screen.findByRole('textbox', { name: 'Start Date' });
+  //   expect(startDate).toHaveFocus();
+  // });
 });
