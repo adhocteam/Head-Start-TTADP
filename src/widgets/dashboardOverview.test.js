@@ -49,8 +49,8 @@ const reportObject = {
   numberOfParticipants: 11,
   deliveryMethod: 'in-person',
   duration: 1,
-  endDate: '2000-01-01T12:00:00Z',
-  startDate: '2000-01-01T12:00:00Z',
+  endDate: '2021-01-01T12:00:00Z',
+  startDate: '2021-01-01T12:00:00Z',
   requester: 'requester',
   programTypes: ['type'],
   targetPopulations: ['pop'],
@@ -75,8 +75,8 @@ const regionTwoReport = {
 
 const reportWithNewDate = {
   ...reportObject,
-  startDate: '2000-06-01T12:00:00Z',
-  endDate: '2000-06-02T12:00:00Z',
+  startDate: '2021-06-01T12:00:00Z',
+  endDate: '2021-06-02T12:00:00Z',
   regionId: 17,
   deliveryMethod: 'method',
 };
@@ -89,12 +89,24 @@ describe('Dashboard overview widget', () => {
     await Region.create({ name: 'office 18', id: 18 });
     await Grant.findOrCreate({
       where: {
-        id: GRANTEE_ID, number: '1', granteeId: GRANTEE_ID, regionId: 17, status: 'Active', startDate: new Date('2000/01/01'),
+        id: GRANTEE_ID,
+        number: '1',
+        granteeId: GRANTEE_ID,
+        regionId: 17,
+        status: 'Active',
+        startDate: new Date('2021/01/01'),
+        endDate: new Date('2021/01/02'),
       },
     });
     await Grant.findOrCreate({
       where: {
-        id: GRANTEE_ID_TWO, number: '2', granteeId: GRANTEE_ID, regionId: 17, status: 'Active', startDate: new Date('2000/01/01'),
+        id: GRANTEE_ID_TWO,
+        number: '2',
+        granteeId: GRANTEE_ID,
+        regionId: 17,
+        status: 'Active',
+        startDate: new Date('2021/01/01'),
+        endDate: new Date('2021/01/02'),
       },
     });
     await NonGrantee.findOrCreate({ where: { id: NON_GRANTEE_ID, name: 'nonGrantee' } });
@@ -145,7 +157,7 @@ describe('Dashboard overview widget', () => {
   });
 
   it('retrieves data', async () => {
-    const query = { 'region.in': [17], 'startDate.win': '2000/01/01-2000/01/01' };
+    const query = { 'region.in': [17], 'startDate.win': '2021/01/01-2021/01/01' };
     const scopes = filtersToScopes(query);
     const data = await dashboardOverview(scopes, formatQuery(query));
 
@@ -158,7 +170,7 @@ describe('Dashboard overview widget', () => {
   });
 
   it('accounts for different date ranges', async () => {
-    const query = { 'region.in': [17], 'startDate.win': '2000/06/01-2000/06/02' };
+    const query = { 'region.in': [17], 'startDate.win': '2021/06/01-2021/06/02' };
     const scopes = filtersToScopes(query);
     const data = await dashboardOverview(scopes, formatQuery(query));
 
@@ -170,7 +182,7 @@ describe('Dashboard overview widget', () => {
     expect(data.nonGrantees).toBe('0');
   });
   it('accounts for different regions', async () => {
-    const query = { 'region.in': [18], 'startDate.win': '2000/01/01-2000/01/01' };
+    const query = { 'region.in': [18], 'startDate.win': '2021/01/01-2021/01/01' };
     const scopes = filtersToScopes(query);
     const data = await dashboardOverview(scopes, formatQuery(query));
 

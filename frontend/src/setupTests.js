@@ -15,6 +15,4 @@ import MutationObserver from '@sheerun/mutationobserver-shim';
 
 window.MutationObserver = MutationObserver;
 
-global.URL.createObjectURL = jest.fn();
-
-jest.setTimeout(30000);
+jest.setTimeout(50000);

@@ -33,4 +33,10 @@ describe('Dashboard Overview Widget', () => {
     expect(screen.getByText(/hours of tta/i)).toBeInTheDocument();
     expect(screen.getByText(/in-person activities/i)).toBeInTheDocument();
   });
+
+  it('renders loading when data is not present', async () => {
+    renderDashboardOverview({ data: null });
+
+    expect(screen.getByText(/loading.../i)).toBeInTheDocument();
+  });
 });
