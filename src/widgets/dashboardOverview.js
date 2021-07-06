@@ -7,6 +7,7 @@ import { REPORT_STATUSES } from '../constants';
 
 export default async function dashboardOverview(scopes, query) {
   const { region } = query;
+  const startDate = '2020-09-15';
 
   let regions = region ? [region] : [0];
 
@@ -17,7 +18,7 @@ export default async function dashboardOverview(scopes, query) {
     }
   }
 
-  const grantsWhere = `WHERE "regionId" in (${regions.join(',')})`;
+  const grantsWhere = `WHERE "regionId" in (${regions.join(',')}) and "endDate" >= '${startDate}'`;
 
   const duration = await ActivityReport.findAll({
     attributes: [
@@ -38,7 +39,7 @@ export default async function dashboardOverview(scopes, query) {
     .toFixed(1)
     .toString();
 
-  const inPerson = duration.filter((report) => report.deliveryMethod === 'in-person').length
+  const inPerson = duration.filter((report) => report.deliveryMethod.toLowerCase() === 'in-person').length
     // .reduce((acc, report) => (
     //   acc + parseFloat(report.duration)
     // ), 0)
@@ -71,9 +72,6 @@ export default async function dashboardOverview(scopes, query) {
             as: 'grant',
             attributes: [],
             required: false,
-            where: {
-              [Op.and]: [scopes],
-            },
           },
           {
             model: NonGrantee,

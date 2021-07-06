@@ -10,12 +10,14 @@ describe('Dashboard page', () => {
   const renderDashboard = (user) => render(<Dashboard user={user} />);
 
   const user = {
-    permissions: [],
+    permissions: [{
+      regionId: 14,
+    }],
   };
 
   it('shows a heading', async () => {
     renderDashboard(user);
-    const heading = await screen.findByText(/region [0-9] tta activity dashboard/i);
+    const heading = await screen.findByText(/region all tta activity dashboard/i);
     expect(heading).toBeInTheDocument();
   });
 
