@@ -18,7 +18,6 @@ describe('Reason List Widget', () => {
     expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
   });
 
-
   it('renders correctly with data', async () => {
     const data = [
       { name: 'reason one', count: 4 },
