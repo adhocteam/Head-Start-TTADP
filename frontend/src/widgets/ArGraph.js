@@ -239,10 +239,10 @@ export function ArGraphWidget({ data, dateTime }) {
   }));
 
   return (
-    <Container className="ttahub--argraph overflow-x-scroll">
+    <Container className="ttahub--argraph overflow-x-scroll" padding={3}>
       <Grid row className="position-relative">
         <Tooltip show={showTooltip} x={tooltipX} text={tooltipText} />
-        <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
+        <Grid col={4}><h3>Topics in Activity Report by Frequency</h3></Grid>
         <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
           <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.timestamp} label={dateTime.label} />
         </Grid>
