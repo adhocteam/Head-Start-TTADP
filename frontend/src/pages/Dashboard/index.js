@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Grid, GridContainer } from '@trussworks/react-uswds';
 import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
+import Container from '../../components/Container';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
 import ArGraph from '../../widgets/ArGraph';
@@ -21,7 +22,7 @@ function Dashboard({ user }) {
   const [hasCentralOffice, updateHasCentralOffice] = useState(false);
   const [dateRange, updateDateRange] = useState('');
   const [gainFocus, setGainFocus] = useState(false);
-  const [dateTime, setDateTime] = useState({ dateInExpectedFormat: '', prettyPrintedQuery: '' });
+  const [dateTime, setDateTime] = useState({ timestamp: '', label: '' });
   const [dateRangeLoaded, setDateRangeLoaded] = useState(false);
 
   /*
@@ -70,18 +71,18 @@ function Dashboard({ user }) {
      * format the date range for display
      */
 
-    const dateInExpectedFormat = formatDateRange({
+    const timestamp = formatDateRange({
       lastThirtyDays: selectedDateRangeOption === 1,
       forDateTime: true,
       string: dateRange,
     });
-    const prettyPrintedQuery = formatDateRange({
+    const label = formatDateRange({
       lastThirtyDays: selectedDateRangeOption === 1,
       withSpaces: true,
       string: dateRange,
     });
 
-    setDateTime({ dateInExpectedFormat, prettyPrintedQuery });
+    setDateTime({ timestamp, label });
   }, [selectedDateRangeOption, dateRange]);
 
   useEffect(() => {
@@ -174,7 +175,7 @@ function Dashboard({ user }) {
             />
           </div>
         </div>
-        <GridContainer className="margin-0 margin-top-205 padding-0">
+        <GridContainer className="margin-0 padding-0">
           <DashboardOverview
             filters={filters}
             region={appliedRegion}
@@ -190,12 +191,16 @@ function Dashboard({ user }) {
                 allRegions={getUserRegions(user)}
                 dateRange={dateRange}
                 skipLoading
+                dateTime={dateTime}
               />
             </Grid>
             <Grid col={7}>
-              <div className="dashboard-overview--widget-grid-coming-soon-one">
-                <h3>Coming Soon...</h3>
-              </div>
+              <Container className="ttahub-coming-soon shadow-2 display-flex" padding={3}>
+                <h3 className="margin-0">
+                  Total Hours of TTA Graph
+                </h3>
+                <p>Feature in development</p>
+              </Container>
             </Grid>
           </Grid>
           <Grid row>

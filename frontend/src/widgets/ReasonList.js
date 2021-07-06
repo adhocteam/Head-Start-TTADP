@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from '@trussworks/react-uswds';
-import moment from 'moment';
 import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
+import DateTime from '../components/DateTime';
 import './ReasonList.css';
 import 'uswds/dist/css/uswds.css';
 
@@ -18,32 +18,7 @@ import 'uswds/dist/css/uswds.css';
   id in the backend `src/widgets/index.js` file or you will get 404s.
 */
 
-function ReasonList({ data, dateRange }) {
-  const [dateHeaderRangeValue, setHeaderDateRangeValue] = useState('');
-
-  useEffect(() => {
-    if (dateRange) {
-      const dates = dateRange.split('-');
-      let startDate;
-      let endDate;
-
-      if (dates.length > 0 && dates[0].length > 0) {
-        startDate = moment(dates[0]).format('MM/DD/yyyy');
-      } else {
-        startDate = 'invalid date';
-      }
-
-      if (dates.length > 1 && dates[1].length > 0) {
-        endDate = moment(dates[1]).format('MM/DD/yyyy');
-      } else {
-        endDate = 'invalid date';
-      }
-
-      setHeaderDateRangeValue(`${startDate} to ${endDate}`);
-    }
-  },
-  [dateRange]);
-
+function ReasonList({ data, dateTime }) {
   const renderReasonList = () => {
     if (data && Array.isArray(data) && data.length > 0) {
       return data.map((reason) => (
@@ -61,12 +36,14 @@ function ReasonList({ data, dateRange }) {
   };
 
   return (
-    <Container className="reason-list shadow-2">
+    <Container className="reason-list shadow-2" padding={3}>
       <div className="usa-table-container--scrollable">
         <Table className="smart-hub--reason-list-table" fullWidth>
           <caption className="smart-hub--reason-list-caption">
-            <span className="smart-hub--reason-list-heading">Reasons in Activity Reports</span>
-            <span className="smart-hub--reason-list-heading-date-range">{dateHeaderRangeValue}</span>
+            <div className="display-flex">
+              <span className="smart-hub--reason-list-heading">Reasons in Activity Reports</span>
+              <DateTime classNames="display-flex flex-align-center padding-x-1 margin-left-3" timestamp={dateTime.timestamp} label={dateTime.label} />
+            </div>
           </caption>
           <thead>
             <tr>
@@ -94,7 +71,17 @@ ReasonList.propTypes = {
       }),
     ), PropTypes.shape({}),
   ]).isRequired,
-
-  dateRange: PropTypes.string.isRequired,
+  dateTime: PropTypes.shape({
+    timestamp: PropTypes.string,
+    label: PropTypes.string,
+  }),
 };
+
+ReasonList.defaultProps = {
+  dateTime: {
+    timestamp: '',
+    label: '',
+  },
+};
+
 export default withWidgetData(ReasonList, 'reasonList');

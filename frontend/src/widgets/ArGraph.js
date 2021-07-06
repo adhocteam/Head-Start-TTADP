@@ -244,7 +244,7 @@ export function ArGraphWidget({ data, dateTime }) {
         <Tooltip show={showTooltip} x={tooltipX} text={tooltipText} />
         <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
         <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
-          <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />
+          <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.timestamp} label={dateTime.label} />
         </Grid>
         <Grid col="auto" className="display-flex padding-x-2">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -281,7 +281,7 @@ export function ArGraphWidget({ data, dateTime }) {
 
 ArGraphWidget.propTypes = {
   dateTime: PropTypes.shape({
-    dateInExpectedFormat: PropTypes.string, prettyPrintedQuery: PropTypes.string,
+    timestamp: PropTypes.string, label: PropTypes.string,
   }),
   data: PropTypes.oneOfType([
     PropTypes.arrayOf(
@@ -295,7 +295,7 @@ ArGraphWidget.propTypes = {
 };
 
 ArGraphWidget.defaultProps = {
-  dateTime: { dateInExpectedFormat: '', prettyPrintedQuery: '' },
+  dateTime: { timestamp: '', label: '' },
 };
 
 export default withWidgetData(ArGraphWidget, 'arGraph');

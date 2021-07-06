@@ -31,12 +31,11 @@ export default function DateSelect(props) {
         onUpdateFilter={onUpdateFilter}
         classNames={['display-flex']}
         gainFocus={gainFocus}
-
       />
     );
   }
 
-  return <DateTime classNames="display-flex flex-align-center" timestamp={dateTime.dateInExpectedFormat} label={dateTime.prettyPrintedQuery} />;
+  return <DateTime classNames="display-flex flex-align-center" timestamp={dateTime.timestamp} label={dateTime.label} />;
 }
 
 DateSelect.propTypes = {
@@ -45,16 +44,16 @@ DateSelect.propTypes = {
   updateDateRange: PropTypes.func,
   gainFocus: PropTypes.bool,
   dateTime: PropTypes.shape({
-    dateInExpectedFormat: PropTypes.string,
-    prettyPrintedQuery: PropTypes.string,
+    timestamp: PropTypes.string,
+    label: PropTypes.string,
   }),
 };
 
 DateSelect.defaultProps = {
   dateRange: '',
   dateTime: {
-    dateInExpectedFormat: '',
-    prettyPrintedQuery: '',
+    timestamp: '',
+    label: '',
   },
   selectedDateRangeOption: 0,
   gainFocus: false,
