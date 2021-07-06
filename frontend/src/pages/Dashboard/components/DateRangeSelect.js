@@ -29,11 +29,6 @@ export default function DateRangeSelect(props) {
     }
   };
 
-  /**
-   * Grab the label text from the DATE_OPTIONS constant
-   */
-  const buttonText = selectedItem.label ? selectedItem.label : 'Select Date Range';
-
   return (
     <div className="margin-left-1">
       <button
@@ -43,7 +38,7 @@ export default function DateRangeSelect(props) {
         aria-label="open date range options menu"
         type="button"
       >
-        {buttonText}
+        {selectedItem.label}
         <img src={triangleDown} alt="" aria-hidden="true" />
       </button>
 

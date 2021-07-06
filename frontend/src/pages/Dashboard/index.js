@@ -27,9 +27,21 @@ function Dashboard({ user }) {
     *    would be passed down into each visualization
     */
 
-  /* eslint-disable-next-line */
   const [filters, updateFilters] = useState([]);
 
+  /**
+   * sets whether a user has central office(14) amongst their permissions
+   */
+  useEffect(() => {
+    if (user) {
+      updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
+    }
+  }, [user]);
+
+  /**
+  * if a user has not applied a region, we apply the first region
+  * if they have central office, we apply that instead
+  */
   useEffect(() => {
     if (appliedRegion === 0) {
       if (hasCentralOffice) {
@@ -40,18 +52,14 @@ function Dashboard({ user }) {
     }
   }, [appliedRegion, hasCentralOffice, regions]);
 
+  // if the regions have been fetched, this smooths out errors around async fetching
+  // of regions vs rendering
   useEffect(() => {
     if (!regionsFetched && regions.length < 1) {
       updateRegionsFetched(true);
       updateRegions(getUserRegions(user));
     }
   }, [regions, regionsFetched, user]);
-
-  useEffect(() => {
-    if (user) {
-      updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
-    }
-  }, [user]);
 
   useEffect(() => {
     /**
