@@ -12,7 +12,7 @@ describe('DateSelect', () => {
     render(<DateSelect
       updateDateRange={updateDateRange}
       selectedDateRangeOption={selectedDateRangeOption}
-      dateTime={{ prettyPrintedQuery: dateLabel }}
+      dateTime={{ label: dateLabel }}
     />);
   };
 
