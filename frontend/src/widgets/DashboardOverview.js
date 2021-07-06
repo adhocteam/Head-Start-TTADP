@@ -12,7 +12,7 @@ function Field({
   label, labelExt, data, icon, iconColor, backgroundColor,
 }) {
   return (
-    <div className="smart-hub--dashboard-overview-field flex-1 display-flex bg-white shadow-2 padding-2 margin-1">
+    <div className="smart-hub--dashboard-overview-field flex-1 display-flex bg-white shadow-2 padding-2">
       <span className="smart-hub--dashboard-overview-field-icon flex-1 display-flex flex-justify-center flex-align-center">
         <span className="smart-hub--dashboard-overview-field-icon-background display-flex flex-justify-center flex-align-center" style={{ backgroundColor }}>
           <FontAwesomeIcon color={iconColor} icon={icon} />
@@ -65,9 +65,8 @@ export function DashboardOverviewWidget({ data }) {
   if (!data) {
     return <p>Loading...</p>;
   }
-
   return (
-    <div className="smart-hub--dashboard-overview">
+    <div className="smart-hub--dashboard-overview margin-bottom-3">
       <Grid row className="smart-hub--dashboard-overview-data flex-wrap">
         <Field icon={faChartBar} iconColor="#148439" backgroundColor="#F0FCF4" label="Activity reports" data={data.numReports} />
         <Field icon={faBuilding} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served" data={data.numGrants} labelExt={`(of ${data.numTotalGrants})`} />

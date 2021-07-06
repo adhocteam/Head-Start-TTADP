@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { v4 as uuidv4 } from 'uuid';
+import { Grid, GridContainer } from '@trussworks/react-uswds';
 import RegionDisplay from './components/RegionDisplay';
 import DateSelect from './components/DateSelect';
 import DateRangeSelect from './components/DateRangeSelect';
@@ -9,6 +10,8 @@ import DashboardOverview from '../../widgets/DashboardOverview';
 import ArGraph from '../../widgets/ArGraph';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
+import ReasonList from '../../widgets/ReasonList';
+import './index.css';
 
 function Dashboard({ user }) {
   const [appliedRegion, updateAppliedRegion] = useState(0);
@@ -148,49 +151,68 @@ function Dashboard({ user }) {
     <div className="ttahub-dashboard">
       <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
 
-      <div className="ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap">
-
-        <RegionDisplay
-          regions={regions}
-          appliedRegion={appliedRegion}
-          onApplyRegion={onApplyRegion}
-          hasCentralOffice={hasCentralOffice}
-        />
-
-        <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
-          <DateRangeSelect
-            onApply={onApplyDateRange}
+      <>
+        <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
+        <div className="ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap">
+          <RegionDisplay
+            regions={regions}
+            appliedRegion={appliedRegion}
+            onApplyRegion={onApplyRegion}
+            hasCentralOffice={hasCentralOffice}
           />
-
-          <DateSelect
-            dateRange={dateRange}
-            updateDateRange={updateDateRange}
-            selectedDateRangeOption={selectedDateRangeOption}
-            gainFocus={gainFocus}
-            dateTime={dateTime}
-          />
-
+          <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
+            <DateRangeSelect
+              selectedDateRangeOption={selectedDateRangeOption}
+              onApply={onApplyDateRange}
+            />
+            <DateSelect
+              dateRange={dateRange}
+              updateDateRange={updateDateRange}
+              selectedDateRangeOption={selectedDateRangeOption}
+              gainFocus={gainFocus}
+              dateTime={dateTime}
+            />
+          </div>
         </div>
-
-      </div>
-
-      <DashboardOverview
-        filters={filters}
-        region={appliedRegion}
-        allRegions={regions}
-        dateRange={dateRange}
-        skipLoading
-      />
-
-      <ArGraph
-        filters={filters}
-        region={appliedRegion}
-        allRegions={regions}
-        dateRange={dateRange}
-        skipLoading
-        dateTime={dateTime}
-      />
-
+        <GridContainer className="margin-0 margin-top-205 padding-0">
+          <DashboardOverview
+            filters={filters}
+            region={appliedRegion}
+            allRegions={regions}
+            dateRange={dateRange}
+            skipLoading
+          />
+          <Grid row gap={2}>
+            <Grid col={5}>
+              <ReasonList
+                filters={filters}
+                region={appliedRegion}
+                allRegions={getUserRegions(user)}
+                dateRange={dateRange}
+                skipLoading
+              />
+            </Grid>
+            <Grid col={7}>
+              <div className="dashboard-overview--widget-grid-coming-soon-one">
+                <h3>Coming Soon...</h3>
+              </div>
+            </Grid>
+          </Grid>
+          <Grid row>
+            <ArGraph
+              filters={filters}
+              region={appliedRegion}
+              allRegions={regions}
+              dateRange={dateRange}
+              skipLoading
+              dateTime={dateTime}
+            />
+          </Grid>
+          <Grid row>
+            <Grid col="auto" />
+          </Grid>
+        </GridContainer>
+      </>
     </div>
 
   );

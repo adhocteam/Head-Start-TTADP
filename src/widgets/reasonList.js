@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { ActivityReport } from '../models';
+import { REPORT_STATUSES } from '../constants';
 
 /*
   Widgets on the backend should only have to worry about fetching data in the format required
@@ -16,7 +17,12 @@ export default async function reasonList(scopes) {
     attributes: [
       'reason',
     ],
-    where: { [Op.and]: [scopes] },
+    where: {
+      [Op.and]: [
+        scopes,
+        { status: REPORT_STATUSES.APPROVED },
+      ],
+    },
     raw: true,
     includeIgnoreAttributes: false,
   });
