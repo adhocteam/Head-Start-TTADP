@@ -39,7 +39,6 @@ describe('Reason List Widget', () => {
     expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
     expect(screen.getByText(/invalid date to invalid date/i)).toBeInTheDocument();
-    screen.debug(undefined, 30000);
   });
 
   it('renders correctly with data', async () => {
