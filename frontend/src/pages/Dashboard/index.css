@@ -1,0 +1,21 @@
+.grid-container {
+  max-width: 100%;
+}
+
+.dashboard-overview--widget-grid-coming-soon-one {
+  height: 439px;
+  max-height: 439px;
+  min-height: 439px;
+
+  min-width: 700px;
+  background-color: white;
+}
+
+.dashboard-overview--widget-grid-coming-soon-one h3 {
+  padding: 0px;
+  margin: 0px;
+  padding-left: 20px;
+  padding-top: 30px;
+  font-family: Source Sans Pro Web, Helvetica Neue, Helvetica, Roboto, Arial,
+    sans-serif;
+}

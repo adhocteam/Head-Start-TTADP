@@ -1,0 +1,94 @@
+.reason-list {
+  font-family: Source Sans Pro Web, Helvetica Neue, Helvetica, Roboto, Arial,
+    sans-serif;
+}
+
+.reason-list .usa-table-container--scrollable {
+  max-height: 370px;
+  min-height: 370px;
+  overflow-y: auto;
+  overflow-x: auto;
+  margin: 0px;
+}
+
+.reason-list .usa-table {
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.reason-list .usa-table caption {
+  margin-bottom: 26px;
+}
+
+.reason-list .usa-table tr {
+  background-color: #fff;
+  font-size: 16px;
+  border-bottom: 0px;
+  font-weight: bold;
+}
+
+.reason-list .usa-table th {
+  border-bottom: 0px;
+  text-align: left;
+  padding: 0px;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+.reason-list .usa-table th:nth-child(2), .reason-list .usa-table td:nth-child(2) {
+  padding-left: 60px;
+}
+
+.reason-list .usa-table td {
+  border: none;
+  padding-top: 10px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  text-align: left;
+  font-size: 18px;
+}
+
+.reason-list .usa-table td:first-child {
+  width: 320px;
+  max-width: 320px;
+  min-width: 320px;
+  white-space: normal;
+}
+
+.reason-list .usa-table p:first-child {
+  max-width: 320px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.smart-hub--reason-list-heading {
+  font-size: 20px;
+  color: #21272d;
+  font-weight: bold;
+  line-height: 24px;
+}
+
+.smart-hub--reason-list-heading-date-range {
+  margin-left: 18px;
+  font-weight: normal;
+  font-size: 14px;
+  background-color: #f8f8f8;
+  padding-left: 9px;
+  padding-right: 9px;
+  padding-top: 7px;
+  padding-bottom: 4px;
+  line-height: 24px;
+  height: 151px;
+  width: 13px;
+}
+
+.reason-list .padding-5 {
+  padding-left: 24px;
+  padding-top: 28px;
+  padding-right: 6px;
+  background-color: white;
+}

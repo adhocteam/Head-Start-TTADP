@@ -96,6 +96,16 @@ const regionTwoReportA = {
   endDate: '2021-02-28T12:00:00Z',
 };
 
+const regionOneDraftReport = {
+  ...reportObject,
+  regionId: 1,
+  duration: 7,
+  reason: ['First Reason', 'Second Reason'],
+  startDate: '2021-02-01T12:00:00Z',
+  endDate: '2021-02-28T12:00:00Z',
+  status: REPORT_STATUSES.DRAFT,
+};
+
 describe('Overview widget', () => {
   beforeAll(async () => {
     await User.findOrCreate({ where: mockUser });
@@ -131,6 +141,9 @@ describe('Overview widget', () => {
 
     const reportSix = await ActivityReport.findOne({ where: { duration: 6, reason: ['First Reason', 'Second Reason'] } });
     await createOrUpdate(regionTwoReportA, reportSix);
+
+    const reportSeven = await ActivityReport.findOne({ where: { duration: 7, reason: ['First Reason', 'Second Reason'], status: REPORT_STATUSES.DRAFT } });
+    await createOrUpdate(regionOneDraftReport, reportSeven);
   });
 
   afterAll(async () => {
