@@ -108,6 +108,16 @@ function Dashboard({ user }) {
 
   const mainClassNames = 'ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap';
 
+  /*
+     <ReasonList
+                filters={filters}
+                region={appliedRegion}
+                allRegions={getUserRegions(user)}
+                dateRange={dateRange}
+                skipLoading
+              />
+  */
+
   return (
     <div className="ttahub-dashboard">
       <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
@@ -133,52 +143,42 @@ function Dashboard({ user }) {
               gainFocus={gainFocus}
             />
           </div>
-          <div>
-            <DashboardOverview
-              filters={filters}
-              region={appliedRegion}
-              allRegions={regions}
-              dateRange={dateRange}
-              skipLoading
-            />
-          </div>
         </div>
-        <div className="dashboard-overview--widget-grid-parent-div">
-          <GridContainer className="dashboard-overview--widget-grid-container">
-            <Grid row className="dashboard-overview--widget-grid-row-one">
-              <Grid className="dashboard-overview--widget-grid-row-one-col-one" tablet={{ col: true }}>
-                <ReasonList
-                  filters={filters}
-                  region={appliedRegion}
-                  allRegions={getUserRegions(user)}
-                  dateRange={dateRange}
-                  skipLoading
-                />
-              </Grid>
-              <Grid className="dashboard-overview--widget-grid-row-one-col-two" tablet={{ col: true }}>
-                <div className="dashboard-overview--widget-grid-coming-soon-one">
-                  <h3>Coming Soon...</h3>
-                </div>
-              </Grid>
+        <GridContainer className="margin-0 margin-top-205 padding-0">
+          <DashboardOverview
+            filters={filters}
+            region={appliedRegion}
+            allRegions={regions}
+            dateRange={dateRange}
+            skipLoading
+          />
+          <Grid row gap={2}>
+            <Grid col={5}>
+              <ReasonList
+                filters={filters}
+                region={appliedRegion}
+                allRegions={getUserRegions(user)}
+                dateRange={dateRange}
+                skipLoading
+              />
             </Grid>
+            <Grid col={7}>
+              <div className="dashboard-overview--widget-grid-coming-soon-one">
+                <h3>Coming Soon...</h3>
+              </div>
+            </Grid>
+          </Grid>
 
-            <Grid row className="dashboard-overview--widget-grid-row-two">
-              <Grid className="dashboard-overview--widget-grid-row-two-col-one" tablet={{ col: 12 }}>
-                <div className="dashboard-overview--widget-grid-coming-soon-two">
-                  <h3>Coming Soon...</h3>
-                </div>
-              </Grid>
+          <Grid row>
+            <Grid col="auto">
+              test 3
             </Grid>
+          </Grid>
 
-            <Grid row className="dashboard-overview--widget-grid-row-three">
-              <Grid className="dashboard-overview--widget-grid-row-three-col-one" tablet={{ col: 12 }}>
-                <div className="dashboard-overview--widget-grid-coming-soon-three">
-                  <h3>Coming Soon...</h3>
-                </div>
-              </Grid>
-            </Grid>
-          </GridContainer>
-        </div>
+          <Grid row>
+            <Grid col="auto" />
+          </Grid>
+        </GridContainer>
       </>
     </div>
   );

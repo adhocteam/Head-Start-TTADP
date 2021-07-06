@@ -59,7 +59,7 @@ function ReasonList({ data, dateRange }) {
   };
 
   return (
-    <Container className="reason-list smart-hub--reason-list-container">
+    <Container className="reason-list shadow-2">
       <div className="usa-table-container--scrollable">
         <Table className="smart-hub--reason-list-table" fullWidth>
           <caption className="smart-hub--reason-list-caption">
