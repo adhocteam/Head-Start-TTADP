@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink as Link, withRouter } from 'react-router-dom';
+import { NavLink as Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons';
 
@@ -33,7 +33,6 @@ const SiteNav = ({
   authenticated,
   logout,
   user,
-  location,
 }) => {
   const navItems = [
     <button type="button" onClick={() => logout(false)} className={`usa-button--unstyled width-full ${navLinkClasses}`}>
@@ -47,56 +46,41 @@ const SiteNav = ({
     </NavLink>,
   ];
 
-  const [showActivityReportSurveyButton, setShowActivityReportSurveyButton] = useState(false);
-
-  useEffect(() => {
-    if (location.pathname === '/activity-reports' && authenticated) {
-      setShowActivityReportSurveyButton(true);
-    } else {
-      setShowActivityReportSurveyButton(false);
-    }
-  }, [location.pathname, authenticated]);
-
   const items = admin ? navItems.concat(adminNavItem) : navItems;
 
   return (
-    <div>
-      <div className="position-relative z-top">
-        <button id="tp-ar-landing-survey" className={`usa-button position-fixed  bottom-2 right-1 display-${showActivityReportSurveyButton ? 'block' : 'none'}`} aria-label="Please leave feedback" type="button">Please leave feedback</button>
-      </div>
-      <div className="smart-hub-sitenav pin-y position-fixed z-0 padding-top-9 font-ui text-white smart-hub-bg-blue width-15 tablet:width-card desktop:width-card-lg no-print">
-        {authenticated && (
-          <>
-            <div className="width-full smart-hub-sitenav-separator--after">
-              <div role="complementary" className="padding-2 smart-hub-sitenav-word-wrap--break">
-                <p className="text-bold margin-top-5">{user.name}</p>
-                <p className="font-sans-3xs margin-bottom-5">{user.email}</p>
-              </div>
-            </div>
-            <nav>
-              <div className="width-full margin-bottom-2 margin-top-6">
-                <ul className="add-list-reset">
-                  <li>
-                    <NavLink
-                      to="/activity-reports"
-                    >
-                      <span className="padding-right-105">
-                        <FontAwesomeIcon color="white" icon={faChartBar} />
-                      </span>
-                      Activity Reports
-                    </NavLink>
-                  </li>
-                </ul>
-              </div>
-              <div className="width-full position-absolute bottom-0 padding-bottom-5 smart-hub-sitenav-separator--before opacity-70">
-                <ul className="add-list-reset padding-top-5 text-base-lightest">
-                  {items.map((item, i) => (<li key={`smart-hub-nav__item-${i}`}>{item}</li>))}
-                </ul>
-              </div>
-            </nav>
-          </>
-        )}
-      </div>
+    <div className="smart-hub-sitenav pin-y position-fixed z-0 padding-top-9 font-ui text-white smart-hub-bg-blue width-15 tablet:width-card desktop:width-card-lg no-print">
+      {authenticated && (
+      <>
+        <div className="width-full smart-hub-sitenav-separator--after">
+          <div role="complementary" className="padding-2 smart-hub-sitenav-word-wrap--break">
+            <p className="text-bold margin-top-5">{user.name}</p>
+            <p className="font-sans-3xs margin-bottom-5">{user.email}</p>
+          </div>
+        </div>
+        <nav>
+          <div className="width-full margin-bottom-2 margin-top-6">
+            <ul className="add-list-reset">
+              <li>
+                <NavLink
+                  to="/activity-reports"
+                >
+                  <span className="padding-right-105">
+                    <FontAwesomeIcon color="white" icon={faChartBar} />
+                  </span>
+                  Activity Reports
+                </NavLink>
+              </li>
+            </ul>
+          </div>
+          <div className="width-full position-absolute bottom-0 padding-bottom-5 smart-hub-sitenav-separator--before opacity-70">
+            <ul className="add-list-reset padding-top-5 text-base-lightest">
+              {items.map((item, i) => (<li key={`smart-hub-nav__item-${i}`}>{item}</li>))}
+            </ul>
+          </div>
+        </nav>
+      </>
+      )}
     </div>
   );
 };
@@ -107,7 +91,6 @@ SiteNav.propTypes = {
   authenticated: PropTypes.bool,
   logout: PropTypes.func,
   user: PropTypes.shape({ name: PropTypes.string, email: PropTypes.string }),
-  location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
 };
 
 SiteNav.defaultProps = {
@@ -119,4 +102,4 @@ SiteNav.defaultProps = {
     email: '',
   },
 };
-export default withRouter(SiteNav);
+export default SiteNav;
