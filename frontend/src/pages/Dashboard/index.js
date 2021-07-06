@@ -106,23 +106,8 @@ function Dashboard({ user }) {
     ];
 
     updateFilters(filtersToApply);
-    updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
-
-    if (appliedRegion === 0) {
-      if (hasCentralOffice) {
-        updateAppliedRegion(14);
-      } else if (regions[0]) {
-        updateAppliedRegion(regions[0]);
-      }
-    }
   },
-  [appliedRegion,
-    dateRange,
-    hasCentralOffice,
-    regions,
-    user,
-    regionsFetched,
-    selectedDateRangeOption]);
+  [appliedRegion, dateRange, user]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
