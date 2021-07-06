@@ -74,9 +74,5 @@ export default function DateRangeSelect(props) {
 }
 
 DateRangeSelect.propTypes = {
-  onApply: PropTypes.func,
-};
-
-DateRangeSelect.defaultProps = {
-  onApply: () => {},
+  onApply: PropTypes.func.isRequired,
 };

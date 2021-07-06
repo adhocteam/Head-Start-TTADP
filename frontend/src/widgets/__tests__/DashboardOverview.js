@@ -6,6 +6,13 @@ import { DashboardOverviewWidget } from '../DashboardOverview';
 const renderDashboardOverview = (props) => (render(<DashboardOverviewWidget data={props.data} />));
 
 describe('Dashboard Overview Widget', () => {
+  it('handles null data', async () => {
+    const data = null;
+    renderDashboardOverview({ data });
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
   it('shows the correct data', async () => {
     const data = {
       numReports: '5',

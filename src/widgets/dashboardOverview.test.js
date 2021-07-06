@@ -112,7 +112,6 @@ describe('Dashboard overview widget', () => {
     await NonGrantee.findOrCreate({ where: { id: NON_GRANTEE_ID, name: 'nonGrantee' } });
 
     const reportOne = await ActivityReport.findOne({ where: { duration: 1 } });
-
     await createOrUpdate(regionOneReport, reportOne);
 
     const reportTwo = await ActivityReport.findOne({ where: { duration: 2 } });

@@ -30,7 +30,7 @@ describe('Dashboard page', () => {
   it('shows the currently selected date range', async () => {
     renderDashboard(user);
 
-    const thirtyDays = formatDateRange(1, { withSpaces: true });
+    const thirtyDays = formatDateRange({ lastThirtyDays: true, withSpaces: true });
     const selectedRange = await screen.findByText(thirtyDays);
     expect(selectedRange).toBeInTheDocument();
   });
@@ -51,7 +51,7 @@ describe('Dashboard page', () => {
   });
 
   it('formats a date range correctly with 0 as an option', async () => {
-    const blank = formatDateRange(0);
+    const blank = formatDateRange();
     expect(blank).toBe('');
   });
 
