@@ -20,6 +20,7 @@ function Dashboard({ user }) {
   const [hasCentralOffice, updateHasCentralOffice] = useState(false);
   const [dateRange, updateDateRange] = useState('');
   const [gainFocus, setGainFocus] = useState(false);
+  const [dateTime, setDateTime] = useState({ dateInExpectedFormat: '', prettyPrintedQuery: '' });
   const [dateRangeLoaded, setDateRangeLoaded] = useState(false);
 
   /*
@@ -28,8 +29,70 @@ function Dashboard({ user }) {
     *    would be passed down into each visualization
     */
 
-  /* eslint-disable-next-line */
   const [filters, updateFilters] = useState([]);
+
+  /**
+   * sets whether a user has central office(14) amongst their permissions
+   */
+  useEffect(() => {
+    if (user) {
+      updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
+    }
+  }, [user]);
+
+  /**
+  * if a user has not applied a region, we apply the first region
+  * if they have central office, we apply that instead
+  */
+  useEffect(() => {
+    if (appliedRegion === 0) {
+      if (hasCentralOffice) {
+        updateAppliedRegion(14);
+      } else if (regions[0]) {
+        updateAppliedRegion(regions[0]);
+      }
+    }
+  }, [appliedRegion, hasCentralOffice, regions]);
+
+  // if the regions have been fetched, this smooths out errors around async fetching
+  // of regions vs rendering
+  useEffect(() => {
+    if (!regionsFetched && regions.length < 1) {
+      updateRegionsFetched(true);
+      updateRegions(getUserRegions(user));
+    }
+  }, [regions, regionsFetched, user]);
+
+  useEffect(() => {
+    /**
+     *
+     * format the date range for display
+     */
+
+    const dateInExpectedFormat = formatDateRange({
+      lastThirtyDays: selectedDateRangeOption === 1,
+      forDateTime: true,
+      string: dateRange,
+    });
+    const prettyPrintedQuery = formatDateRange({
+      lastThirtyDays: selectedDateRangeOption === 1,
+      withSpaces: true,
+      string: dateRange,
+    });
+
+    setDateTime({ dateInExpectedFormat, prettyPrintedQuery });
+  }, [selectedDateRangeOption, dateRange]);
+
+  useEffect(() => {
+    if (!dateRangeLoaded) {
+      updateDateRange(formatDateRange({
+        lastThirtyDays: selectedDateRangeOption === 1,
+        forDateTime: true,
+      }));
+
+      setDateRangeLoaded(true);
+    }
+  }, [dateRangeLoaded, selectedDateRangeOption]);
 
   useEffect(() => {
     if (!user) {
@@ -52,37 +115,9 @@ function Dashboard({ user }) {
       },
     ];
 
-    if (!regionsFetched && regions.length < 1) {
-      updateRegionsFetched(true);
-      updateRegions(getUserRegions(user));
-    }
-
     updateFilters(filtersToApply);
-    updateHasCentralOffice(!!user.permissions.find((permission) => permission.regionId === 14));
-
-    if (appliedRegion === 0) {
-      if (hasCentralOffice) {
-        updateAppliedRegion(14);
-      } else if (regions[0]) {
-        updateAppliedRegion(regions[0]);
-      }
-    }
-
-    if (!dateRangeLoaded) {
-      updateDateRange(formatDateRange(selectedDateRangeOption, { forDateTime: true }));
-      setDateRangeLoaded(true);
-    }
   },
-  [
-    appliedRegion,
-    dateRange,
-    hasCentralOffice,
-    regions,
-    user,
-    regionsFetched,
-    selectedDateRangeOption,
-    dateRangeLoaded,
-  ]);
+  [appliedRegion, dateRange, user]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
@@ -93,8 +128,13 @@ function Dashboard({ user }) {
     const rangeId = range ? range.value : selectedDateRangeOption;
     updateSelectedDateRangeOption(rangeId);
 
-    if (selectedDateRangeOption !== CUSTOM_DATE_RANGE) {
-      updateDateRange(formatDateRange(selectedDateRangeOption, { forDateTime: true }));
+    const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
+
+    if (!isCustom) {
+      updateDateRange(formatDateRange({ lastThirtyDays: true, forDateTime: true }));
+    }
+
+    if (isCustom) {
       // set focus to DateRangePicker 1st input
       setGainFocus(true);
     }
@@ -106,25 +146,13 @@ function Dashboard({ user }) {
     );
   }
 
-  const mainClassNames = 'ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap';
-
-  /*
-     <ReasonList
-                filters={filters}
-                region={appliedRegion}
-                allRegions={getUserRegions(user)}
-                dateRange={dateRange}
-                skipLoading
-              />
-  */
-
   return (
     <div className="ttahub-dashboard">
       <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
 
       <>
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
-        <div className={appliedRegion === 14 && selectedDateRangeOption === CUSTOM_DATE_RANGE ? `${mainClassNames} all-selected-custom` : mainClassNames}>
+        <div className="ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap">
           <RegionDisplay
             regions={regions}
             appliedRegion={appliedRegion}
@@ -141,6 +169,7 @@ function Dashboard({ user }) {
               updateDateRange={updateDateRange}
               selectedDateRangeOption={selectedDateRangeOption}
               gainFocus={gainFocus}
+              dateTime={dateTime}
             />
           </div>
         </div>
@@ -168,13 +197,11 @@ function Dashboard({ user }) {
               </div>
             </Grid>
           </Grid>
-
           <Grid row>
             <Grid col="auto">
               test 3
             </Grid>
           </Grid>
-
           <Grid row>
             <Grid col="auto" />
           </Grid>

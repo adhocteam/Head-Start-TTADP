@@ -27,14 +27,16 @@ function ReasonList({ data, dateRange }) {
       let startDate;
       let endDate;
 
-      if (dates && Array.isArray(dates)) {
-        if (dates.length > 0) {
-          startDate = moment(dates[0]).format('MM/DD/yyyy');
-        }
+      if (dates.length > 0 && dates[0].length > 0) {
+        startDate = moment(dates[0]).format('MM/DD/yyyy');
+      } else {
+        startDate = 'invalid date';
+      }
 
-        if (dates.length > 1) {
-          endDate = moment(dates[1]).format('MM/DD/yyyy');
-        }
+      if (dates.length > 1 && dates[1].length > 0) {
+        endDate = moment(dates[1]).format('MM/DD/yyyy');
+      } else {
+        endDate = 'invalid date';
       }
 
       setHeaderDateRangeValue(`${startDate} to ${endDate}`);

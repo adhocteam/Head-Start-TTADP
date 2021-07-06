@@ -4,17 +4,42 @@ import { render, screen } from '@testing-library/react';
 import ReasonList from '../ReasonList';
 
 const renderReasonList = (props) => {
-  render(<ReasonList data={props.data} allRegions={[]} skipLoading />);
+  render(<ReasonList data={props.data} allRegions={[]} dateRange={props.dateRange} skipLoading />);
 };
 
 describe('Reason List Widget', () => {
   it('renders correctly without data', async () => {
     const data = [];
-    renderReasonList({ data });
+    const dateRange = '2021/07/01-2021/04/01';
+    renderReasonList({ data, dateRange });
 
     expect(screen.getByText(/reasons in activity reports/i)).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
+    expect(screen.getByText(/07\/01\/2021 to 04\/01\/2021/i)).toBeInTheDocument();
+  });
+
+  it('renders correctly with a missing date', async () => {
+    const data = [];
+    const dateRange = '2021/07/01-';
+    renderReasonList({ data, dateRange });
+
+    expect(screen.getByText(/reasons in activity reports/i)).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
+    expect(screen.getByText(/07\/01\/2021 to invalid date/i)).toBeInTheDocument();
+  });
+
+  it('renders correctly with no dates', async () => {
+    const data = [];
+    const dateRange = '-';
+    renderReasonList({ data, dateRange });
+
+    expect(screen.getByText(/reasons in activity reports/i)).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /reason/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /# of activities/i })).toBeInTheDocument();
+    expect(screen.getByText(/invalid date to invalid date/i)).toBeInTheDocument();
+    screen.debug(undefined, 30000);
   });
 
   it('renders correctly with data', async () => {
