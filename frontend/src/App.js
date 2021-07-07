@@ -16,7 +16,7 @@ import Admin from './pages/Admin';
 import Dashboard from './pages/Dashboard';
 import Unauthenticated from './pages/Unauthenticated';
 import NotFound from './pages/NotFound';
-// import Home from './pages/Home';
+import Home from './pages/Home';
 import Landing from './pages/Landing';
 import ActivityReport from './pages/ActivityReport';
 import LegacyReport from './pages/LegacyReport';
@@ -30,7 +30,7 @@ import LandingLayout from './components/LandingLayout';
 import RequestPermissions from './components/RequestPermissions';
 import AriaLiveContext from './AriaLiveContext';
 import AriaLiveRegion from './components/AriaLiveRegion';
-import { SCOPE_IDS } from './Constants';
+// import { SCOPE_IDS } from './Constants';
 
 function App() {
   const [user, updateUser] = useState();
@@ -83,12 +83,12 @@ function App() {
   // include write or approve, this would be true
   // otherwise, it'll return false
 
-  function startOnActivityReport(currentUser) {
-    return currentUser.permissions.find((permission) => (
-      // eslint-disable-next-line max-len
-      permission.scopeId === SCOPE_IDS.READ_WRITE_ACTIVITY_REPORTS || permission.scopeId === SCOPE_IDS.APPROVE_ACTIVITY_REPORTS
-    ));
-  }
+  // function startOnActivityReport(currentUser) {
+  //   return currentUser.permissions.find((permission) => (
+  // eslint-disable-next-line max-len
+  //     permission.scopeId === SCOPE_IDS.READ_WRITE_ACTIVITY_REPORTS || permission.scopeId === SCOPE_IDS.APPROVE_ACTIVITY_REPORTS
+  //   ));
+  // }
 
   const admin = isAdmin(user);
   const enableWidgets = process.env.REACT_APP_ENABLE_WIDGETS === 'true';
@@ -119,19 +119,7 @@ function App() {
         <Route
           exact
           path="/"
-          render={(match) => {
-            const showReport = startOnActivityReport(user);
-
-            if (showReport) {
-              return (
-                <LandingLayout><Landing match={match} /></LandingLayout>
-              );
-            }
-
-            return (
-              <Dashboard user={user} />
-            );
-          }}
+          render={() => <Home />}
         />
         <Route
           exact
