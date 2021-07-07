@@ -4,7 +4,13 @@ import db, {
 import { filtersToScopes } from '../scopes/activityReport';
 import { REPORT_STATUSES } from '../constants';
 import { createOrUpdate } from '../services/activityReports';
-import arGraph, { BASE_REASONS } from './arGraph';
+import arGraph, { topics } from './arGraph';
+
+const BASE_REASONS = topics.map((topic) => ({
+  reason: topic,
+  count: 0,
+  participants: [],
+}));
 
 const GRANTEE_ID = 30;
 
