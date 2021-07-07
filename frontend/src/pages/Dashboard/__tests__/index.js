@@ -31,8 +31,8 @@ describe('Dashboard page', () => {
     renderDashboard(user);
 
     const thirtyDays = formatDateRange({ lastThirtyDays: true, withSpaces: true });
-    const selectedRange = await screen.findByText(thirtyDays);
-    expect(selectedRange).toBeInTheDocument();
+    const selectedRange = await screen.findAllByText(thirtyDays);
+    expect(selectedRange.length).toBeGreaterThan(0);
   });
 
   it('shows the currently applied date range', async () => {
