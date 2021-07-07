@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import Plotly from 'plotly.js';
+import Plotly from 'plotly.js-basic-dist';
 import { Grid } from '@trussworks/react-uswds';
 import Select, { components } from 'react-select';
 import withWidgetData from './withWidgetData';
