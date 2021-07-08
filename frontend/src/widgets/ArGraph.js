@@ -100,11 +100,11 @@ const styles = {
     return {
       ...provided,
       outline,
-      height: '40px',
+      height: state.isFocused ? 'auto' : '40px',
+      zIndex: '2',
     };
   },
   control: (provided) => ({
-    height: '40px',
     ...provided,
     borderColor: '#565c65',
     backgroundColor: 'white',
@@ -112,6 +112,7 @@ const styles = {
     '&:hover': {
       borderColor: '#565c65',
     },
+    height: 'auto',
     width: '180px',
   }),
   menu: (provided) => ({
@@ -125,7 +126,10 @@ const styles = {
     marginRight: '4px',
   }),
   indicatorSeparator: () => ({ display: 'none' }),
-  valueContainer: (provided) => ({ ...provided, height: '40px' }),
+  valueContainer: (provided) => ({
+    ...provided,
+    height: 'auto',
+  }),
   placeholder: (provided) => ({
     ...provided,
     color: 'black',
@@ -211,7 +215,7 @@ export function ArGraphWidget({ data, dateTime }) {
 
     bars.current.on('plotly_hover', (e) => {
       if (e.points && e.points[0]) {
-        const x = ((e.points[0].pointIndex + 1) * 180) - 60;
+        const x = ((e.points[0].pointIndex + 0) * 176) + 88;
         setShowTooltip(true);
         setTooltipX(x);
         setTooltipText(counts[e.points[0].pointIndex]);
@@ -260,7 +264,7 @@ export function ArGraphWidget({ data, dateTime }) {
             id="arGraphSpecialists"
             value={selectedSpecialists}
             onChange={(selected) => {
-              setSelectedSpecialists(selected); // test
+              setSelectedSpecialists(selected);
             }}
             className="margin-top-1 ttahub-dashboard--participant-select"
             components={DropdownIndicator}
