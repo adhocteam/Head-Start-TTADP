@@ -10,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form/dist/index.ie11';
 import ReviewSubmit from '../index';
 import { REPORT_STATUSES } from '../../../../../Constants';
 
-const approvers = [
+const availableApprovers = [
   { id: 1, name: 'user 1' },
   { id: 2, name: 'user 2' },
 ];
@@ -22,7 +22,7 @@ const reportCreator = {
 
 const RenderReview = ({
   // eslint-disable-next-line react/prop-types
-  allComplete, formData, onSubmit, onReview, approvingManagerId, approvingManager, pages,
+  allComplete, formData, onSubmit, onReview, approvingManagerId, isApprover, pages,
 }) => {
   const hookForm = useForm({
     mode: 'onChange',
@@ -35,12 +35,12 @@ const RenderReview = ({
         allComplete={allComplete}
         onSubmit={onSubmit}
         reviewItems={[]}
-        approvers={approvers}
+        availableApprovers={availableApprovers}
         formData={formData}
         onReview={onReview}
         onResetToDraft={() => {}}
         onSaveForm={() => {}}
-        approvingManager={approvingManager}
+        isApprover={isApprover}
         pages={pages}
         reportCreator={reportCreator}
         updateShowValidationErrors={() => {}}
@@ -63,7 +63,7 @@ const incompletePages = [{
 
 const renderReview = (
   allComplete,
-  approvingManager = false,
+  isApprover = false,
   status = REPORT_STATUSES.DRAFT,
   formData = { additionalNotes: '' },
   onSubmit = () => {},
@@ -82,7 +82,7 @@ const renderReview = (
         formData={{
           ...formData, status, author: { name: 'user' }, id: 1, displayId: '1',
         }}
-        approvingManager={approvingManager}
+        isApprover={isApprover}
         onReview={onReview}
         approvingManagerId={approvingManagerId}
         pages={pages}

@@ -15,8 +15,8 @@ const ReviewSubmit = ({
   onSubmit,
   onReview,
   reviewItems,
-  approvers,
-  approvingManager,
+  availableApprovers,
+  isApprover,
   reportCreator,
   formData,
   onResetToDraft,
@@ -74,11 +74,11 @@ const ReviewSubmit = ({
         <title>Review and submit</title>
       </Helmet>
       <PrintSummary reportCreator={reportCreator} />
-      {!approvingManager
+      {!isApprover
         && (
         <Submitter
           status={status}
-          approvers={approvers}
+          availableApprovers={availableApprovers}
           pages={pages}
           onFormSubmit={onFormSubmit}
           onResetToDraft={onReset}
@@ -89,7 +89,7 @@ const ReviewSubmit = ({
           <Accordion bordered={false} items={items} />
         </Submitter>
         )}
-      {approvingManager
+      {isApprover
         && (
         <Approver
           status={status}
@@ -109,7 +109,7 @@ const ReviewSubmit = ({
 ReviewSubmit.propTypes = {
   updateShowValidationErrors: PropTypes.func.isRequired,
   onSaveForm: PropTypes.func.isRequired,
-  approvers: PropTypes.arrayOf(
+  availableApprovers: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
@@ -118,7 +118,7 @@ ReviewSubmit.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onReview: PropTypes.func.isRequired,
   onResetToDraft: PropTypes.func.isRequired,
-  approvingManager: PropTypes.bool.isRequired,
+  isApprover: PropTypes.bool.isRequired,
   formData: PropTypes.shape({
     additionalNotes: PropTypes.string,
     status: PropTypes.string,

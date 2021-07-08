@@ -10,7 +10,7 @@ import Approved from './Approved';
 import Submitted from './Submitted';
 
 const Submitter = ({
-  approvers,
+  availableApprovers,
   onFormSubmit,
   formData,
   onResetToDraft,
@@ -27,8 +27,11 @@ const Submitter = ({
     id,
     displayId,
   } = formData;
+  // FIXME: These statuses will come from `submissionStatus`
   const draft = status === REPORT_STATUSES.DRAFT;
   const submitted = status === REPORT_STATUSES.SUBMITTED;
+  // FIXME: The statuses below will come from a different field, presumably `calculatedStatus`
+  // We may need to look at the AR's approvers array to find out which approver(s) requested changes
   const needsAction = status === REPORT_STATUSES.NEEDS_ACTION;
   const approved = status === REPORT_STATUSES.APPROVED;
 
@@ -86,7 +89,7 @@ const Submitter = ({
         <DraftReview
           onSaveForm={onSaveForm}
           incompletePages={incompletePages}
-          approvers={approvers}
+          availableApprovers={availableApprovers}
           onFormSubmit={onFormSubmit}
           reportId={id}
           displayId={displayId}
@@ -134,7 +137,7 @@ Submitter.propTypes = {
     review: PropTypes.bool,
     label: PropTypes.string,
   })).isRequired,
-  approvers: PropTypes.arrayOf(PropTypes.shape({
+  availableApprovers: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
   })).isRequired,

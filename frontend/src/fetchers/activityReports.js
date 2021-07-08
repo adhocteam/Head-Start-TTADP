@@ -12,6 +12,7 @@ export const legacyReportById = async (legacyId) => {
   return res.json();
 };
 
+// TODO: Change to get available approvers.
 export const getApprovers = async (region) => {
   const res = await get(join(activityReportUrl, 'approvers', `?region=${region}`));
   return res.json();
