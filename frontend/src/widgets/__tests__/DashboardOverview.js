@@ -27,7 +27,6 @@ describe('Dashboard Overview Widget', () => {
 
     expect(screen.getByText(/5/i)).toBeInTheDocument();
     expect(screen.getByText(/activity reports/i)).toBeInTheDocument();
-    expect(screen.getByText(/grants served \(of 2\)/i)).toBeInTheDocument();
     expect(screen.getByText(/non-grantees served/i)).toBeInTheDocument();
     expect(screen.getByText(/2623\.0/i)).toBeInTheDocument();
     expect(screen.getByText(/hours of tta/i)).toBeInTheDocument();

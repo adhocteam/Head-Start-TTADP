@@ -69,7 +69,7 @@ export function DashboardOverviewWidget({ data }) {
     <div className="smart-hub--dashboard-overview margin-bottom-3">
       <Grid row className="smart-hub--dashboard-overview-data flex-wrap">
         <Field icon={faChartBar} iconColor="#148439" backgroundColor="#F0FCF4" label="Activity reports" data={data.numReports} />
-        <Field icon={faBuilding} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served" data={data.numGrants} labelExt={`(of ${data.numTotalGrants})`} />
+        <Field icon={faBuilding} iconColor="#2B7FB9" backgroundColor="#E2EFF7" label="Grants served" data={data.numGrants} />
         <Field icon={faUserFriends} iconColor="#264A64" backgroundColor="#ECEEF1" label="Non-grantees served" data={data.nonGrantees} />
         <Field icon={faClock} iconColor="#E29F4D" backgroundColor="#FFF1E0" label="Hours of TTA" data={data.sumDuration} />
         <Field icon={faUser} iconColor="#A12854" backgroundColor="#FFE8F0" label="In-person activities" data={data.inPerson} />
@@ -83,7 +83,6 @@ DashboardOverviewWidget.propTypes = {
     nonGrantees: PropTypes.string,
     numReports: PropTypes.string,
     numGrants: PropTypes.string,
-    numTotalGrants: PropTypes.string,
     sumDuration: PropTypes.string,
     inPerson: PropTypes.string,
   }).isRequired,
