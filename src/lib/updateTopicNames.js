@@ -42,14 +42,13 @@ export default async function updateTopicNames() {
       const index = topics.indexOf(topic.old);
 
       if (index !== -1) {
+        // eslint-disable-next-line no-console
         console.log(`Renaming ${topic.old} to ${topic.renamed} in ${report.id}`);
         topics.splice(index, 1, topic.renamed);
       }
     });
 
     promises.push(report.update({ topics }));
-
-    console.log('TOPICS', report.topics);
   });
 
   return Promise.all(promises);
