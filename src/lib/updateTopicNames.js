@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { ActivityReport } from '../models';
+import { logger } from '../logger';
 
 /**
  * put it in this object so we could add to this as necessary
@@ -53,8 +54,7 @@ export default async function updateTopicNames() {
 
       // -1 if it doesn't exist (Thanks Javascript)
       if (index !== -1) {
-        // eslint-disable-next-line no-console
-        console.log(`Renaming ${topic.old} to ${topic.renamed} in ${report.id}`);
+        logger.info(`Renaming ${topic.old} to ${topic.renamed} in ${report.id}`);
         // mutate our copy
         topics.splice(index, 1, topic.renamed);
       }
