@@ -4,9 +4,8 @@
     color: white;
     min-width: 2rem;
     padding: .5em;
-    position: absolute;
+    position: fixed;
     text-align: center;    
-    top: 120px;
     z-index: 2;
 }
 
@@ -21,5 +20,4 @@
     position: absolute;
     top: 100%;
     left: 33%;
-
 }

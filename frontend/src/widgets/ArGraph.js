@@ -38,13 +38,16 @@ export function sortData(data, order) {
 }
 
 export function Tooltip(props) {
-  const { show, x, text } = props;
-  return show ? <span className="ttahub--argraph ttahub--aragraph-tooltip" style={{ left: x }}>{text}</span> : null;
+  const {
+    show, x, y, text,
+  } = props;
+  return show ? <span className="ttahub--argraph ttahub--aragraph-tooltip" style={{ left: x, top: y - 50 }}>{text}</span> : null;
 }
 
 Tooltip.propTypes = {
   show: PropTypes.bool.isRequired,
   x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
   text: PropTypes.number.isRequired,
 };
 
@@ -148,6 +151,8 @@ export function ArGraphWidget({ data, dateTime }) {
   const [showTooltip, setShowTooltip] = useState(false);
   // set x position of tooltip
   const [tooltipX, setTooltipX] = useState(0);
+  // set y position of tooltip
+  const [tooltipY, setTooltipY] = useState(0);
   // set tooltip text
   const [tooltipText, setTooltipText] = useState('1');
 
@@ -185,7 +190,7 @@ export function ArGraphWidget({ data, dateTime }) {
 
     };
 
-    const width = reasons.length * 180;
+    const width = reasons.length > 1 ? reasons.length * 180 : 330;
 
     const layout = {
       bargap: 0.5,
@@ -215,9 +220,12 @@ export function ArGraphWidget({ data, dateTime }) {
 
     bars.current.on('plotly_hover', (e) => {
       if (e.points && e.points[0]) {
-        const x = ((e.points[0].pointIndex + 0) * 176) + 88;
+        const rect = document.querySelectorAll('.point')[e.points[0].pointIndex].getBoundingClientRect();
+        const x = rect.left;
+        const y = rect.top;
         setShowTooltip(true);
         setTooltipX(x);
+        setTooltipY(y);
         setTooltipText(counts[e.points[0].pointIndex]);
       }
     });
@@ -245,7 +253,7 @@ export function ArGraphWidget({ data, dateTime }) {
   return (
     <Container className="ttahub--argraph overflow-x-scroll" padding={3}>
       <Grid row className="position-relative">
-        <Tooltip show={showTooltip} x={tooltipX} text={tooltipText} />
+        <Tooltip show={showTooltip} x={tooltipX} y={tooltipY} text={tooltipText} />
         <Grid col={4}><h3>Topics in Activity Report by Frequency</h3></Grid>
         <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
           <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.timestamp} label={dateTime.label} />
