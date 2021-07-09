@@ -111,7 +111,7 @@ describe('update topic names job', () => {
 
         if (report.requester === 'Brucina') {
           topics = [
-            'Quality Improvement Plan/QIP',
+            'Quality Improvement Plan / QIP',
             'Program Planning and Services',
             'Curriculum (Instructional or Parenting)',
             'Environmental Health and Safety / EPRR',
