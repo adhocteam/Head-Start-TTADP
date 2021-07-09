@@ -515,7 +515,6 @@ function Landing() {
                   allRegions={getUserRegions(user)}
                   skipLoading
                 />
-                )
               </Grid>
             </Grid>
             <Grid row>
