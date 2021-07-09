@@ -96,7 +96,7 @@ describe('Topics & resources', () => {
       expect(await screen.findByText('Physical Health and Screenings')).toBeVisible();
       expect(await screen.findByText('Pregnancy Services / Expectant Families')).toBeVisible();
       expect(await screen.findByText('Program Planning and Services')).toBeVisible();
-      expect(await screen.findByText('Quality Improvement Plan/QIP')).toBeVisible();
+      expect(await screen.findByText('Quality Improvement Plan / QIP')).toBeVisible();
       expect(await screen.findByText('Recordkeeping and Reporting')).toBeVisible();
       expect(await screen.findByText('Safety Practices')).toBeVisible();
       expect(await screen.findByText('Staff Wellness')).toBeVisible();
