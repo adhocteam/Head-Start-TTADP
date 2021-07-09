@@ -56,7 +56,7 @@ describe('Activity Reports Approvers', () => {
   });
 
   afterAll(async () => {
-    await User.destroy({ truncate: true, cascade: true})
+    await User.destroy({ truncate: true, cascade: true });
     await db.sequelize.close();
   });
 

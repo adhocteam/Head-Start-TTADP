@@ -82,17 +82,17 @@ describe('Activity Reports DB service', () => {
   });
 
   afterAll(async () => {
-    const reports = await ActivityReport
-      .findAll({ where: { userId: [mockUser.id, mockUserTwo.id, mockUserThree.id] } });
-    const ids = reports.map((report) => report.id);
-    await NextStep.destroy({ where: { activityReportId: ids } });
-    await ActivityRecipient.destroy({ where: { activityReportId: ids } });
-    await ActivityReport.destroy({ where: { id: ids } });
-    await User.destroy({ where: { id: [mockUser.id, mockUserTwo.id] } });
-    await NonGrantee.destroy({ where: { id: GRANTEE_ID } });
-    await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_SORTING] } });
+    await User.destroy({ where: { id: [mockUser.id, mockUserTwo.id, mockUserThree.id] } });
     await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_SORTING] } });
-    await Region.destroy({ where: { id: 17 } });
+    await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_SORTING] } });
+
+    // Table data is not used outside this test (e.g. not added by seeders),
+    // can simply destroy all records
+    await NextStep.destroy({ truncate: true });
+    await ActivityRecipient.destroy({ truncate: true });
+    await ActivityReport.destroy({ truncate: true });
+    await NonGrantee.destroy({ truncate: true });
+    await Region.destroy({ truncate: true });
     await db.sequelize.close();
   });
 
