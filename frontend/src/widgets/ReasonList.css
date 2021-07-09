@@ -23,7 +23,6 @@
 
 .reason-list .usa-table tr {
   background-color: #fff;
-  font-size: 16px;
   border-bottom: 0px;
   font-weight: bold;
 }
@@ -49,7 +48,6 @@
   padding-left: 0px;
   padding-right: 0px;
   text-align: left;
-  font-size: 18px;
 }
 
 .reason-list .usa-table td:first-child {
@@ -66,18 +64,8 @@
 }
 
 .smart-hub--reason-list-heading {
-  font-size: 20px;
   color: #21272d;
   font-weight: bold;
   line-height: 24px;
 }
 
-.smart-hub--reason-list-heading-date-range {
-  margin-left: 18px;
-  font-weight: normal;
-  font-size: 14px;
-  background-color: #f8f8f8;
-  line-height: 24px;
-  height: 151px;
-  width: 13px;
-}

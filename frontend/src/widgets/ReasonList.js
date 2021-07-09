@@ -41,7 +41,7 @@ function ReasonList({ data, dateTime }) {
         <Table className="smart-hub--reason-list-table" fullWidth>
           <caption className="smart-hub--reason-list-caption">
             <div className="display-flex">
-              <span className="smart-hub--reason-list-heading">Reasons in Activity Reports</span>
+              <h2 className="smart-hub--reason-list-heading margin-0">Reasons in Activity Reports</h2>
               <DateTime classNames="display-flex flex-align-center padding-x-1 margin-left-3" timestamp={dateTime.timestamp} label={dateTime.label} />
             </div>
           </caption>

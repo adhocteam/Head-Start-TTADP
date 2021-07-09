@@ -196,9 +196,9 @@ function Dashboard({ user }) {
             </Grid>
             <Grid col={7}>
               <Container className="ttahub-coming-soon shadow-2 display-flex" padding={3}>
-                <h3 className="margin-0">
+                <h2 className="margin-0">
                   Total Hours of TTA Graph
-                </h3>
+                </h2>
                 <p>Feature in development</p>
               </Container>
             </Grid>
