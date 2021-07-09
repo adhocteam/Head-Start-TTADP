@@ -14,5 +14,5 @@ import 'react-dates/initialize';
 import MutationObserver from '@sheerun/mutationobserver-shim';
 
 window.MutationObserver = MutationObserver;
-
-jest.setTimeout(30000);
+global.URL.createObjectURL = jest.fn();
+jest.setTimeout(50000);

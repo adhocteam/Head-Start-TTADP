@@ -1,0 +1,13 @@
+.smart-hub--dashboard-overview-field {
+    gap: 1em;
+}
+
+.smart-hub--dashboard-overview-data  {
+    gap: 1em;
+}
+
+.smart-hub--dashboard-overview-field-icon-background {
+    border-radius: 50%;
+    height: 3em;
+    width: 3em;
+}
