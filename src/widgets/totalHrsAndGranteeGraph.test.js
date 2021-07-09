@@ -109,24 +109,72 @@ describe('Overview widget', () => {
 
     it('retrieves data by region', async () => {
 
+        // Outside of Start Date bounds.
         const reportOne = await ActivityReport.findOne({ where: { duration: 1, startDate: '2021-01-03' } });
         await createOrUpdate({ ...regionOneReport, duration: 1, startDate: '2021-01-03'}, reportOne);
 
+        // One Report in Feb.
         const reportTwo = await ActivityReport.findOne({ where: { duration: 2, startDate: '2021-02-15' } });
         await createOrUpdate({ ...regionOneReport, startDate: '2021-02-15', duration: 2 }, reportTwo);
 
-        const reportThree = await ActivityReport.findOne({ where: { duration: 3, ttaType: ['training'], startDate: '2021-06-25' } });
-        await createOrUpdate({ ...regionOneReport, startDate: '2021-06-25', duration: 3, ttaType: ['training'] }, reportThree);
+        // Three Reports in June.
+        const reportThree = await ActivityReport.findOne({ where: { duration: 3, ttaType: ['training'], startDate: '2021-06-10' } });
+        await createOrUpdate({ ...regionOneReport, startDate: '2021-06-10', duration: 3, ttaType: ['training'] }, reportThree);
 
-        const reportFour = await ActivityReport.findOne({ where: { duration: 4, ttaType: ['training', 'technical-assistance'], startDate: '2021-07-09' } });
-        await createOrUpdate({ ...regionOneReport, startDate: '2021-07-09', duration: 4, ttaType: ['training', 'technical-assistance'] }, reportFour);
+        const reportFour = await ActivityReport.findOne({ where: { duration: 4, ttaType: ['technical-assistance'], startDate: '2021-06-15' } });
+        await createOrUpdate({ ...regionOneReport, startDate: '2021-06-15', duration: 4, ttaType: ['technical-assistance'] }, reportFour);
 
+        const reportFive = await ActivityReport.findOne({ where: { duration: 5.5, ttaType: ['training','technical-assistance'], startDate: '2021-06-20' } });
+        await createOrUpdate({ ...regionOneReport, startDate: '2021-06-20', duration: 5.5, ttaType: ['training','technical-assistance'] }, reportFive);
+
+        // Two Reports in July.
+        const reportSix = await ActivityReport.findOne({ where: { duration: 6, ttaType: ['training'], startDate: '2021-07-01' } });
+        await createOrUpdate({ ...regionOneReport, startDate: '2021-07-01', duration: 6, ttaType: ['training'] }, reportSix);
+
+        const reportSeven = await ActivityReport.findOne({ where: { duration: 7, ttaType: ['training', 'technical-assistance'], startDate: '2021-07-09' } });
+        await createOrUpdate({ ...regionOneReport, startDate: '2021-07-09', duration: 7, ttaType: ['training', 'technical-assistance'] }, reportFour);
+
+        // Outside of End Date bounds.
+        const reportSeven = await ActivityReport.findOne({ where: { duration: 8, ttaType: ['training', 'technical-assistance'], startDate: '2021-08-08' } });
+        await createOrUpdate({ ...regionOneReport, startDate: '2021-08-08', duration: 8, ttaType: ['training', 'technical-assistance'] }, reportSeven);
+
+        // Different Region.
         const reportOneR2 = await ActivityReport.findOne({ where: { duration: 1.5 } });
         await createOrUpdate({ ...regionTwoReport, duration: 1.5 }, reportOneR2);
 
         const query = { 'region.in': ['17'], 'startDate.win': '2021/02/01-2021/07/31'};
         const scopes = filtersToScopes(query);
-        
         const data = await totalHrsAndGranteeGraph(scopes, query);
+
+        // Overall trace categories.
+        expect(data.length).toEqual(4);
+
+        // Grantee Rec TTA.
+        expect(data[0].x.length).toEqual(3);
+        expect(data[0].y.length).toEqual(3);
+
+        expect(data[0].x).toStrictEqual([2,6,4]);
+        expect(data[0].y).toEqual(['February', 'June', 'July']);
+
+        // Hours of Training.
+        expect(data[1].x.length).toEqual(3);
+        expect(data[1].y.length).toEqual(3);
+
+        expect(data[1].x).toStrictEqual([0,3,6]);
+        expect(data[1].y).toEqual(['February', 'June', 'July']);
+
+        // Hours of Technical Assistance.
+        expect(data[2].x.length).toEqual(3);
+        expect(data[2].y.length).toEqual(3);
+
+        expect(data[2].x).toStrictEqual([2,4,0]);
+        expect(data[2].y).toEqual(['February', 'June', 'July']);
+
+        // Both.
+        expect(data[3].x.length).toEqual(3);
+        expect(data[3].y.length).toEqual(3);
+
+        expect(data[3].x).toStrictEqual([0,0,7]);
+        expect(data[3].y).toEqual(['February', 'June', 'July']);
     });
 });
