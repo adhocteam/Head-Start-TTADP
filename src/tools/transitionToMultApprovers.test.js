@@ -83,6 +83,7 @@ describe('Transition to multiple approvers', () => {
   });
 
   afterAll(async () => {
+    await User.destroy({ truncate: true, cascade: true})
     await db.sequelize.close();
   });
 

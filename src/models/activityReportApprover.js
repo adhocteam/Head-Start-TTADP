@@ -2,7 +2,13 @@ import { APPROVER_STATUSES, REPORT_STATUSES } from '../constants';
 
 const { Model } = require('sequelize');
 
-function calculateStatus(approvals) {
+/**
+ * Helper function called by calculateReportStatus function
+ * Returns calculatedStatus string based on approvals
+ * @param {*} approvals - array, status fields of all approvals for current model instance's
+ * activity report
+ */
+function calculateReportStatusFromApprovals(approvals) {
   const approved = (status) => status === APPROVER_STATUSES.APPROVED;
   if (approvals.every(approved)) {
     return REPORT_STATUSES.APPROVED;
@@ -14,6 +20,27 @@ function calculateStatus(approvals) {
   }
 
   return REPORT_STATUSES.SUBMITTED;
+}
+
+/**
+ * Helper function called by model hooks.
+ * Returns calculatedStatus string based on approverStatus and approvals
+ * @param {*} approverStatus - string, status field of current model instance
+ * @param {*} approvals - array, status fields of all approvals for current model instance's
+ * activity report
+ */
+function calculateReportStatus(approverStatus, approvals) {
+  switch (approverStatus) {
+    case APPROVER_STATUSES.NEEDS_ACTION: {
+      return REPORT_STATUSES.NEEDS_ACTION;
+    }
+    case APPROVER_STATUSES.APPROVED: {
+      return calculateReportStatusFromApprovals(approvals);
+    }
+    default: {
+      return REPORT_STATUSES.SUBMITTED;
+    }
+  }
 }
 
 module.exports = (sequelize, DataTypes) => {
@@ -50,47 +77,53 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     hooks: {
-      // I'll need an afterCreate hook too
-      afterUpsert: async (instances, options) => {
-        console.log('[Approver afterUpsert]');
-        const instance = instances[0]; // we'll need to loop here
-        const report = await sequelize.models.ActivityReport.findOne({
+      afterCreate: async (instance, options) => {
+        // The following code should match afterUpsert.
+        // This can not be abstracted into a function.
+        // Begin
+        const approverStatuses = await sequelize.models.ActivityReportApprover.findAll({
+          attributes: ['status'],
+          raw: true,
+          where: { activityReportId: instance.activityReportId },
+          transaction: options.transaction,
+        }).map((a) => a.status);
+
+        const newCalculatedStatus = calculateReportStatus(instance.status, approverStatuses);
+        await sequelize.models.ActivityReport.update({
+          calculatedStatus: newCalculatedStatus,
+        }, {
           where: { id: instance.activityReportId },
           transaction: options.transaction,
+          hooks: false,
         });
+        // End
+      },
+      afterUpsert: async (created, options) => {
+        // The following is poorly documented in Sequelize:
+        // Created is an array. First item in created array is
+        // a model instance, second item is boolean indicating
+        // if record was newly created (false = updated existing object.)
+        const instance = created[0];
 
-        let calculatedStatus;
-        switch (instance.status) {
-          case APPROVER_STATUSES.NEEDS_ACTION: {
-            console.log('- [Approver afterUpsert hook] got NEEDS_ACTION');
-            calculatedStatus = REPORT_STATUSES.NEEDS_ACTION;
-            break;
-          }
-          case APPROVER_STATUSES.APPROVED: {
-            console.log('- [Approver afterUpsert hook] got APPROVED');
-            const approverStatuses = await sequelize.models.ActivityReportApprover.findAll(
-              {
-                attributes: ['status'],
-                raw: true,
-                where: {
-                  activityReportId: instance.activityReportId,
-                },
-                transaction: options.transaction,
-              },
-            ).map((a) => a.status);
-            calculatedStatus = calculateStatus(approverStatuses);
-            break;
-          }
-          default: {
-            console.log('- [Approver afterUpsert hook] got something else');
-            calculatedStatus = REPORT_STATUSES.SUBMITTED;
-            break;
-          }
-        }
+        // The following code should match afterCreate.
+        // This can not be abstracted into a function.
+        // Begin
+        const approverStatuses = await sequelize.models.ActivityReportApprover.findAll({
+          attributes: ['status'],
+          raw: true,
+          where: { activityReportId: instance.activityReportId },
+          transaction: options.transaction,
+        }).map((a) => a.status);
 
-        report.calculatedStatus = calculatedStatus;
-        await report.save();
-        console.log('- [Approver afterUpsert hook] stored calculateStatus', report.calculatedStatus);
+        const newCalculatedStatus = calculateReportStatus(instance.status, approverStatuses);
+        await sequelize.models.ActivityReport.update({
+          calculatedStatus: newCalculatedStatus,
+        }, {
+          where: { id: instance.activityReportId },
+          transaction: options.transaction,
+          hooks: false,
+        });
+        // End
       },
     },
     sequelize,

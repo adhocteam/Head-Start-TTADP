@@ -32,8 +32,6 @@ export default class ActivityReport {
   }
 
   canReset() {
-    console.log('this.activityReport.calculatedStatus', this.activityReport.calculatedStatus);
-    console.log(this.activityReport.calculatedStatus === REPORT_STATUSES.SUBMITTED);
     return (this.isAuthor() || this.isCollaborator())
       && this.activityReport.calculatedStatus === REPORT_STATUSES.SUBMITTED;
   }

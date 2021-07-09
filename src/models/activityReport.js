@@ -12,11 +12,13 @@ function formatDate(fieldName) {
 }
 
 /**
- * Helper function called by AR model hooks.
- * calculatedStatus is updated to 'submitted', 'needs_review', and 'approved'
+ * Helper function called by model hooks.
+ * Updates current model instance's calculatedStatus field.
+ * Background: calculatedStatus is updated to 'submitted', 'needs_review', and 'approved'
  * based on hooks on the ActivityReportApprovers. Before submission though,
  * we want calculatedStatus to function like submissionStatus so developers
  * only have to check calculatedStatus to determine overall report status.
+ * @param {*} report - current model instance
  */
 function copyStatus(report) {
   const { submissionStatus } = report;
@@ -268,14 +270,10 @@ export default (sequelize, DataTypes) => {
     modelName: 'ActivityReport',
     hooks: {
       beforeCreate: (report) => {
-        console.log('[AR beforeCreate hook]');
         copyStatus(report);
-        console.log('- [AR beforeCreate hook] stored calculatedStatus', report.calculatedStatus);
       },
       beforeUpdate: (report) => {
-        console.log('[AR beforeUpdate hook]');
         copyStatus(report);
-        console.log('- [AR beforeUpdate hook] stored calculatedStatus', report.calculatedStatus);
       },
     },
   });

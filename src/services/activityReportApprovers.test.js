@@ -13,7 +13,7 @@ const mockUser = {
   hsesUserId: '1000',
 };
 
-const mockManger = {
+const mockManager = {
   id: 2000,
   homeRegionId: 2,
   name: 'user2000',
@@ -21,7 +21,7 @@ const mockManger = {
   hsesUserId: '2000',
 };
 
-const secondMockManger = {
+const secondMockManager = {
   id: 3000,
   homeRegionId: 3,
   name: 'user3000',
@@ -51,16 +51,12 @@ const submittedReport = {
 describe('Activity Reports Approvers', () => {
   beforeAll(async () => {
     await User.create(mockUser);
-    await User.create(mockManger);
-    await User.create(secondMockManger);
+    await User.create(mockManager);
+    await User.create(secondMockManager);
   });
 
   afterAll(async () => {
-    const reports = await ActivityReport
-      .findAll({ where: { userId: [mockUser.id] } });
-    const ids = reports.map((report) => report.id);
-    await ActivityReport.destroy({ where: { id: ids } });
-    await User.destroy({ where: { id: [mockUser.id] } });
+    await User.destroy({ truncate: true, cascade: true})
     await db.sequelize.close();
   });
 
@@ -70,13 +66,13 @@ describe('Activity Reports Approvers', () => {
       // One approved
       await ActivityReportApprover.create({
         activityReportId: report.id,
-        userId: mockManger.id,
+        userId: mockManager.id,
         status: REPORT_STATUSES.APPROVED,
       });
       // One pending
       await ActivityReportApprover.create({
         activityReportId: report.id,
-        userId: secondMockManger.id,
+        userId: secondMockManager.id,
       });
       // Works with managed transaction
       await sequelize.transaction(async (transaction) => {
@@ -84,25 +80,25 @@ describe('Activity Reports Approvers', () => {
         const approver = await upsertApprover({
           status: REPORT_STATUSES.NEEDS_ACTION,
           activityReportId: report.id,
-          userId: secondMockManger.id,
+          userId: secondMockManager.id,
         }, transaction);
         expect(approver.status).toEqual(REPORT_STATUSES.NEEDS_ACTION);
-        const updatedReport = await activityReportById(report.id);
-        expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
-        expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.NEEDS_ACTION);
       });
+      const updatedReport = await activityReportById(report.id);
+      expect(updatedReport.submissionStatus).toEqual(REPORT_STATUSES.SUBMITTED);
+      expect(updatedReport.calculatedStatus).toEqual(REPORT_STATUSES.NEEDS_ACTION);
     });
     it('calculatedStatus is "approved" if all approvers approve', async () => {
       const report = await ActivityReport.create(submittedReport);
       // One pending
       await ActivityReportApprover.create({
         activityReportId: report.id,
-        userId: mockManger.id,
+        userId: mockManager.id,
       });
       // Pending updated to approved
       const approver = await upsertApprover({
         activityReportId: report.id,
-        userId: mockManger.id,
+        userId: mockManager.id,
         status: REPORT_STATUSES.APPROVED,
       });
       expect(approver.status).toEqual(REPORT_STATUSES.APPROVED);
@@ -115,13 +111,13 @@ describe('Activity Reports Approvers', () => {
       // One approved
       await ActivityReportApprover.create({
         activityReportId: report.id,
-        userId: mockManger.id,
+        userId: mockManager.id,
         status: REPORT_STATUSES.APPROVED,
       });
       // One pending
       const approver = await upsertApprover({
         activityReportId: report.id,
-        userId: secondMockManger.id,
+        userId: secondMockManager.id,
       });
       expect(approver.status).toBeNull();
       const updatedReport = await activityReportById(report.id);
