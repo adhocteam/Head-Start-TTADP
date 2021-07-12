@@ -468,25 +468,25 @@ function Landing() {
         {({ user }) => (
           <>
             {showAlert && message && (
-            <Alert
-              type="success"
-              role="alert"
-              noIcon
-              cta={(
-                <Button
-                  role="button"
-                  unstyled
-                  aria-label="dismiss alert"
-                  onClick={() => updateShowAlert(false)}
-                >
-                  <span className="fa-sm margin-right-2">
-                    <FontAwesomeIcon color="black" icon={faTimesCircle} />
-                  </span>
-                </Button>
+              <Alert
+                type="success"
+                role="alert"
+                noIcon
+                cta={(
+                  <Button
+                    role="button"
+                    unstyled
+                    aria-label="dismiss alert"
+                    onClick={() => updateShowAlert(false)}
+                  >
+                    <span className="fa-sm margin-right-2">
+                      <FontAwesomeIcon color="black" icon={faTimesCircle} />
+                    </span>
+                  </Button>
               )}
-            >
-              {msg}
-            </Alert>
+              >
+                {msg}
+              </Alert>
             )}
             <Grid row gap>
               <Grid>
@@ -498,6 +498,7 @@ function Landing() {
                 <RegionalSelect
                   regions={allRegionsUserHasPermissionTo(user)}
                   onApply={onApplyRegion}
+                  hasCentralOffice={user.homeRegionId === 14}
                 />
                 )}
               </Grid>
