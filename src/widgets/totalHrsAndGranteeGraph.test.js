@@ -190,27 +190,31 @@ describe('Total Hrs and Grantee Graph widget', () => {
   });
 
   it('retrieves line graph data by day', async () => {
-    const reportOne = await ActivityReport.findOne({ where: { duration: 1, ttaType: ['training'], startDate: '2021-06-10' } });
+    const reportOne = await ActivityReport.findOne({
+      where: {
+        regionId: 18, duration: 1, ttaType: ['training'], startDate: '2021-06-10',
+      },
+    });
     await createOrUpdate({
-      ...regionOneReport, startDate: '2021-06-10', duration: 1, ttaType: ['training'],
+      ...regionOneReport, regionId: 18, startDate: '2021-06-10', duration: 1, ttaType: ['training'],
     }, reportOne);
 
     const reportTwo = await ActivityReport.findOne({ where: { duration: 2, ttaType: ['technical-assistance'], startDate: '2021-06-15' } });
     await createOrUpdate({
-      ...regionOneReport, startDate: '2021-06-15', duration: 2, ttaType: ['technical-assistance'],
+      ...regionOneReport, regionId: 18, startDate: '2021-06-15', duration: 2, ttaType: ['technical-assistance'],
     }, reportTwo);
 
     const reportThree = await ActivityReport.findOne({ where: { duration: 3.3, ttaType: ['training', 'technical-assistance'], startDate: '2021-06-20' } });
     await createOrUpdate({
-      ...regionOneReport, startDate: '2021-06-20', duration: 3.3, ttaType: ['training', 'technical-assistance'],
+      ...regionOneReport, regionId: 18, startDate: '2021-06-20', duration: 3.3, ttaType: ['training', 'technical-assistance'],
     }, reportThree);
 
     const reportFour = await ActivityReport.findOne({ where: { duration: 4, ttaType: ['technical-assistance'], startDate: '2021-06-20' } });
     await createOrUpdate({
-      ...regionOneReport, startDate: '2021-06-20', duration: 4, ttaType: ['technical-assistance'],
+      ...regionOneReport, regionId: 18, startDate: '2021-06-20', duration: 4, ttaType: ['technical-assistance'],
     }, reportFour);
 
-    const query = { 'region.in': ['17'], 'startDate.win': '2021/06/01-2021/06/30' };
+    const query = { 'region.in': ['18'], 'startDate.win': '2021/06/01-2021/06/30' };
     const scopes = filtersToScopes(query);
     const data = await totalHrsAndGranteeGraph(scopes, query);
 
