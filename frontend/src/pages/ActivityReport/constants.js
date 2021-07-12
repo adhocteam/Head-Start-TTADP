@@ -90,7 +90,7 @@ export const topics = [
   'Physical Health and Screenings',
   'Pregnancy Services / Expectant Families',
   'Program Planning and Services',
-  'Quality Improvement Plan/QIP',
+  'Quality Improvement Plan / QIP',
   'Recordkeeping and Reporting',
   'Safety Practices',
   'Staff Wellness',

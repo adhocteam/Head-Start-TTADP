@@ -12,7 +12,7 @@ const TOPIC_DICTIONARY = [
   },
   {
     old: 'QIP',
-    renamed: 'Quality Improvement Plan/QIP',
+    renamed: 'Quality Improvement Plan / QIP',
   },
   {
     old: 'CLASS: Classroom Management',
