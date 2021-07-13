@@ -175,6 +175,7 @@
     "express": "^4.17.1",
     "express-unless": "^0.5.0",
     "express-winston": "^4.0.5",
+    "faker": "^5.5.3",
     "file-type": "^16.1.0",
     "form-data": "^4.0.0",
     "helmet": "^4.1.0",
