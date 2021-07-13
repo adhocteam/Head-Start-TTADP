@@ -413,7 +413,6 @@ export async function activityReportAlerts(userId, {
   sortBy = 'startDate', sortDir = 'desc', offset = 0, ...filters
 }) {
   const updatedFilters = await setReadRegions(filters, userId);
-
   const scopes = filtersToScopes(updatedFilters);
   return ActivityReport.findAndCountAll({
     where: {
