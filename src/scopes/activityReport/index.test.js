@@ -90,9 +90,11 @@ describe('filtersToScopes', () => {
 
   afterAll(async () => {
     await User.destroy({
-      where: { id: [mockUser.id, mockManager.id, includedUser1.id, includedUser2.id, excludedUser.id] },
+      where: {
+        id: [
+          mockUser.id, mockManager.id, includedUser1.id, includedUser2.id, excludedUser.id],
+      },
     });
-    await ActivityReport.destroy({ truncate: true, cascade: true });
     await db.sequelize.close();
   });
 

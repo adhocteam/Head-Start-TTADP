@@ -126,7 +126,7 @@ describe('Activity Report handlers', () => {
     jest.clearAllMocks();
   });
   afterAll(async () => {
-    await UserModel.destroy({ where: { id: [mockUser.id, mockManager.id] } });
+    await UserModel.destroy({ where: { id: [mockUser.id, mockManager.id, secondMockManager.id] } });
     await db.sequelize.close();
   });
 

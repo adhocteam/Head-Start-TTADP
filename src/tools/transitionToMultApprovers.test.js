@@ -84,7 +84,7 @@ describe('Transition to multiple approvers', () => {
 
   afterAll(async () => {
     await ActivityReport.destroy({ truncate: true, cascade: true });
-    await User.destroy({ where: { id: [author.id, manager.id] }});
+    await User.destroy({ where: { id: [author.id, manager.id] } });
     await db.sequelize.close();
   });
 

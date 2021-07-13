@@ -17,25 +17,10 @@ const mockUser = {
   hsesUserId: '1000',
 };
 
-const mockUserTwo = {
-  id: 1002,
-  homeRegionId: 1,
-  name: 'user1002',
-  hsesUserId: 1002,
-  hsesUsername: 'Rex',
-};
-
-const mockUserThree = {
-  id: 1003,
-  homeRegionId: 1,
-  name: 'user1003',
-  hsesUserId: 1003,
-  hsesUsername: 'Tex',
-};
-
 const reportObject = {
   activityRecipientType: 'grantee',
-  status: REPORT_STATUSES.APPROVED,
+  submissionStatus: REPORT_STATUSES.SUBMITTED,
+  calculatedStatus: REPORT_STATUSES.APPROVED,
   userId: mockUser.id,
   lastUpdatedById: mockUser.id,
   ECLKCResourcesUsed: ['test'],
@@ -70,41 +55,38 @@ const regionTwoReport = {
 
 describe('Overview widget', () => {
   beforeAll(async () => {
-    await User.findOrCreate({ where: mockUser });
-    await Grantee.findOrCreate({ where: { name: 'grantee', id: GRANTEE_ID } });
-    await Region.create({ name: 'office 17', id: 17 });
-    await Region.create({ name: 'office 18', id: 18 });
-    await Grant.findOrCreate({
-      where: {
+    await Promise.all([
+      User.create(mockUser),
+      Grantee.create({ name: 'grantee', id: GRANTEE_ID }),
+      Region.bulkCreate([
+        { name: 'office 17', id: 17 },
+        { name: 'office 18', id: 18 },
+      ]),
+      NonGrantee.create({ id: GRANTEE_ID, name: 'nonGrantee' }),
+    ]);
+    await Grant.bulkCreate([
+      {
         id: GRANTEE_ID, number: '1', granteeId: GRANTEE_ID, regionId: 17, status: 'Active',
       },
-    });
-    await Grant.findOrCreate({
-      where: {
+      {
         id: GRANTEE_ID_TWO, number: '2', granteeId: GRANTEE_ID, regionId: 17, status: 'Active',
       },
-    });
-    await NonGrantee.findOrCreate({ where: { id: GRANTEE_ID, name: 'nonGrantee' } });
+    ]);
   });
 
   afterAll(async () => {
-    const reports = await ActivityReport
-      .findAll({ where: { userId: [mockUser.id, mockUserTwo.id, mockUserThree.id] } });
-    const ids = reports.map((report) => report.id);
-    await NextStep.destroy({ where: { activityReportId: ids } });
-    await ActivityRecipient.destroy({ where: { activityReportId: ids } });
-    await ActivityReport.destroy({ where: { id: ids } });
-    await User.destroy({ where: { id: [mockUser.id, mockUserTwo.id] } });
-    await NonGrantee.destroy({ where: { id: GRANTEE_ID } });
-    await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
+    await User.destroy({ where: { id: [mockUser.id] } });
     await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
-    await Region.destroy({ where: { id: 17 } });
-    await Region.destroy({ where: { id: 18 } });
-    await db.sequelize.close();
-  });
+    await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+    // Table data is not used outside this test (e.g. not added by seeders),
+    // can simply destroy all records
+    await NextStep.destroy({ truncate: true });
+    await ActivityRecipient.destroy({ truncate: true });
+    await ActivityReport.destroy({ truncate: true });
+    await NonGrantee.destroy({ truncate: true });
+    await Region.destroy({ truncate: true });
+    await db.sequelize.close();
   });
 
   it('retrieves data by region', async () => {

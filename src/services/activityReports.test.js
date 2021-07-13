@@ -72,13 +72,17 @@ const submittedReport = {
 
 describe('Activity Reports DB service', () => {
   beforeAll(async () => {
-    await User.create(mockUser);
-    await Grantee.findOrCreate({ where: { name: 'grantee', id: GRANTEE_ID } });
-    await Region.create({ name: 'office 17', id: 17 });
+    await Promise.all([
+      User.create(mockUser),
+      User.create(mockUserTwo),
+      User.create(mockUserThree),
+      NonGrantee.create({ id: GRANTEE_ID, name: 'nonGrantee' }),
+      Grantee.findOrCreate({ where: { name: 'grantee', id: GRANTEE_ID } }),
+      Region.create({ name: 'office 17', id: 17 }),
+    ]);
     await Grant.create({
       id: GRANTEE_ID, number: 1, granteeId: GRANTEE_ID, regionId: 17, status: 'Active',
     });
-    await NonGrantee.create({ id: GRANTEE_ID, name: 'nonGrantee' });
   });
 
   afterAll(async () => {
@@ -300,6 +304,7 @@ describe('Activity Reports DB service', () => {
     let firstGrant;
 
     beforeAll(async () => {
+      await ActivityReport.destroy({ truncate: true, cascade: true });
       const topicsOne = ['topic d', 'topic c'];
       const topicsTwo = ['topic b', 'topic a'];
       const firstGrantee = await Grantee.create({ id: GRANTEE_ID_SORTING, name: 'aaaa' });
@@ -450,12 +455,6 @@ describe('Activity Reports DB service', () => {
     let nonApprovedReport;
 
     beforeAll(async () => {
-      await User.findOrCreate({
-        where: {
-          id: mockUser.id,
-        },
-        defaults: mockUser,
-      });
       const mockLegacyReport = {
         ...submittedReport,
         imported: { foo: 'bar' },
@@ -504,51 +503,42 @@ describe('Activity Reports DB service', () => {
     let report;
 
     beforeAll(async () => {
-      await User.findOrCreate({
-        where: {
-          id: mockUserThree.id,
-        },
-        defaults: mockUserThree,
-      });
-      const mockReport = {
+      await ActivityReport.destroy({ truncate: true, cascade: true });
+      const mockSubmittedReport = {
         ...submittedReport,
         regionId: 14,
-        userId: mockUserThree.id,
+        userId: mockUser.id,
       };
-      report = await ActivityReport.create(mockReport);
-      // user is author and report submitted, would not be alert
-      await ActivityReport.create(mockReport);
+      const mockNeedsActionReport = {
+        ...submittedReport,
+        calculatedStatus: REPORT_STATUSES.NEEDS_ACTION,
+        regionId: 14,
+        userId: mockUserTwo.id,
+      };
+      await ActivityReport.create(mockSubmittedReport);
+      report = await ActivityReport.create(mockNeedsActionReport);
     });
 
-    it('returns all reports', async () => { // How did this test ever pass?
-      const result = await getAllDownloadableActivityReportAlerts(mockUserThree.id);
+    it('do not alert for submitted reports', async () => {
+      const result = await getAllDownloadableActivityReportAlerts(mockUser.id);
+      const { rows } = result;
+      expect(rows.length).toEqual(0);
+    });
+    it('returns all reports that need action', async () => {
+      const result = await getAllDownloadableActivityReportAlerts(mockUserTwo.id);
       const { rows } = result;
       const ids = rows.map((row) => row.id);
 
-      expect(ids.length).toEqual(0); // Originally 2
+      expect(ids.length).toEqual(1);
       expect(ids).toContain(report.id);
     });
   });
 
   describe('getDownloadableActivityReportsByIds', () => {
-    beforeAll(async () => {
-      await User.findOrCreate({
-        where: {
-          id: mockUser.id,
-        },
-        defaults: mockUser,
-      });
-      await User.findOrCreate({
-        where: {
-          id: mockUserTwo.id,
-        },
-        defaults: mockUserTwo,
-      });
-    });
-
     it('returns report when passed a single report id', async () => {
       const mockReport = {
         ...submittedReport,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
       };
       const report = await ActivityReport.create(mockReport);
       const result = await getDownloadableActivityReportsByIds([1], { report: report.id });
@@ -563,6 +553,7 @@ describe('Activity Reports DB service', () => {
         ...reportObject,
         imported: { foo: 'bar' },
         legacyId: 'R14-AR-abc123',
+        calculatedStatus: REPORT_STATUSES.APPROVED,
       };
       const legacyReport = await ActivityReport.create(mockLegacyReport);
 
@@ -582,6 +573,7 @@ describe('Activity Reports DB service', () => {
     it('ignores invalid report ids', async () => {
       const mockReport = {
         ...submittedReport,
+        calculatedStatus: REPORT_STATUSES.APPROVED,
       };
       const report = await ActivityReport.create(mockReport);
 

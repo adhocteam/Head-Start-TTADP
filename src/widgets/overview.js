@@ -16,7 +16,7 @@ export default async function overview(scopes, region) {
   const trainingWhere = '"ttaType" = \'{"training"}\'';
   const taWhere = '"ttaType" = \'{"technical-assistance"}\'';
   const ttaWhere = '"ttaType" = \'{"training", "technical-assistance"}\'';
-  const baseWhere = `WHERE "regionId" IN (${region}) AND "legacyId" IS NULL AND "status" != 'deleted'`;
+  const baseWhere = `WHERE "regionId" IN (${region}) AND "legacyId" IS NULL AND "submissionStatus" != 'deleted'`;
   // There could be a better way, but using sequelize.literal was the only way I could get correct
   // numbers for SUM
   // FIXME: see if there is a better way to get totals using SUM
