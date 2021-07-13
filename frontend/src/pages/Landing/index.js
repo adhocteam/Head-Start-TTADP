@@ -220,7 +220,6 @@ function Landing() {
   const [reportCheckboxes, setReportCheckboxes] = useState({});
   const [allReportsChecked, setAllReportsChecked] = useState(false);
   const [regionLabel, setRegionLabel] = useState('');
-
   const ariaLiveContext = useContext(AriaLiveContext);
 
   const makeReportCheckboxes = (reportsArr, checked) => (

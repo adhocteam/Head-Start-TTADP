@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { REPORT_STATUSES, DECIMAL_BASE, REPORTS_PER_PAGE } from '../constants';
 import orderReportsBy from '../lib/orderReportsBy';
 import { filtersToScopes } from '../scopes/activityReport';
+import { setReadRegions } from './accessValidation';
 
 import {
   ActivityReport,
@@ -408,10 +409,12 @@ export function activityReports(
  * submitted.
  * @param {*} userId
  */
-export function activityReportAlerts(userId, {
+export async function activityReportAlerts(userId, {
   sortBy = 'startDate', sortDir = 'desc', offset = 0, ...filters
 }) {
-  const scopes = filtersToScopes(filters);
+  const updatedFilters = await setReadRegions(filters, userId);
+
+  const scopes = filtersToScopes(updatedFilters);
   return ActivityReport.findAndCountAll({
     where: {
       [Op.and]: scopes,
