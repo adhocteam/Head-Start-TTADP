@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Plotly from 'plotly.js-basic-dist';
 import { Grid } from '@trussworks/react-uswds';
 import withWidgetData from './withWidgetData';
-import Container from '../components/Container';
 import DateTime from '../components/DateTime';
 import './TotalHrsAndGranteeGraph.css';
 
@@ -40,59 +39,99 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
             return;
         }
 
-        console.log("DATA!", data);
-
         const traces = [
             {
-                type: 'line',
+                type: 'scatter',
+                mode: 'lines+markers',
                 x: data[0].x,
                 y: data[0].y,
+                hovertemplate: '<extra></extra>',
                 hoverinfo: 'y',
+                /*
+                hoverlabel: {
+                    font: {color: '#ffffff', size: '16'},
+                    bgcolor: '#21272d',
+                },*/
                 line: {
                     dash: 'dot',
-                    width: 2,
+                    width: 3,
                     color: '#0166ab',
+                },
+                marker: {
+                    size: 7,
                 }
             }
             ,
             {
-                type: 'line',
+                type: 'scatter',
+                mode: 'lines+markers',
                 x: data[1].x,
                 y: data[1].y,
+                hovertemplate: '<extra></extra>',
                 hoverinfo: 'y',
+                /*
+                hoverlabel: {
+                    font: {color: '#ffffff', size: '16'},
+                    bgcolor: '#21272d',
+                },
+                */
                 line: {
                     dash: 'solid',
-                    width: 2,
+                    width: 3,
                     color: '#e29f4d',
+                },
+                marker: {
+                    size: 7,
                 }
             },
             {
-                type: 'line',
+                type: 'scatter',
+                mode: 'lines+markers',
                 x: data[2].x,
                 y: data[2].y,
+                hovertemplate: '<extra></extra>',
                 hoverinfo: 'y',
+                /*
+                hoverlabel: {
+                    font: {color: '#ffffff', size: '16'},
+                    bgcolor: '#21272d',
+                },
+                */
                 line: {
                     dash: 'solid',
-                    width: 2,
+                    width: 3,
                     color: '#264a64',
+                },
+                marker: {
+                    size: 7,
                 }
             },
             {
-                type: 'line',
+                type: 'scatter',
+                mode: 'lines+markers',
                 x: data[3].x,
                 y: data[3].y,
+                hovertemplate: '<extra></extra>',
                 hoverinfo: 'y',
+                /*
+                hoverlabel: {
+                    font: {color: '#ffffff', size: '16'},
+                    bgcolor: '#21272d',
+                },
+                */
                 line: {
                     dash: 'solid',
-                    width: 2,
+                    width: 3,
                     color: '#148439',
+                },
+                marker: {
+                    size: 7,
                 }
             },
 
 
         ];
 
-        // TODO: Write Logic.
         const width = 760;
 
         // Specify Chart Layout.
@@ -108,42 +147,42 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
             },
             margin: {
                 l: 50,
-                // t: 40,
                 t: 0,
                 pad: 20,
                 r: 0,
                 b: 35,
             },
             width,
-            hovermode: 'none',
             showlegend: false,
             xaxis: {
                 showgrid: false,
                 b: 0,
                 t: 0,
             },
+            hovermode: 'none',
         };
 
         // draw the plot
         Plotly.newPlot(lines.current, traces, layout, { displayModeBar: false, hovermode: 'none' });
 
-        /*
+        console.log('Data:', data);
+
         lines.current.on('plotly_hover', (e) => {
+            console.log('Event:',e);
             if (e.points && e.points[0]) {
-                const rect = document.querySelectorAll('.point')[e.points[0].pointIndex].getBoundingClientRect();
-                const x = rect.left;
+                const rect = lines.current.querySelectorAll(`.trace${e.points[0].fullData.uid} .point`)[e.points[0].pointIndex].getBoundingClientRect();
+                const x = rect.left - 12;
                 const y = rect.top;
                 setShowTooltip(true);
                 setTooltipX(x);
                 setTooltipY(y);
-                setTooltipText(counts[e.points[0].pointIndex]);
+                setTooltipText(e.points[0].data.y[0]);
             }
         });
 
         lines.current.on('plotly_unhover', () => {
             setShowTooltip(false);
         });
-        */
     }, [data]);
 
 
