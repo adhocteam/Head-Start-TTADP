@@ -50,12 +50,12 @@ const SiteNav = ({
   const [showActivityReportSurveyButton, setShowActivityReportSurveyButton] = useState(false);
 
   useEffect(() => {
-    if (location.pathname === '/activity-reports') {
+    if (location.pathname === '/activity-reports' && authenticated) {
       setShowActivityReportSurveyButton(true);
     } else {
       setShowActivityReportSurveyButton(false);
     }
-  }, [location.pathname]);
+  }, [location.pathname, authenticated]);
 
   const items = admin ? navItems.concat(adminNavItem) : navItems;
 
@@ -66,35 +66,35 @@ const SiteNav = ({
       </div>
       <div className="smart-hub-sitenav pin-y position-fixed z-0 padding-top-9 font-ui text-white smart-hub-bg-blue width-15 tablet:width-card desktop:width-card-lg no-print">
         {authenticated && (
-        <>
-          <div className="width-full smart-hub-sitenav-separator--after">
-            <div role="complementary" className="padding-2 smart-hub-sitenav-word-wrap--break">
-              <p className="text-bold margin-top-5">{ user.name }</p>
-              <p className="font-sans-3xs margin-bottom-5">{ user.email }</p>
+          <>
+            <div className="width-full smart-hub-sitenav-separator--after">
+              <div role="complementary" className="padding-2 smart-hub-sitenav-word-wrap--break">
+                <p className="text-bold margin-top-5">{user.name}</p>
+                <p className="font-sans-3xs margin-bottom-5">{user.email}</p>
+              </div>
             </div>
-          </div>
-          <nav>
-            <div className="width-full margin-bottom-2 margin-top-6">
-              <ul className="add-list-reset">
-                <li>
-                  <NavLink
-                    to="/activity-reports"
-                  >
-                    <span className="padding-right-105">
-                      <FontAwesomeIcon color="white" icon={faChartBar} />
-                    </span>
-                    Activity Reports
-                  </NavLink>
-                </li>
-              </ul>
-            </div>
-            <div className="width-full position-absolute bottom-0 padding-bottom-5 smart-hub-sitenav-separator--before opacity-70">
-              <ul className="add-list-reset padding-top-5 text-base-lightest">
-                {items.map((item, i) => (<li key={`smart-hub-nav__item-${i}`}>{item}</li>))}
-              </ul>
-            </div>
-          </nav>
-        </>
+            <nav>
+              <div className="width-full margin-bottom-2 margin-top-6">
+                <ul className="add-list-reset">
+                  <li>
+                    <NavLink
+                      to="/activity-reports"
+                    >
+                      <span className="padding-right-105">
+                        <FontAwesomeIcon color="white" icon={faChartBar} />
+                      </span>
+                      Activity Reports
+                    </NavLink>
+                  </li>
+                </ul>
+              </div>
+              <div className="width-full position-absolute bottom-0 padding-bottom-5 smart-hub-sitenav-separator--before opacity-70">
+                <ul className="add-list-reset padding-top-5 text-base-lightest">
+                  {items.map((item, i) => (<li key={`smart-hub-nav__item-${i}`}>{item}</li>))}
+                </ul>
+              </div>
+            </nav>
+          </>
         )}
       </div>
     </div>
@@ -113,11 +113,10 @@ SiteNav.propTypes = {
 SiteNav.defaultProps = {
   admin: false,
   authenticated: false,
-  logout: () => {},
+  logout: () => { },
   user: {
     name: '',
     email: '',
   },
 };
-
 export default withRouter(SiteNav);
