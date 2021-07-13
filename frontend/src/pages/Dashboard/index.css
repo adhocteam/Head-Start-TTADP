@@ -2,6 +2,14 @@
   max-width: 100%;
 }
 
+.ttahub--dashboard-title {
+  font-size: 40px;
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  margin: 0 30px 0 0;
+  white-space: inherit;
+}
+
 .ttahub-coming-soon {
   height: calc( 100% - 1.5rem);
 }

@@ -7,17 +7,6 @@ import DateTime from '../components/DateTime';
 import './ReasonList.css';
 import 'uswds/dist/css/uswds.css';
 
-// import { DATE_FMT } from '../Constants';
-
-/*
-  Widgets only have to worry about presenting data. Filtering of the data happens at a
-  higher level, which is why this component is wrapped with `withWidgetData`. `withWidgetData`
-  takes care of fetching data, flagging the component as loading and handling errors while
-  fetching data. Widgets are only rendered after data has been successfully loaded from the
-  API. Note the `example` passed as a 2nd parameter to `withWidgetData` must match the widget
-  id in the backend `src/widgets/index.js` file or you will get 404s.
-*/
-
 function ReasonList({ data, dateTime }) {
   const renderReasonList = () => {
     if (data && Array.isArray(data) && data.length > 0) {
@@ -40,7 +29,7 @@ function ReasonList({ data, dateTime }) {
       <div className="usa-table-container--scrollable">
         <Table className="smart-hub--reason-list-table" fullWidth>
           <caption className="smart-hub--reason-list-caption">
-            <div className="display-flex">
+            <div className="display-flex flex-wrap">
               <h2 className="smart-hub--reason-list-heading margin-0">Reasons in Activity Reports</h2>
               <DateTime classNames="display-flex flex-align-center padding-x-1 margin-left-3" timestamp={dateTime.timestamp} label={dateTime.label} />
             </div>

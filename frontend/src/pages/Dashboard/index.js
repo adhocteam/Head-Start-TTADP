@@ -154,14 +154,23 @@ function Dashboard({ user }) {
 
       <>
         <Helmet titleTemplate="%s - Dashboard - TTA Smart Hub" defaultTitle="TTA Smart Hub - Dashboard" />
-        <div className="ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap">
-          <RegionDisplay
-            regions={regions}
-            appliedRegion={appliedRegion}
-            onApplyRegion={onApplyRegion}
-            hasCentralOffice={hasCentralOffice}
-          />
-          <div className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center">
+        <Grid className="ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap margin-bottom-2">
+          <Grid col="auto" className="flex-wrap">
+            <h1 className="ttahub--dashboard-title">
+              Region
+              {' '}
+              {appliedRegion === 14 ? 'All' : appliedRegion }
+              {' '}
+              TTA Activity Dashboard
+            </h1>
+          </Grid>
+          <Grid className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center flex-wrap">
+            <RegionDisplay
+              regions={regions}
+              appliedRegion={appliedRegion}
+              onApplyRegion={onApplyRegion}
+              hasCentralOffice={hasCentralOffice}
+            />
             <DateRangeSelect
               selectedDateRangeOption={selectedDateRangeOption}
               onApply={onApplyDateRange}
@@ -173,8 +182,8 @@ function Dashboard({ user }) {
               gainFocus={gainFocus}
               dateTime={dateTime}
             />
-          </div>
-        </div>
+          </Grid>
+        </Grid>
         <GridContainer className="margin-0 padding-0">
           <DashboardOverview
             filters={filters}
@@ -184,7 +193,7 @@ function Dashboard({ user }) {
             skipLoading
           />
           <Grid row gap={2}>
-            <Grid col={5}>
+            <Grid desktop={{ col: 5 }} tabletLg={{ col: 12 }}>
               <ReasonList
                 filters={filters}
                 region={appliedRegion}
@@ -194,7 +203,7 @@ function Dashboard({ user }) {
                 dateTime={dateTime}
               />
             </Grid>
-            <Grid col={7}>
+            <Grid desktop={{ col: 7 }} tabletLg={{ col: 12 }}>
               <Container className="ttahub-coming-soon shadow-2 display-flex" padding={3}>
                 <h2 className="margin-0">
                   Total Hours of TTA Graph

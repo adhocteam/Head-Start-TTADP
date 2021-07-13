@@ -1,9 +1,10 @@
-.smart-hub--dashboard-overview-field {
-    gap: 1em;
-}
-
-.smart-hub--dashboard-overview-data  {
-    gap: 1em;
+@media( min-width: 64em ){
+    .smart-hub--dashboard-overview  {      
+        gap: 1em;
+    }
+    .smart-hub--dashboard-overview-field {
+        margin: 0;
+    }
 }
 
 .smart-hub--dashboard-overview-field-icon-background {
