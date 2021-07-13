@@ -12,7 +12,7 @@ import ArGraph from '../../widgets/ArGraph';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 import ReasonList from '../../widgets/ReasonList';
-import TotalHrsAndGranteeGraph from '../../widgets/TotalHrsAndGranteeGraph';
+import TotalHrsAndGrantee from '../../widgets/TotalHrsAndGranteeGraph';
 import './index.css';
 
 function Dashboard({ user }) {
@@ -120,7 +120,7 @@ function Dashboard({ user }) {
 
     updateFilters(filtersToApply);
   },
-    [appliedRegion, dateRange, user]);
+  [appliedRegion, dateRange, user]);
 
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
@@ -197,14 +197,14 @@ function Dashboard({ user }) {
             </Grid>
             <Grid col={7}>
               <Container className="ttahub-coming-soon shadow-2 display-flex" padding={3}>
-                <TotalHrsAndGranteeGraph
-                       filters={filters}
-                       region={appliedRegion}
-                       allRegions={regions}
-                       dateRange={dateRange}
-                       skipLoading
-                       dateTime={dateTime}
-                        />
+                <TotalHrsAndGrantee
+                  filters={filters}
+                  region={appliedRegion}
+                  allRegions={regions}
+                  dateRange={dateRange}
+                  skipLoading
+                  dateTime={dateTime}
+                />
               </Container>
             </Grid>
           </Grid>
