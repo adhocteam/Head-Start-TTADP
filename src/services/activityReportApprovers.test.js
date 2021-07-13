@@ -50,13 +50,13 @@ const submittedReport = {
 
 describe('Activity Reports Approvers', () => {
   beforeAll(async () => {
-    await User.create(mockUser);
-    await User.create(mockManager);
-    await User.create(secondMockManager);
+    await User.bulkCreate([mockUser, mockManager, secondMockManager]);
   });
 
   afterAll(async () => {
-    await User.destroy({ truncate: true, cascade: true });
+    await User.destroy({ where: { id: [mockUser.id, mockManager.id, secondMockManager.id] } });
+    await ActivityReport.destroy({ truncate: true, cascade: true });
+    await ActivityReportApprover.destroy({ truncate: true });
     await db.sequelize.close();
   });
 

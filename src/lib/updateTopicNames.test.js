@@ -17,7 +17,8 @@ const mockUser = {
 
 const reportObject = {
   activityRecipientType: 'grantee',
-  status: REPORT_STATUSES.APPROVED,
+  calculatedStatus: REPORT_STATUSES.APPROVED,
+  submissionStatus: REPORT_STATUSES.SUBMITTED,
   userId: mockUser.id,
   lastUpdatedById: mockUser.id,
   ECLKCResourcesUsed: ['test'],
@@ -25,7 +26,6 @@ const reportObject = {
     { activityRecipientId: GRANTEE_ID },
     { activityRecipientId: GRANTEE_ID_TWO },
   ],
-  approvingManagerId: 1,
   numberOfParticipants: 11,
   deliveryMethod: 'method',
   duration: 1,
@@ -42,7 +42,7 @@ const reportObject = {
 
 describe('update topic names job', () => {
   beforeAll(async () => {
-    await User.findOrCreate({ where: mockUser });
+    await User.create(mockUser);
     await Grantee.findOrCreate({ where: { name: 'grantee', id: GRANTEE_ID } });
 
     await Grant.findOrCreate({
@@ -58,20 +58,16 @@ describe('update topic names job', () => {
   });
 
   afterAll(async () => {
-    const reports = await ActivityReport
-      .findAll({ where: { userId: [mockUser.id] } });
-    const ids = reports.map((report) => report.id);
-    await NextStep.destroy({ where: { activityReportId: ids } });
-    await ActivityRecipient.destroy({ where: { activityReportId: ids } });
-    await ActivityReport.destroy({ where: { id: ids } });
     await User.destroy({ where: { id: [mockUser.id] } });
-    await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
     await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
-    await db.sequelize.close();
-  });
+    await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+    // Table data is not used outside this test (e.g. not added by seeders),
+    // can simply destroy all records
+    await NextStep.destroy({ truncate: true });
+    await ActivityRecipient.destroy({ truncate: true });
+    await ActivityReport.destroy({ truncate: true, cascade: true });
+    await db.sequelize.close();
   });
 
   it('updates the contents of the database', async () => {

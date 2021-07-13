@@ -60,12 +60,10 @@ module.exports = (sequelize, DataTypes) => {
     activityReportId: {
       allowNull: false,
       type: DataTypes.INTEGER,
-      unique: 'reportApprover',
     },
     userId: {
       allowNull: false,
       type: DataTypes.INTEGER,
-      unique: 'reportApprover',
     },
     status: {
       allowNull: true,
@@ -126,6 +124,10 @@ module.exports = (sequelize, DataTypes) => {
         // End
       },
     },
+    indexes: [{
+      unique: true,
+      fields: ['activityReportId', 'userId'],
+    }],
     sequelize,
     modelName: 'ActivityReportApprover',
   });

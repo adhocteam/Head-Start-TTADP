@@ -95,6 +95,7 @@ describe('filtersToScopes', () => {
           mockUser.id, mockManager.id, includedUser1.id, includedUser2.id, excludedUser.id],
       },
     });
+    await ActivityReport.destroy({ truncate: true, cascade: true });
     await db.sequelize.close();
   });
 
@@ -652,18 +653,6 @@ describe('filtersToScopes', () => {
       ];
     });
 
-    afterAll(async () => {
-      await ActivityReport.destroy({
-        where: {
-          id: [
-            includedReportMultApprover.id,
-            excludedReportMultApprover.id,
-            globallyExcluded.id,
-          ],
-        },
-      });
-    });
-
     it('includes statuses with a partial match', async () => {
       const filters = { 'calculatedStatus.in': ['approved'] };
       const scope = filtersToScopes(filters);
@@ -699,7 +688,6 @@ describe('filtersToScopes', () => {
       expect(deleted.id).toBeDefined();
       const endARCount = await ActivityReport.count();
       expect(endARCount).toEqual(beginningARCount);
-      await deleted.destroy();
     });
   });
 });

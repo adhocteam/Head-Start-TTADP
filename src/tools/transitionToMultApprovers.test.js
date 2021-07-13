@@ -78,7 +78,6 @@ describe('Transition to multiple approvers', () => {
     await ActivityReport.bulkCreate([
       deletedReport, draftReport, submittedReport, needsActionReport, approvedReport,
     ]);
-
     await transitionToMultApprovers();
   });
 
