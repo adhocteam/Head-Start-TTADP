@@ -28,7 +28,7 @@ const renderRegionalSelect = () => {
 describe('Regional Select', () => {
   test('displays correct region in input', async () => {
     renderRegionalSelect();
-    const input = await screen.findByText(/region 1/i);
+    const input = await screen.findByText(/all regions/i);
     expect(input).toBeVisible();
   });
 
@@ -36,7 +36,7 @@ describe('Regional Select', () => {
     renderRegionalSelect();
     let input = await screen.findByText(/all regions/i);
     expect(input).toBeVisible();
-    await selectEvent.select(screen.getByText(/region 1/i), [/region 2/i]);
+    await selectEvent.select(input, [/region 2/i]);
     const applyButton = await screen.findByText(/apply/i);
     fireEvent.click(applyButton);
     input = await screen.findByText(/region 2/i);
