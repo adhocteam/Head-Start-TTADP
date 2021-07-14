@@ -7,7 +7,8 @@ import check from '../images/check.svg';
 
 function ButtonSelect(props) {
   const {
-    options, onApply, labelId, initialValue, applied, labelText,
+    // eslint-disable-next-line no-unused-vars
+    options, onApply, labelId, initialValue, applied, labelText, isDate, customDateOption,
   } = props;
 
   const [selectedItem, setSelectedItem] = useState();
@@ -96,6 +97,13 @@ ButtonSelect.propTypes = {
     label: PropTypes.string,
   }).isRequired,
   applied: PropTypes.number.isRequired,
+  isDate: PropTypes.bool,
+  customDateOption: PropTypes.number,
+};
+
+ButtonSelect.defaultProps = {
+  isDate: false,
+  customDateOption: 0,
 };
 
 export default ButtonSelect;
