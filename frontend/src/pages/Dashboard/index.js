@@ -4,11 +4,11 @@ import { Helmet } from 'react-helmet';
 import { v4 as uuidv4 } from 'uuid';
 import { Grid, GridContainer } from '@trussworks/react-uswds';
 import RegionDisplay from './components/RegionDisplay';
-import DateSelect from './components/DateSelect';
 import Container from '../../components/Container';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
 import ArGraph from '../../widgets/ArGraph';
+import DateTime from '../../components/DateTime';
 import { getUserRegions } from '../../permissions';
 import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
 import ReasonList from '../../widgets/ReasonList';
@@ -175,14 +175,13 @@ function Dashboard({ user }) {
               selectedDateRangeOption={selectedDateRangeOption}
               onApply={onApplyDateRange}
               applied={selectedDateRangeOption}
-            />
-            <DateSelect
+              customDateRangeOption={CUSTOM_DATE_RANGE}
               dateRange={dateRange}
               updateDateRange={updateDateRange}
-              selectedDateRangeOption={selectedDateRangeOption}
               gainFocus={gainFocus}
               dateTime={dateTime}
             />
+            <DateTime classNames="display-flex flex-align-center" timestamp={dateTime.timestamp} label={dateTime.label} />
           </Grid>
         </Grid>
         <GridContainer className="margin-0 padding-0">

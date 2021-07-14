@@ -11,7 +11,7 @@
     margin-bottom: 8px;
     margin-top: 8px;
     position: absolute;
-    width: 200px;
+    min-width: 200px;
     z-index: 1;
     box-sizing: border-box;
 }
@@ -37,4 +37,7 @@
     float: right;
     margin-top: -9px;
     width: 32px;
+}
+.smart-hub--button-select-menu .ttahub-date-range-picker {
+    margin: 0.5em;
 }
