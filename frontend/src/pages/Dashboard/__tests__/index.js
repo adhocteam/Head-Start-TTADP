@@ -44,9 +44,6 @@ describe('Dashboard page', () => {
     const custom = screen.getByRole('button', { name: /select to view data from custom date range\. select apply filters button to apply selection/i });
     fireEvent.click(custom);
 
-    const apply = screen.getByRole('button', { name: 'Apply filters' });
-    fireEvent.click(apply);
-
     expect(screen.getByRole('textbox', { name: /start date/i })).toBeInTheDocument();
   });
 

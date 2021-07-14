@@ -5,13 +5,10 @@ import {
 } from '@testing-library/react';
 import { Router } from 'react-router';
 import { createMemoryHistory } from 'history';
-
-import selectEvent from 'react-select-event';
 import RegionalSelect from '../RegionalSelect';
 
-const renderRegionalSelect = () => {
+const renderRegionalSelect = (onApplyRegion) => {
   const history = createMemoryHistory();
-  const onApplyRegion = jest.fn();
 
   render(
     <Router history={history}>
@@ -32,13 +29,20 @@ describe('Regional Select', () => {
   });
 
   test('changes input value on apply', async () => {
-    renderRegionalSelect();
-    let input = await screen.findByText(/region 1/i);
+    const onApplyRegion = jest.fn();
+    renderRegionalSelect(onApplyRegion);
+    const input = await screen.findByText(/region 1/i);
     expect(input).toBeVisible();
-    await selectEvent.select(screen.getByText(/region 1/i), [/region 2/i]);
-    const applyButton = await screen.findByText(/apply/i);
+
+    fireEvent.click(input);
+
+    fireEvent.click(screen.getByRole('button', {
+      name: /select to view data from region 2\. select apply filters button to apply selection/i,
+    }));
+
+    const applyButton = screen.getByRole('button', { name: 'Apply filters' });
     fireEvent.click(applyButton);
-    input = await screen.findByText(/region 2/i);
-    expect(input).toBeVisible();
+
+    expect(onApplyRegion).toHaveBeenCalled();
   });
 });

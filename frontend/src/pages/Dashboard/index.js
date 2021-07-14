@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { v4 as uuidv4 } from 'uuid';
 import { Grid, GridContainer } from '@trussworks/react-uswds';
-import RegionDisplay from './components/RegionDisplay';
 import Container from '../../components/Container';
+import RegionalSelect from '../../components/RegionalSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
 import ArGraph from '../../widgets/ArGraph';
@@ -165,12 +165,15 @@ function Dashboard({ user }) {
             </h1>
           </Grid>
           <Grid className="ttahub-dashboard--filters display-flex flex-wrap flex-align-center tablet:margin-top-2">
-            <RegionDisplay
-              regions={regions}
-              appliedRegion={appliedRegion}
-              onApplyRegion={onApplyRegion}
-              hasCentralOffice={hasCentralOffice}
-            />
+            {regions.length > 1
+                && (
+                <RegionalSelect
+                  regions={regions}
+                  onApply={onApplyRegion}
+                  hasCentralOffice={hasCentralOffice}
+                  appliedRegion={appliedRegion}
+                />
+                )}
             <DateRangeSelect
               selectedDateRangeOption={selectedDateRangeOption}
               onApply={onApplyDateRange}
