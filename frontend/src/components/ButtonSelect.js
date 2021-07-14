@@ -42,7 +42,6 @@ function ButtonSelect(props) {
     onApply(selectedItem);
 
     if (hasDateRange && selectedItem && selectedItem.value === customDateRangeOption) {
-      console.log(range);
       updateDateRange(range);
     }
 
