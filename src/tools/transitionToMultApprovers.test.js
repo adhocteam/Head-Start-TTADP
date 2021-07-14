@@ -7,7 +7,7 @@ import db, {
 import { REPORT_STATUSES } from '../constants';
 
 const author = {
-  id: 1000,
+  id: 4400,
   homeRegionId: 1,
   name: 'user1000',
   hsesUsername: 'user1000',
@@ -15,7 +15,7 @@ const author = {
 };
 
 const manager = {
-  id: 2000,
+  id: 5500,
   homeRegionId: 2,
   name: 'user2000',
   hsesUsername: 'user2000',
@@ -42,22 +42,26 @@ const report = {
 
 const deletedReport = {
   ...report,
+  id: 10001,
   submissionStatus: REPORT_STATUSES.DELETED,
 };
 
 const draftReport = {
   ...report,
+  id: 1002,
   submissionStatus: REPORT_STATUSES.DRAFT,
 };
 
 const submittedReport = {
   ...report,
+  id: 1003,
   oldApprovingManagerId: manager.id,
   submissionStatus: REPORT_STATUSES.SUBMITTED,
 };
 
 const needsActionReport = {
   ...report,
+  id: 1004,
   oldApprovingManagerId: manager.id,
   oldManagerNotes: 'make changes',
   submissionStatus: REPORT_STATUSES.NEEDS_ACTION,
@@ -65,6 +69,7 @@ const needsActionReport = {
 
 const approvedReport = {
   ...report,
+  id: 1005,
   oldApprovingManagerId: manager.id,
   oldManagerNotes: 'great work',
   submissionStatus: REPORT_STATUSES.APPROVED,
@@ -82,7 +87,12 @@ describe('Transition to multiple approvers', () => {
   });
 
   afterAll(async () => {
-    await ActivityReport.destroy({ truncate: true, cascade: true });
+    const ids = [
+      deletedReport.id, draftReport.id, submittedReport.id,
+      needsActionReport.id, approvedReport.id,
+    ];
+    await ActivityReportApprover.destroy({ where: { activityReportId: ids } });
+    await ActivityReport.destroy({ where: { id: ids } });
     await User.destroy({ where: { id: [author.id, manager.id] } });
     await db.sequelize.close();
   });

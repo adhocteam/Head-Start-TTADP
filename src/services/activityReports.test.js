@@ -1,4 +1,4 @@
-import db, {
+import {
   ActivityReport, ActivityRecipient, User, Grantee, NonGrantee, Grant, NextStep, Region,
 } from '../models';
 import {
@@ -86,18 +86,17 @@ describe('Activity Reports DB service', () => {
   });
 
   afterAll(async () => {
-    await User.destroy({ where: { id: [mockUser.id, mockUserTwo.id, mockUserThree.id] } });
-    await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_SORTING] } });
+    const reports = await ActivityReport
+      .findAll({ where: { userId: [mockUser.id, mockUserTwo.id, mockUserThree.id] } });
+    const ids = reports.map((report) => report.id);
+    await NextStep.destroy({ where: { activityReportId: ids } });
+    await ActivityRecipient.destroy({ where: { activityReportId: ids } });
+    await ActivityReport.destroy({ where: { id: ids } });
+    await User.destroy({ where: { id: [mockUser.id, mockUserTwo.id] } });
+    await NonGrantee.destroy({ where: { id: GRANTEE_ID } });
     await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_SORTING] } });
-
-    // Table data is not used outside this test (e.g. not added by seeders),
-    // can simply destroy all records
-    await NextStep.destroy({ truncate: true });
-    await ActivityRecipient.destroy({ truncate: true });
-    await ActivityReport.destroy({ truncate: true });
-    await NonGrantee.destroy({ truncate: true });
-    await Region.destroy({ truncate: true });
-    await db.sequelize.close();
+    await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_SORTING] } });
+    await Region.destroy({ where: { id: 17 } });
   });
 
   afterEach(() => {
@@ -304,7 +303,6 @@ describe('Activity Reports DB service', () => {
     let firstGrant;
 
     beforeAll(async () => {
-      await ActivityReport.destroy({ truncate: true, cascade: true });
       const topicsOne = ['topic d', 'topic c'];
       const topicsTwo = ['topic b', 'topic a'];
       const firstGrantee = await Grantee.create({ id: GRANTEE_ID_SORTING, name: 'aaaa' });
@@ -503,7 +501,6 @@ describe('Activity Reports DB service', () => {
     let report;
 
     beforeAll(async () => {
-      await ActivityReport.destroy({ truncate: true, cascade: true });
       const mockSubmittedReport = {
         ...submittedReport,
         regionId: 14,

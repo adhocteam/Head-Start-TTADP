@@ -8,7 +8,7 @@ const GRANTEE_ID = 30;
 const GRANTEE_ID_TWO = 31;
 
 const mockUser = {
-  id: 1000,
+  id: 6000,
   homeRegionId: 1,
   name: 'chud',
   hsesUsername: 'chud',
@@ -58,15 +58,15 @@ describe('update topic names job', () => {
   });
 
   afterAll(async () => {
+    const reports = await ActivityReport
+      .findAll({ where: { userId: [mockUser.id] } });
+    const ids = reports.map((report) => report.id);
+    await NextStep.destroy({ where: { activityReportId: ids } });
+    await ActivityRecipient.destroy({ where: { activityReportId: ids } });
+    await ActivityReport.destroy({ where: { id: ids } });
     await User.destroy({ where: { id: [mockUser.id] } });
-    await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
     await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
-
-    // Table data is not used outside this test (e.g. not added by seeders),
-    // can simply destroy all records
-    await NextStep.destroy({ truncate: true });
-    await ActivityRecipient.destroy({ truncate: true });
-    await ActivityReport.destroy({ truncate: true, cascade: true });
+    await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
     await db.sequelize.close();
   });
 

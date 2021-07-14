@@ -10,7 +10,7 @@ const GRANTEE_ID = 30;
 const GRANTEE_ID_TWO = 31;
 
 const mockUser = {
-  id: 1000,
+  id: 7000,
   homeRegionId: 1,
   name: 'user1000',
   hsesUsername: 'user1000',
@@ -74,17 +74,17 @@ describe('Overview widget', () => {
   });
 
   afterAll(async () => {
+    const reports = await ActivityReport.findAll({ where: { userId: [mockUser.id] } });
+    const ids = reports.map((report) => report.id);
+    await NextStep.destroy({ where: { activityReportId: ids } });
+    await ActivityRecipient.destroy({ where: { activityReportId: ids } });
+    await ActivityReport.destroy({ where: { id: ids } });
     await User.destroy({ where: { id: [mockUser.id] } });
-    await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
+    await NonGrantee.destroy({ where: { id: GRANTEE_ID } });
     await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
-
-    // Table data is not used outside this test (e.g. not added by seeders),
-    // can simply destroy all records
-    await NextStep.destroy({ truncate: true });
-    await ActivityRecipient.destroy({ truncate: true });
-    await ActivityReport.destroy({ truncate: true });
-    await NonGrantee.destroy({ truncate: true });
-    await Region.destroy({ truncate: true });
+    await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
+    await Region.destroy({ where: { id: 17 } });
+    await Region.destroy({ where: { id: 18 } });
     await db.sequelize.close();
   });
 
