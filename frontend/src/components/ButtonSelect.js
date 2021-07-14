@@ -7,7 +7,6 @@ import check from '../images/check.svg';
 
 function ButtonSelect(props) {
   const {
-    // eslint-disable-next-line no-unused-vars
     options,
     onApply,
     labelId,
@@ -26,18 +25,31 @@ function ButtonSelect(props) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [range, setRange] = useState();
 
+  /**
+   * just so we always have something selected
+   * */
   useEffect(() => {
     if (!selectedItem && !applied) {
       setSelectedItem(initialValue);
     }
   }, [applied, initialValue, selectedItem]);
 
+  /**
+   * we store the date range in here so that we can apply it up the chain
+   * when the calendar control is updated
+   */
   useEffect(() => {
     if (!range) {
       setRange(dateRange);
     }
   }, [range, dateRange]);
 
+  /**
+   * apply the selected item and close the menu
+   *
+   * if we have a date picker and it's a custom range, also apply the
+   * new date range
+   */
   const onApplyClick = () => {
     onApply(selectedItem);
 
@@ -48,16 +60,31 @@ function ButtonSelect(props) {
     setMenuIsOpen(false);
   };
 
+  /**
+   * Update the local date range when the calendar control is updated
+   * @param {string} query
+   * @param {string} date
+   */
   const onUpdateDateRange = (query, date) => {
     setRange(date);
   };
 
+  /**
+   * Close the menu on escape key
+   * @param {Event} e
+   */
   const onKeyDown = (e) => {
     if (e.keyCode === 27) {
       setMenuIsOpen(false);
     }
   };
 
+  /**
+   * Close the menu on blur, with some extenuating circumstance
+   *
+   * @param {Event} e
+   * @returns
+   */
   const onBlur = (e) => {
     // if we're within the same menu, do nothing
     if (e.relatedTarget && e.relatedTarget.matches('.smart-hub--button-select-menu *')) {
@@ -65,7 +92,7 @@ function ButtonSelect(props) {
     }
 
     // if we've a date range, also do nothing on blur when we click on those
-    if (e.target.matches('.CalendarDay, .DayPickerNavigation_button')) {
+    if (e.target.matches('.DateRangePicker_picker *')) {
       return;
     }
 
