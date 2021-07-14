@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RegionalSelect from '../../Landing/RegionalSelect';
+import RegionalSelect from '../../../components/RegionalSelect';
 
 export default function RegionDisplay({
-  regions, onApplyRegion, hasCentralOffice,
+  regions, onApplyRegion, hasCentralOffice, appliedRegion,
 }) {
   return (
     <>
@@ -13,6 +13,7 @@ export default function RegionDisplay({
           regions={regions}
           onApply={onApplyRegion}
           hasCentralOffice={hasCentralOffice}
+          appliedRegion={appliedRegion}
         />
         )}
     </>
@@ -23,6 +24,7 @@ RegionDisplay.propTypes = {
   regions: PropTypes.arrayOf(PropTypes.number),
   onApplyRegion: PropTypes.func,
   hasCentralOffice: PropTypes.bool,
+  appliedRegion: PropTypes.number.isRequired,
 };
 
 RegionDisplay.defaultProps = {

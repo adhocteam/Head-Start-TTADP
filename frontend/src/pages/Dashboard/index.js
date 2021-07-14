@@ -164,7 +164,7 @@ function Dashboard({ user }) {
               TTA Activity Dashboard
             </h1>
           </Grid>
-          <Grid className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center flex-wrap tablet:margin-top-2">
+          <Grid className="ttahub-dashboard--filters display-flex flex-wrap flex-align-center tablet:margin-top-2">
             <RegionDisplay
               regions={regions}
               appliedRegion={appliedRegion}
@@ -174,6 +174,7 @@ function Dashboard({ user }) {
             <DateRangeSelect
               selectedDateRangeOption={selectedDateRangeOption}
               onApply={onApplyDateRange}
+              applied={selectedDateRangeOption}
             />
             <DateSelect
               dateRange={dateRange}

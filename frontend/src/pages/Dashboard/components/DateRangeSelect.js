@@ -9,7 +9,7 @@ import ButtonSelect from '../../../components/ButtonSelect';
 export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` }));
 
 export default function DateRangeSelect(props) {
-  const { onApply } = props;
+  const { onApply, selectedDateRangeOption } = props;
 
   const initialValue = {
     label: 'Last 30 Days',
@@ -23,10 +23,12 @@ export default function DateRangeSelect(props) {
       labelId="dateRangeOptionsLabel"
       labelText="Date range options"
       options={DATE_OPTIONS}
+      applied={selectedDateRangeOption}
     />
   );
 }
 
 DateRangeSelect.propTypes = {
   onApply: PropTypes.func.isRequired,
+  selectedDateRangeOption: PropTypes.number.isRequired,
 };

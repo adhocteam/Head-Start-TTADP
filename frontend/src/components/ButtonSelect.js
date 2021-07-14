@@ -7,17 +7,17 @@ import check from '../images/check.svg';
 
 function ButtonSelect(props) {
   const {
-    options, onApply, labelId, initialValue, labelText,
+    options, onApply, labelId, initialValue, applied, labelText,
   } = props;
 
   const [selectedItem, setSelectedItem] = useState();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!selectedItem) {
+    if (!selectedItem && !applied) {
       setSelectedItem(initialValue);
     }
-  }, [initialValue, selectedItem]);
+  }, [applied, initialValue, selectedItem]);
 
   const onApplyClick = () => {
     onApply(selectedItem);
@@ -70,7 +70,7 @@ function ButtonSelect(props) {
                 }}
               >
                 {option.label}
-                { option.value === selectedItem.value ? <img className="smart-hub--button-select-checkmark" src={check} alt="" aria-hidden="true" /> : null }
+                { option.value === applied ? <img className="smart-hub--button-select-checkmark" src={check} alt="" aria-hidden="true" /> : null }
               </button>
             ))}
             <button type="button" onKeyDown={onKeyDown} className="usa-button smart-hub--button margin-2" onClick={onApplyClick} aria-label="Apply filters">Apply</button>
@@ -95,6 +95,7 @@ ButtonSelect.propTypes = {
     value: PropTypes.number,
     label: PropTypes.string,
   }).isRequired,
+  applied: PropTypes.number.isRequired,
 };
 
 export default ButtonSelect;

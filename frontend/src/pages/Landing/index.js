@@ -28,7 +28,7 @@ import { REPORTS_PER_PAGE, ALERTS_PER_PAGE } from '../../Constants';
 import Filter, { filtersToQueryString } from './Filter';
 import ReportMenu from './ReportMenu';
 import Overview from '../../widgets/Overview';
-import RegionalSelect from './RegionalSelect';
+import RegionalSelect from '../../components/RegionalSelect';
 import './TouchPoints.css';
 
 function renderReports(reports, history, reportCheckboxes, handleReportSelect) {
@@ -498,6 +498,7 @@ function Landing() {
                 <RegionalSelect
                   regions={allRegionsUserHasPermissionTo(user)}
                   onApply={onApplyRegion}
+                  appliedRegion={appliedRegion}
                 />
                 )}
               </Grid>
