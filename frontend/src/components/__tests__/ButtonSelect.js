@@ -8,7 +8,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import ButtonSelect from '../ButtonSelect';
 
-const renderButtonSelect = () => {
+const renderButtonSelect = (onApply) => {
   const options = [
     {
       label: 'Test',
@@ -22,8 +22,6 @@ const renderButtonSelect = () => {
 
   const labelId = 'Test-Button-Select';
   const labelText = 'Give me a test, guv';
-  const onApply = jest.fn();
-
   const initialValue = options[0];
   const applied = options[0].value;
 
@@ -46,8 +44,51 @@ const renderButtonSelect = () => {
 };
 
 describe('The Button Select component', () => {
+  it('calls update date range', () => {
+    const onApply = jest.fn();
+    renderButtonSelect(onApply);
+
+    const openMenu = screen.getByRole('button', {
+      name: /open menu/i,
+    });
+
+    fireEvent.click(openMenu);
+
+    const custom = screen.getByRole('button', {
+      name: /select to view data from custom\. select apply filters button to apply selection/i,
+    });
+
+    fireEvent.click(custom);
+
+    const calendar = screen.getByRole('button', {
+      name: /open calendar/i,
+    });
+
+    fireEvent.click(calendar);
+
+    const [day1, day2] = document.querySelectorAll('.DateRangePicker_picker .CalendarDay');
+
+    fireEvent.click(day1);
+    fireEvent.click(day2);
+
+    const startDate = screen.getByRole('textbox', {
+      name: /start date/i,
+    });
+
+    expect(startDate).toBeInTheDocument();
+
+    const apply = screen.getByRole('button', {
+      name: 'Apply filters',
+    });
+
+    fireEvent.click(apply);
+
+    expect(onApply).toHaveBeenCalled();
+  });
+
   it('handles blur', () => {
-    renderButtonSelect();
+    const onApply = jest.fn();
+    renderButtonSelect(onApply);
 
     const openMenu = screen.getByRole('button', {
       name: /open menu/i,
@@ -65,8 +106,6 @@ describe('The Button Select component', () => {
       name: /start date/i,
     });
 
-    const blanko = screen.getByRole('button', { name: /blanko/i });
-
     // is this the best way to fire on blur? yikes
     userEvent.tab();
     userEvent.tab();
@@ -77,6 +116,7 @@ describe('The Button Select component', () => {
     userEvent.tab();
     userEvent.tab();
 
+    const blanko = screen.getByRole('button', { name: /blanko/i });
     expect(blanko).toHaveFocus();
 
     expect(startDate).not.toBeInTheDocument();
