@@ -4,7 +4,7 @@ import db, {
 import { filtersToScopes } from '../scopes/activityReport';
 import { REPORT_STATUSES } from '../constants';
 import { createOrUpdate } from '../services/activityReports';
-import arGraph, { topics } from './arGraph';
+import topicFrequencyGraph, { topics } from './topicFrequencyGraph';
 
 const BASE_REASONS = topics.map((topic) => ({
   reason: topic,
@@ -113,7 +113,7 @@ describe('AR Graph widget', () => {
   it('returns data in the correct format', async () => {
     const query = { 'region.in': [17], 'startDate.win': '2000/01/01-2000/01/01' };
     const scopes = filtersToScopes(query);
-    const data = await arGraph(scopes);
+    const data = await topicFrequencyGraph(scopes);
 
     const reasons = [...BASE_REASONS];
     const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');
@@ -127,7 +127,7 @@ describe('AR Graph widget', () => {
   it('respects the region scope', async () => {
     const query = { 'region.in': [18], 'startDate.win': '2000/01/01-2000/01/01' };
     const scopes = filtersToScopes(query);
-    const data = await arGraph(scopes);
+    const data = await topicFrequencyGraph(scopes);
     const reasons = [...BASE_REASONS];
     const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');
     reasonToModify.count = 1;
@@ -139,7 +139,7 @@ describe('AR Graph widget', () => {
   it('respects the date scope', async () => {
     const query = { 'region.in': [17], 'startDate.win': '2000/01/01-2000/06/02' };
     const scopes = filtersToScopes(query);
-    const data = await arGraph(scopes);
+    const data = await topicFrequencyGraph(scopes);
 
     const reasons = [...BASE_REASONS];
     const reasonToModify = reasons.find((reason) => reason.reason === 'Program Planning and Services');

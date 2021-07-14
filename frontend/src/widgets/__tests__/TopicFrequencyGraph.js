@@ -3,8 +3,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  ArGraphWidget, reasonsWithLineBreaks, filterData, sortData, Tooltip,
-} from '../ArGraph';
+  TopicFrequencyGraphWidget, reasonsWithLineBreaks, filterData, sortData, Tooltip,
+} from '../TopicFrequencyGraph';
 
 const TEST_DATA = [{
   reason: 'CLASS: Instructional Support',
@@ -39,7 +39,7 @@ const TEST_DATA = [{
 
 const renderArGraphOverview = async (props) => (
   render(
-    <ArGraphWidget data={props.data} dateTime={{ dateInExpectedFormat: '', prettyPrintedQuery: '05/27/1967-08/21/1968' }} />,
+    <TopicFrequencyGraphWidget data={props.data} dateTime={{ dateInExpectedFormat: '', prettyPrintedQuery: '05/27/1967-08/21/1968' }} />,
   )
 );
 

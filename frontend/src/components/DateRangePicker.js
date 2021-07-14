@@ -6,7 +6,7 @@ import { DateRangePicker as DateRange, isInclusivelyBeforeDay } from 'react-date
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
-import { DATE_FMT, EARLIEST_FILTER_DATE } from '../pages/Landing/constants';
+import { DATE_FMT, EARLIEST_FILTER_DATE } from '../Constants';
 
 const phrases = {
   focusStartDate: 'Interact with the calendar and add the dates for your date range',

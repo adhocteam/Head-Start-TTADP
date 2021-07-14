@@ -7,7 +7,7 @@ import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
 import arrowBoth from '../images/arrow-both.svg';
 import DateTime from '../components/DateTime';
-import './ArGraph.css';
+import './TopicFrequencyGraph.css';
 
 export function filterData(data, selectedSpecialists) {
   return data.filter((dataPoint) => {
@@ -139,7 +139,7 @@ const styles = {
   }),
 };
 
-export function ArGraphWidget({ data, dateTime }) {
+export function TopicFrequencyGraphWidget({ data, dateTime }) {
   // the order the data is displayed in the chart
   const [order, setOrder] = useState('desc');
   // this is for populating the select box
@@ -147,7 +147,6 @@ export function ArGraphWidget({ data, dateTime }) {
   // this is the actual selected specialists to filter on
   const [selectedSpecialists, setSelectedSpecialists] = useState([]);
   // whether or not to show the tooltip
-  // eslint-disable-next-line no-unused-vars
   const [showTooltip, setShowTooltip] = useState(false);
   // set x position of tooltip
   const [tooltipX, setTooltipX] = useState(0);
@@ -291,7 +290,7 @@ export function ArGraphWidget({ data, dateTime }) {
   );
 }
 
-ArGraphWidget.propTypes = {
+TopicFrequencyGraphWidget.propTypes = {
   dateTime: PropTypes.shape({
     timestamp: PropTypes.string, label: PropTypes.string,
   }),
@@ -306,8 +305,8 @@ ArGraphWidget.propTypes = {
   ]).isRequired,
 };
 
-ArGraphWidget.defaultProps = {
+TopicFrequencyGraphWidget.defaultProps = {
   dateTime: { timestamp: '', label: '' },
 };
 
-export default withWidgetData(ArGraphWidget, 'arGraph');
+export default withWidgetData(TopicFrequencyGraphWidget, 'topicFrequencyGraph');

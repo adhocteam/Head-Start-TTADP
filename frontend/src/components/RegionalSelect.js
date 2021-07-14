@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ButtonSelect from './ButtonSelect';
 
-export const getUserOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` })).sort((a, b) => a.value - b.value);
+export const getRegionOptions = (regions) => regions.map((region) => ({ value: region, label: `Region ${region}` })).sort((a, b) => a.value - b.value);
 
 function RegionalSelect(props) {
   const {
     regions, onApply, hasCentralOffice, appliedRegion,
   } = props;
 
-  let options = [...getUserOptions(regions)];
+  let options = [...getRegionOptions(regions)];
 
   if (hasCentralOffice) {
-    options = [...getUserOptions(regions), { label: 'All Regions', value: 14 }];
+    options = [...getRegionOptions(regions), { label: 'All Regions', value: 14 }];
   }
 
   const initialValue = hasCentralOffice ? { label: 'All Regions', value: 14 } : options[0];

@@ -61,7 +61,7 @@ export default async function arGraph(scopes) {
   });
 
   // new instance of base reasons so we aren't mutating the const
-  const reasons = [...topics].map((topic) => ({
+  const reasons = topics.map((topic) => ({
     reason: topic,
     count: 0,
     participants: [],

@@ -5,7 +5,6 @@ import withWidgetData from './withWidgetData';
 import Container from '../components/Container';
 import DateTime from '../components/DateTime';
 import './ReasonList.css';
-import 'uswds/dist/css/uswds.css';
 
 function ReasonList({ data, dateTime }) {
   const renderReasonList = () => {

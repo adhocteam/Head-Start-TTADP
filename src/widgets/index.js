@@ -2,7 +2,7 @@ import example from './example';
 import overview from './overview';
 import reasonList from './reasonList';
 import dashboardOverview from './dashboardOverview';
-import arGraph from './arGraph';
+import topicFrequencyGraph from './topicFrequencyGraph';
 
 /*
   All widgets need to be added to this object
@@ -12,5 +12,5 @@ export default {
   overview,
   reasonList,
   dashboardOverview,
-  arGraph,
+  topicFrequencyGraph,
 };

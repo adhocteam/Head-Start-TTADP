@@ -7,10 +7,11 @@ import Container from '../../components/Container';
 import RegionalSelect from '../../components/RegionalSelect';
 import DateRangeSelect from './components/DateRangeSelect';
 import DashboardOverview from '../../widgets/DashboardOverview';
-import ArGraph from '../../widgets/ArGraph';
+import TopicFrequencyGraph from '../../widgets/TopicFrequencyGraph';
 import DateTime from '../../components/DateTime';
 import { getUserRegions } from '../../permissions';
-import { formatDateRange, CUSTOM_DATE_RANGE } from './constants';
+import { CUSTOM_DATE_RANGE } from './constants';
+import formatDateRange from './formatDateRange';
 import ReasonList from '../../widgets/ReasonList';
 import './index.css';
 
@@ -219,7 +220,7 @@ function Dashboard({ user }) {
             </Grid>
           </Grid>
           <Grid row>
-            <ArGraph
+            <TopicFrequencyGraph
               filters={filters}
               region={appliedRegion}
               allRegions={regions}

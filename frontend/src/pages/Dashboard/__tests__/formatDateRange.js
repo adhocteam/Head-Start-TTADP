@@ -1,4 +1,4 @@
-import { formatDateRange } from '../constants';
+import formatDateRange from '../formatDateRange';
 
 describe('format date function', () => {
   it('returns a formatted date string', () => {
