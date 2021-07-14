@@ -11,9 +11,7 @@ import { INTERNAL_SERVER_ERROR } from 'http-codes';
 import { CronJob } from 'cron';
 import { hsesAuth } from './middleware/authMiddleware';
 import updateGrantsGrantees from './lib/updateGrantsGrantees';
-
 import findOrCreateUser from './services/accessValidation';
-
 import { logger, auditLogger, requestLogger } from './logger';
 
 const app = express();
