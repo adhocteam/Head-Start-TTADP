@@ -22,7 +22,6 @@ Tooltip.propTypes = {
 
 export function TotalHrsAndGranteeGraph({ data, dateTime }) {
   // whether or not to show the tooltip
-  // eslint-disable-next-line no-unused-vars
   const [showTooltip, setShowTooltip] = useState(false);
   // set x position of tooltip
   const [tooltipX, setTooltipX] = useState(0);
@@ -39,6 +38,13 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
       return;
     }
 
+    /*
+      Data: The below is a breakdown of the Traces widget data array.
+      data[0]: Grantee Rec TTA
+      data[1]: Hours of Training
+      data[2]: Hours of Technical Assistance
+      data[3]: Hours of Both
+    */
     const traces = [
       {
         type: 'scatter',
@@ -47,11 +53,6 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
         y: data[0].y,
         hovertemplate: '<extra></extra>',
         hoverinfo: 'y',
-        /*
-                hoverlabel: {
-                    font: {color: '#ffffff', size: '16'},
-                    bgcolor: '#21272d',
-                }, */
         line: {
           dash: 'dot',
           width: 3,
@@ -68,12 +69,6 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
         y: data[1].y,
         hovertemplate: '<extra></extra>',
         hoverinfo: 'y',
-        /*
-                hoverlabel: {
-                    font: {color: '#ffffff', size: '16'},
-                    bgcolor: '#21272d',
-                },
-                */
         line: {
           dash: 'solid',
           width: 3,
@@ -90,12 +85,6 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
         y: data[2].y,
         hovertemplate: '<extra></extra>',
         hoverinfo: 'y',
-        /*
-                hoverlabel: {
-                    font: {color: '#ffffff', size: '16'},
-                    bgcolor: '#21272d',
-                },
-                */
         line: {
           dash: 'solid',
           width: 3,
@@ -112,12 +101,6 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
         y: data[3].y,
         hovertemplate: '<extra></extra>',
         hoverinfo: 'y',
-        /*
-                hoverlabel: {
-                    font: {color: '#ffffff', size: '16'},
-                    bgcolor: '#21272d',
-                },
-                */
         line: {
           dash: 'solid',
           width: 3,
@@ -134,7 +117,6 @@ export function TotalHrsAndGranteeGraph({ data, dateTime }) {
 
     // Specify Chart Layout.
     const layout = {
-      // height: 344,
       height: 300,
       hoverlabel: {
         bgcolor: '#fff',
