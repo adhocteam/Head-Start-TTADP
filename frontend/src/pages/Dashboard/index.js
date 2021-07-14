@@ -121,6 +121,20 @@ function Dashboard({ user }) {
   },
   [appliedRegion, dateRange, user]);
 
+  useEffect(() => {
+    const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
+
+    if (!isCustom) {
+      const newRange = formatDateRange({ lastThirtyDays: true, forDateTime: true });
+      updateDateRange(newRange);
+    }
+
+    if (isCustom) {
+      // set focus to DateRangePicker 1st input
+      setGainFocus(true);
+    }
+  }, [selectedDateRangeOption]);
+
   const onApplyRegion = (region) => {
     const regionId = region ? region.value : appliedRegion;
     updateAppliedRegion(regionId);
@@ -129,17 +143,6 @@ function Dashboard({ user }) {
   const onApplyDateRange = (range) => {
     const rangeId = range ? range.value : selectedDateRangeOption;
     updateSelectedDateRangeOption(rangeId);
-
-    const isCustom = selectedDateRangeOption === CUSTOM_DATE_RANGE;
-
-    if (!isCustom) {
-      updateDateRange(formatDateRange({ lastThirtyDays: true, forDateTime: true }));
-    }
-
-    if (isCustom) {
-      // set focus to DateRangePicker 1st input
-      setGainFocus(true);
-    }
   };
 
   if (!user) {

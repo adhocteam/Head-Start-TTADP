@@ -25,6 +25,7 @@ function RegionalSelect(props) {
       labelId="regionSelect"
       labelText="Region Select Options"
       applied={appliedRegion}
+      ariaLabel="Open the regional select menu"
     />
   );
 }

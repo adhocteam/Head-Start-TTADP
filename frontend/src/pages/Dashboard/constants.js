@@ -14,6 +14,7 @@ export const DATE_OPTIONS = [
   },
 ];
 
+export const LAST_THIRTY_DAYS = DATE_OPTIONS[0].value;
 export const CUSTOM_DATE_RANGE = DATE_OPTIONS[1].value;
 
 export function formatDateRange(format = {
@@ -26,7 +27,6 @@ export function formatDateRange(format = {
   if (!format.sep) {
     sep = '-';
   }
-
   if (format.lastThirtyDays) {
     const today = moment();
     const thirtyDaysAgo = moment().subtract(30, 'days');

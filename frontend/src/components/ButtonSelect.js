@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DateRangePicker from './DateRangePicker';
+import { CUSTOM_DATE_RANGE } from '../pages/Dashboard/constants';
 import './ButtonSelect.css';
 import triangleDown from '../images/triange_down.png';
 import check from '../images/check.svg';
@@ -13,8 +14,8 @@ function ButtonSelect(props) {
     initialValue,
     applied,
     labelText,
+    ariaLabel,
     hasDateRange,
-    customDateRangeOption,
     updateDateRange,
     dateRangeShouldGainFocus,
     dateRangePickerId,
@@ -53,7 +54,7 @@ function ButtonSelect(props) {
   const onApplyClick = () => {
     onApply(selectedItem);
 
-    if (hasDateRange && selectedItem && selectedItem.value === customDateRangeOption) {
+    if (hasDateRange && selectedItem && selectedItem.value === CUSTOM_DATE_RANGE) {
       updateDateRange(range);
     }
 
@@ -108,7 +109,7 @@ function ButtonSelect(props) {
         onClick={setMenuIsOpen}
         onKeyDown={onKeyDown}
         className="usa-button smart-hub--button-select-toggle-btn display-flex"
-        aria-label="open date range options menu"
+        aria-label={ariaLabel}
         type="button"
       >
         {label ? label.label : options[0].label}
@@ -137,7 +138,7 @@ function ButtonSelect(props) {
               </button>
             ))}
 
-            { hasDateRange && selectedItem && selectedItem.value === customDateRangeOption
+            { hasDateRange && selectedItem && selectedItem.value === CUSTOM_DATE_RANGE
               ? (
                 <DateRangePicker
                   id={dateRangePickerId}
@@ -171,10 +172,10 @@ ButtonSelect.propTypes = {
     label: PropTypes.string,
   }).isRequired,
   applied: PropTypes.number.isRequired,
+  ariaLabel: PropTypes.string.isRequired,
 
   // props for handling the date range select
   hasDateRange: PropTypes.bool,
-  customDateRangeOption: PropTypes.number,
   updateDateRange: PropTypes.func,
   dateRangeShouldGainFocus: PropTypes.bool,
   dateRange: PropTypes.string,
@@ -183,7 +184,6 @@ ButtonSelect.propTypes = {
 
 ButtonSelect.defaultProps = {
   hasDateRange: false,
-  customDateRangeOption: 0,
   dateRangeShouldGainFocus: false,
   updateDateRange: () => {},
   dateRange: '',
