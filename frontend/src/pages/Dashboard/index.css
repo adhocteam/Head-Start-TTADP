@@ -1,0 +1,8 @@
+.grid-container {
+  max-width: 100%;
+}
+
+.ttahub-coming-soon {
+  height: calc( 100% - 1.5rem);
+}
+

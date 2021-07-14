@@ -550,7 +550,7 @@ function Landing() {
                     selected
                     {' '}
                     <Button
-                      className="smart-hub--select-tag__button margin-left-1"
+                      className="smart-hub--select-tag__button"
                       unstyled
                       aria-label="deselect all reports"
                       onClick={() => {
