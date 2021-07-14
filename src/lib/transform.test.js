@@ -99,7 +99,7 @@ describe('activityReportToCsvRecord', () => {
     id: 209914,
     regionId: 14,
     reason: 'Test CSV Export',
-    status: 'approved',
+    submissionStatus: 'approved',
     numberOfParticipants: 12,
     deliveryMethod: 'virtual',
     duration: 4.5,

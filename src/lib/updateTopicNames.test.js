@@ -8,7 +8,7 @@ const GRANTEE_ID = 30;
 const GRANTEE_ID_TWO = 31;
 
 const mockUser = {
-  id: 1000,
+  id: 6000,
   homeRegionId: 1,
   name: 'chud',
   hsesUsername: 'chud',
@@ -17,7 +17,8 @@ const mockUser = {
 
 const reportObject = {
   activityRecipientType: 'grantee',
-  status: REPORT_STATUSES.APPROVED,
+  calculatedStatus: REPORT_STATUSES.APPROVED,
+  submissionStatus: REPORT_STATUSES.SUBMITTED,
   userId: mockUser.id,
   lastUpdatedById: mockUser.id,
   ECLKCResourcesUsed: ['test'],
@@ -25,7 +26,6 @@ const reportObject = {
     { activityRecipientId: GRANTEE_ID },
     { activityRecipientId: GRANTEE_ID_TWO },
   ],
-  approvingManagerId: 1,
   numberOfParticipants: 11,
   deliveryMethod: 'method',
   duration: 1,
@@ -42,7 +42,7 @@ const reportObject = {
 
 describe('update topic names job', () => {
   beforeAll(async () => {
-    await User.findOrCreate({ where: mockUser });
+    await User.create(mockUser);
     await Grantee.findOrCreate({ where: { name: 'grantee', id: GRANTEE_ID } });
 
     await Grant.findOrCreate({
@@ -68,10 +68,6 @@ describe('update topic names job', () => {
     await Grant.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
     await Grantee.destroy({ where: { id: [GRANTEE_ID, GRANTEE_ID_TWO] } });
     await db.sequelize.close();
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
   });
 
   it('updates the contents of the database', async () => {

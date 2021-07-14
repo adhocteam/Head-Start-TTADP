@@ -14,7 +14,7 @@ import { REPORT_STATUSES } from '../constants';
 */
 export default async function overview(scopes, region) {
   const grantsWhere = `WHERE "regionId" in (${region})`;
-  const baseWhere = `${grantsWhere} AND "status" = '${REPORT_STATUSES.APPROVED}'`;
+  const baseWhere = `${grantsWhere} AND "calculatedStatus" = '${REPORT_STATUSES.APPROVED}'`;
   // There could be a better way, but using sequelize.literal was the only way I could get correct
   // numbers for SUM
   // FIXME: see if there is a better way to get totals using SUM
@@ -67,7 +67,7 @@ export default async function overview(scopes, region) {
     where: {
       [Op.and]: [
         scopes,
-        { status: REPORT_STATUSES.APPROVED },
+        { calculatedStatus: REPORT_STATUSES.APPROVED },
       ],
     },
     raw: true,

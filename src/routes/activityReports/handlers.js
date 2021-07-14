@@ -1,13 +1,13 @@
 import stringify from 'csv-stringify/lib/sync';
 import handleErrors from '../../lib/apiErrorHandler';
 import SCOPES from '../../middleware/scopeConstants';
+import { sequelize } from '../../models';
 import ActivityReport from '../../policies/activityReport';
 import User from '../../policies/user';
 import {
   possibleRecipients,
   activityReportById,
   createOrUpdate,
-  review,
   activityReports,
   setStatus,
   activityReportAlerts,
@@ -16,17 +16,18 @@ import {
   getAllDownloadableActivityReportAlerts,
   getAllDownloadableActivityReports,
 } from '../../services/activityReports';
-import { goalsForGrants } from '../../services/goals';
+import { upsertApprover } from '../../services/activityReportApprovers';
+import { goalsForGrants, copyGoalsToGrants } from '../../services/goals';
 import { userById, usersWithPermissions } from '../../services/users';
 import { REPORT_STATUSES, DECIMAL_BASE } from '../../constants';
 import { getUserReadRegions, setReadRegions } from '../../services/accessValidation';
 
 import { logger } from '../../logger';
 import {
-  managerApprovalNotification,
+  approverAssignedNotification,
   changesRequestedNotification,
   reportApprovedNotification,
-  collaboratorAddedNotification,
+  collaboratorAssignedNotification,
 } from '../../lib/mailer';
 import { activityReportToCsvRecord } from '../../lib/transform';
 
@@ -135,7 +136,7 @@ export async function getApprovers(req, res) {
 }
 
 /**
- * Review a report setting it's status to approved or needs action
+ * Review a report, setting Approver status to approved or needs action
  *
  * @param {*} req - request
  * @param {*} res - response
@@ -143,9 +144,15 @@ export async function getApprovers(req, res) {
 export async function reviewReport(req, res) {
   try {
     const { activityReportId } = req.params;
-    const { status, managerNotes } = req.body;
+    const { status, note } = req.body;
+    const { userId } = req.session;
 
-    const user = await userById(req.session.userId);
+    if (!Number.isInteger(activityReportId)) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const user = await userById(userId);
     const report = await activityReportById(activityReportId);
     const authorization = new ActivityReport(user, report);
 
@@ -153,14 +160,32 @@ export async function reviewReport(req, res) {
       res.sendStatus(403);
       return;
     }
-    const savedReport = await review(report, status, managerNotes);
-    if (status === REPORT_STATUSES.NEEDS_ACTION) {
-      changesRequestedNotification(savedReport);
+
+    const transaction = sequelize.transaction(async (t) => t);
+    const savedApprover = await upsertApprover({
+      status,
+      note,
+      activityReportId,
+      userId,
+    }, transaction);
+
+    const reviewedReport = await activityReportById(activityReportId);
+
+    if (reviewedReport.calculatedStatus === REPORT_STATUSES.APPROVED) {
+      if (reviewedReport.activityRecipientType === 'grantee') {
+        await copyGoalsToGrants(
+          reviewedReport.goals,
+          reviewedReport.activityRecipients.map((recipient) => recipient.activityRecipientId),
+        );
+      }
+      reportApprovedNotification(reviewedReport);
     }
-    if (status === REPORT_STATUSES.APPROVED) {
-      reportApprovedNotification(savedReport);
+
+    if (reviewedReport.calculatedStatus === REPORT_STATUSES.NEEDS_ACTION) {
+      changesRequestedNotification(reviewedReport, savedApprover);
     }
-    res.json(savedReport);
+
+    res.json(savedApprover);
   } catch (error) {
     await handleErrors(req, res, error, logContext);
   }
@@ -187,7 +212,7 @@ export async function resetToDraft(req, res) {
 }
 
 /**
- * Mark activity report status as deleted
+ * Mark activity report submissionStatus as deleted
  *
  * @param {*} req - request
  * @param {*} res - response
@@ -205,7 +230,7 @@ export async function softDeleteReport(req, res) {
       return;
     }
 
-    await setStatus(report, REPORT_STATUSES.DELETED);
+    setStatus(report, REPORT_STATUSES.DELETED);
     res.sendStatus(204);
   } catch (error) {
     await handleErrors(req, res, error, logContext);
@@ -213,17 +238,14 @@ export async function softDeleteReport(req, res) {
 }
 
 /**
- * Flags a report as submitted for approval
- *
+ * Submit a report to managers for approval
  * @param {*} req - request
  * @param {*} res - response
  */
 export async function submitReport(req, res) {
   try {
     const { activityReportId } = req.params;
-    const { approvingManagerId, additionalNotes } = req.body;
-    const newReport = { approvingManagerId, additionalNotes };
-    newReport.status = REPORT_STATUSES.SUBMITTED;
+    const { userIds, additionalNotes } = req.body;
 
     const user = await userById(req.session.userId);
     const report = await activityReportById(activityReportId);
@@ -234,9 +256,25 @@ export async function submitReport(req, res) {
       return;
     }
 
-    const savedReport = await createOrUpdate(newReport, report);
-    managerApprovalNotification(savedReport);
-    res.json(savedReport);
+    // Update Activity Report notes and submissionStatus
+    const savedReport = await createOrUpdate({
+      additionalNotes,
+      submissionStatus: REPORT_STATUSES.SUBMITTED,
+    }, report);
+
+    // Save Approvers and notify
+    const approverPromises = userIds.map(async (userId) => {
+      const transaction = await sequelize.transaction(async (t) => t);
+      return upsertApprover({
+        activityReportId,
+        userId,
+      }, transaction);
+    });
+    const savedApprovers = await Promise.all(approverPromises);
+
+    approverAssignedNotification(savedReport, savedApprovers);
+
+    res.json(savedApprovers);
   } catch (error) {
     await handleErrors(req, res, error, logContext);
   }
@@ -343,7 +381,7 @@ export async function saveReport(req, res) {
         const oldCollaborators = report.collaborators.map((x) => x.email);
         return !oldCollaborators.includes(c.email);
       });
-      collaboratorAddedNotification(savedReport, newCollaborators);
+      collaboratorAssignedNotification(savedReport, newCollaborators);
     }
 
     res.json(savedReport);
@@ -366,7 +404,7 @@ export async function createReport(req, res) {
       return;
     }
     const userId = parseInt(req.session.userId, 10);
-    newReport.status = REPORT_STATUSES.DRAFT;
+    newReport.submissionStatus = REPORT_STATUSES.DRAFT;
     newReport.userId = userId;
     newReport.lastUpdatedById = userId;
     const user = await userById(req.session.userId);
@@ -378,7 +416,7 @@ export async function createReport(req, res) {
 
     const report = await createOrUpdate(newReport);
     if (report.collaborators) {
-      collaboratorAddedNotification(report, report.collaborators);
+      collaboratorAssignedNotification(report, report.collaborators);
     }
     res.json(report);
   } catch (error) {

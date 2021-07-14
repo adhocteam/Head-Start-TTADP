@@ -10,12 +10,12 @@ post:
         schema:
           type: object
           properties:
-            approvingManagerId:
-              type: string
-              description: The id of the manager assigned to approve the report
+            userIds:
+              type: array
+              description: Array of userIds of managers assigned to approve the report
             additionalNotes:
               type: string
-              description: Any contextual information the author/collaborators want to provide the approving manager
+              description: Any contextual information the author/collaborators want to provide the approving managers
   parameters:
     - in: path
       name: activityReportId
@@ -24,8 +24,11 @@ post:
         type: number
   responses:
     200:
-      description: The submitted activity report
+      description: The approvals submitted for the activity report
       content:
         application/json:
           schema:
-            $ref: '../../index.yaml#/components/schemas/activityReport'
+            approvers:
+              type: array
+              items:
+                $ref: '../../index.yaml#/components/schemas/approver'

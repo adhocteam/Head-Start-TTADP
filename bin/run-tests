@@ -77,9 +77,9 @@ main() {
 
     if [[ "$opt" == "backend" || -z "$opt" ]]; then
         # Test backend
-        command="yarn test:ci --colors"
+        command="yarn test:sj --colors"
         if [ $verbose == "false" ]; then
-          command="yarn test:ci --silent --colors"
+          command="yarn test:sj --colors"
         fi
         echo
         log "Running backend tests"
@@ -112,7 +112,7 @@ main() {
     log "Cleaning up test containers"
     docker-compose \
         -f 'docker-compose.test.yml' \
-        down --volumes
+        down --volumes --remove-orphans
     check_exit "$?"
 
     if [[ $exit_code -ne 0 ]]; then
