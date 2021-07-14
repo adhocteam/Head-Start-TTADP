@@ -4,7 +4,7 @@ import {
   render, screen, fireEvent,
 } from '@testing-library/react';
 import Dashboard from '../index';
-import { formatDateRange } from '../constants';
+import formatDateRange from '../formatDateRange';
 
 describe('Dashboard page', () => {
   const renderDashboard = (user) => render(<Dashboard user={user} />);

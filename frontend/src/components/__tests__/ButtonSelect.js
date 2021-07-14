@@ -3,15 +3,20 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import {
-  render, screen, fireEvent, waitFor,
+  render, screen, fireEvent,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import ButtonSelect from '../ButtonSelect';
 
 const renderButtonSelect = () => {
   const options = [
     {
       label: 'Test',
-      value: 0,
+      value: 1,
+    },
+    {
+      label: 'Custom',
+      value: 2,
     },
   ];
 
@@ -33,7 +38,6 @@ const renderButtonSelect = () => {
         applied={applied}
         ariaLabel="open menu"
         hasDateRange
-        customDateRangeOption={0}
       />
 
       <button type="button" data-testid="blanko">Blanko</button>
@@ -49,23 +53,32 @@ describe('The Button Select component', () => {
       name: /open menu/i,
     });
 
-    fireEvent.click(screen.getByRole('button', {
-      name: /open menu/i,
-    }));
+    fireEvent.click(openMenu);
 
-    expect(screen.getByRole('textbox', {
+    const custom = screen.getByRole('button', {
+      name: /select to view data from custom\. select apply filters button to apply selection/i,
+    });
+
+    fireEvent.click(custom);
+
+    const startDate = screen.getByRole('textbox', {
       name: /start date/i,
-    })).toBeInTheDocument();
+    });
 
-    screen.getByRole('button', { name: /blanko/i }).focus();
+    const blanko = screen.getByRole('button', { name: /blanko/i });
 
-    expect(openMenu).toNotHaveFocus();
+    // is this the best way to fire on blur? yikes
+    userEvent.tab();
+    userEvent.tab();
+    userEvent.tab();
+    userEvent.tab();
+    userEvent.tab();
+    userEvent.tab();
+    userEvent.tab();
+    userEvent.tab();
 
-    expect(true).toBe(false);
-  });
+    expect(blanko).toHaveFocus();
 
-  it('does the thing', async () => {
-    renderButtonSelect();
-    expect(true).toBe(false);
+    expect(startDate).not.toBeInTheDocument();
   });
 });

@@ -3,31 +3,12 @@ import React from 'react';
 import {
   render, screen, fireEvent,
 } from '@testing-library/react';
-import DateRangeSelect, { getUserOptions } from '../DateRangeSelect';
+import DateRangeSelect from '../DateRangeSelect';
 
 describe('DateRangeSelect', () => {
   const renderDateRangeSelect = (onApplyDateRange) => {
     render(<DateRangeSelect onApply={onApplyDateRange} />);
   };
-
-  it('gets user options', () => {
-    const regions = [1, 2, 3];
-
-    expect(getUserOptions(regions)).toEqual([
-      {
-        value: 1,
-        label: 'Region 1',
-      },
-      {
-        value: 2,
-        label: 'Region 2',
-      },
-      {
-        value: 3,
-        label: 'Region 3',
-      },
-    ]);
-  });
 
   it('renders correctly', () => {
     const onApplyDateRange = jest.fn();
