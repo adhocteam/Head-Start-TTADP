@@ -42,7 +42,7 @@ const styles = {
     paddingBottom: '4px',
     whiteSpace: 'nowrap',
     color: 'white',
-    minWidth: '200px',
+    minWidth: '140px',
     width: '120px',
   }),
   indicatorSeparator: () => ({ display: 'none' }),
