@@ -164,7 +164,7 @@ function Dashboard({ user }) {
               TTA Activity Dashboard
             </h1>
           </Grid>
-          <Grid className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center flex-wrap">
+          <Grid className="ttahub-dashboard--date-filters display-flex flex-row flex-align-center flex-wrap tablet:margin-top-2">
             <RegionDisplay
               regions={regions}
               appliedRegion={appliedRegion}

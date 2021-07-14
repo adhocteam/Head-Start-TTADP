@@ -29,9 +29,9 @@ function ReasonList({ data, dateTime }) {
       <div className="usa-table-container--scrollable">
         <Table className="smart-hub--reason-list-table" fullWidth>
           <caption className="smart-hub--reason-list-caption">
-            <div className="display-flex flex-wrap">
+            <div className="display-flex flex-wrap flex-align-center">
               <h2 className="smart-hub--reason-list-heading margin-0">Reasons in Activity Reports</h2>
-              <DateTime classNames="display-flex flex-align-center padding-x-1 margin-left-3" timestamp={dateTime.timestamp} label={dateTime.label} />
+              <DateTime classNames="padding-x-1 margin-left-3" timestamp={dateTime.timestamp} label={dateTime.label} />
             </div>
           </caption>
           <thead>
