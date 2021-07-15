@@ -60,7 +60,6 @@ export default async function topicFrequencyGraph(scopes) {
     includeIgnoreAttributes: false,
   });
 
-  // new instance of base reasons so we aren't mutating the const
   const reasons = topics.map((topic) => ({
     reason: topic,
     count: 0,

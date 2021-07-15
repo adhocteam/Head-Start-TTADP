@@ -6,22 +6,6 @@ import {
 import { REPORT_STATUSES } from '../constants';
 
 export default async function dashboardOverview(scopes) {
-// the commented out lines assume a seperate parameter called query
-//  const { region } = query;
-// const startDate = '2020-09-15';
-
-  // let regions = region ? [region] : [0];
-
-  // if ('region.in' in query) {
-  //   if (Array.isArray(query['region.in'])) {
-  //     const regionsFromQuery = query['region.in'];
-  //     regions = regionsFromQuery;
-  //   }
-  // }
-
-  // eslint-disable-next-line max-len
-  // const grantsWhere = `WHERE "regionId" in (${regions.join(',')}) and "endDate" >= '${startDate}'`;
-
   const duration = await ActivityReport.findAll({
     attributes: [
       'duration',
