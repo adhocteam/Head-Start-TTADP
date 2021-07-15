@@ -79,17 +79,6 @@ function App() {
     );
   }
 
-  // does a user have permissions to write or approve reports?
-  // include write or approve, this would be true
-  // otherwise, it'll return false
-
-  // function startOnActivityReport(currentUser) {
-  //   return currentUser.permissions.find((permission) => (
-  // eslint-disable-next-line max-len
-  //     permission.scopeId === SCOPE_IDS.READ_WRITE_ACTIVITY_REPORTS || permission.scopeId === SCOPE_IDS.APPROVE_ACTIVITY_REPORTS
-  //   ));
-  // }
-
   const admin = isAdmin(user);
   const enableWidgets = process.env.REACT_APP_ENABLE_WIDGETS === 'true';
 
