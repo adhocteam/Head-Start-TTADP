@@ -16,17 +16,13 @@ import ApproverStatusList from '../../components/ApproverStatusList';
 const Review = ({
   additionalNotes,
   onFormReview,
+  approverStatusList,
 }) => {
   const { handleSubmit, register, watch } = useFormContext();
   const watchTextValue = watch('managerNotes');
   const textAreaClass = watchTextValue !== '' ? 'yes-print' : 'no-print';
 
   const defaultEditorState = getEditorState(additionalNotes || 'No creator notes');
-
-  const approverStatusData = [
-    { approver: 'Test Approver 1', status: 'approved' },
-    { approver: 'Test Approver 2', status: '' },
-    { approver: 'Test Approver 3', status: 'needs_action' }];
 
   return (
     <>
@@ -47,6 +43,7 @@ const Review = ({
         <FormItem
           name="status"
           label="Choose report status"
+          className="margin-bottom-3"
         >
           <Dropdown id="status" name="status" defaultValue="" inputRef={register({ required: true })}>
             <option name="default" value="" disabled hidden>- Select -</option>
@@ -55,7 +52,7 @@ const Review = ({
             ))}
           </Dropdown>
         </FormItem>
-        <ApproverStatusList approverStatus={approverStatusData} />
+        <ApproverStatusList approverStatus={approverStatusList} />
         <Button type="submit">Submit</Button>
       </Form>
     </>
@@ -65,6 +62,10 @@ const Review = ({
 Review.propTypes = {
   additionalNotes: PropTypes.string.isRequired,
   onFormReview: PropTypes.func.isRequired,
+  approverStatusList: PropTypes.arrayOf(PropTypes.shape({
+    approver: PropTypes.string,
+    status: PropTypes.string,
+  })).isRequired,
 };
 
 export default Review;

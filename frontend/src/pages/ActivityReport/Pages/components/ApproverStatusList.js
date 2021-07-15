@@ -28,22 +28,20 @@ const getDisplayStatus = (status) => {
 const ApproverStatusList = ({
   approverStatus,
 }) => {
-  const displayApproverStatusList = () => {
-    if (!approverStatus) {
-      return null;
-    }
+  const displayApproverStatusList = () => approverStatus.map((s) => (
+    <li className="margin-bottom-205" key={s.approver}>
+      {getStatusIcon(s.status)}
+      <b>{getDisplayStatus(s.status)}</b>
+      {' '}
+      by
+      {' '}
+      {s.approver}
+    </li>
+  ));
 
-    return approverStatus.map((s) => (
-      <li className="margin-bottom-205" key={s.approver}>
-        {getStatusIcon(s.status)}
-        <b>{getDisplayStatus(s.status)}</b>
-        {' '}
-        by
-        {' '}
-        {s.approver}
-      </li>
-    ));
-  };
+  if (!approverStatus) {
+    return null;
+  }
 
   return (
     <>
