@@ -41,7 +41,7 @@ function ReasonList({ data, dateTime }) {
           </thead>
           <tbody>
             {
-              renderReasonList(data)
+              renderReasonList()
             }
           </tbody>
         </Table>
