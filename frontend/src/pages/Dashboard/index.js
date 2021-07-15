@@ -161,9 +161,7 @@ function Dashboard({ user }) {
         <Grid className="ttahub-dashboard--filter-row flex-fill display-flex flex-align-center flex-align-self-center flex-row flex-wrap margin-bottom-2">
           <Grid col="auto" className="flex-wrap">
             <h1 className="ttahub--dashboard-title">
-              Region
-              {' '}
-              {appliedRegion === 14 ? 'All' : appliedRegion }
+              {appliedRegion === 14 ? 'Regional' : `Region ${appliedRegion}` }
               {' '}
               TTA Activity Dashboard
             </h1>
