@@ -168,7 +168,7 @@ function Dashboard({ user }) {
               TTA Activity Dashboard
             </h1>
           </Grid>
-          <Grid className="ttahub-dashboard--filters display-flex flex-wrap flex-align-center tablet:margin-top-2">
+          <Grid className="ttahub-dashboard--filters display-flex flex-wrap flex-align-center margin-top-2 desktop:margin-top-0">
             {regions.length > 1
                 && (
                 <RegionalSelect
