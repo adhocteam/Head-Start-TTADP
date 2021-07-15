@@ -29,48 +29,21 @@ const ApproverStatusList = ({
   approverStatus,
 }) => {
   const displayApproverStatusList = () => {
-    if (approverStatus && Array.isArray(approverStatus) && approverStatus.length > 0) {
-      return (
-        <>
-          {
-            approverStatus.map((s) => (
-              <li className="margin-bottom-205" key={s.approver}>
-                {getStatusIcon(s.status)}
-                <b>{getDisplayStatus(s.status)}</b>
-                {' '}
-                by
-                {' '}
-                {s.approver}
-              </li>
-            ))
-          }
-        </>
-      );
+    if (!approverStatus) {
+      return null;
     }
 
-    return null;
+    return approverStatus.map((s) => (
+      <li className="margin-bottom-205" key={s.approver}>
+        {getStatusIcon(s.status)}
+        <b>{getDisplayStatus(s.status)}</b>
+        {' '}
+        by
+        {' '}
+        {s.approver}
+      </li>
+    ));
   };
-
-  /*
-const ApproverStatusList = ({
-  approverStatus,
-}) => {
-  const displayApproverStatusList = () => {
-    if (approverStatus && Array.isArray(approverStatus) && approverStatus.length > 0) {
-      return (
-        approverStatus.map((s) => {
-          <li className="margin-bottom-205" key={s.approver}>
-            {getStatusIcon(s.status)}
-            <b>{getDisplayStatus(s.status)}</b>
-            &nbsp;
-            by
-            &nbsp;{s.approver}
-          </li>
-        })
-      );
-    }
-  };
-  */
 
   return (
     <>
