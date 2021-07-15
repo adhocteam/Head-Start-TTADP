@@ -154,7 +154,7 @@ function ButtonSelect(props) {
                     <div className="usa-alert usa-alert--error margin-1" role="alert">
                       <div className="usa-alert__body">
                         <p className="usa-alert__text">
-                          Please enter a valid date
+                          Please enter a valid date range
                         </p>
                       </div>
                     </div>
