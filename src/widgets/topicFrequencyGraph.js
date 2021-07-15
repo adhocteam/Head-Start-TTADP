@@ -45,7 +45,7 @@ export const topics = [
   'Transportation',
 ];
 
-export default async function arGraph(scopes) {
+export default async function topicFrequencyGraph(scopes) {
   const topicsAndParticipants = await ActivityReport.findAll({
     attributes: [
       'topics',
