@@ -17,7 +17,7 @@ describe('Dashboard page', () => {
 
   it('shows a heading', async () => {
     renderDashboard(user);
-    const heading = await screen.findByText(/region all tta activity dashboard/i);
+    const heading = await screen.findByText(/regional tta activity dashboard/i);
     expect(heading).toBeInTheDocument();
   });
 
