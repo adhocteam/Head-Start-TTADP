@@ -27,7 +27,6 @@ const ReviewSubmit = ({
   const { additionalNotes, status } = formData;
 
   useEffect(() => {
-    console.log('Form Data:', formData);
     updateShowValidationErrors(true);
   }, [updateShowValidationErrors]);
 

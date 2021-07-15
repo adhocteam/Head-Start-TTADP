@@ -33,18 +33,16 @@ const ApproverStatusList = ({
       return (
         <>
           {
-            approverStatus.map((s) => {
-              return (
-                <li className="margin-bottom-205" key={s.approver}>
-                  {getStatusIcon(s.status)}
-                  <b>{getDisplayStatus(s.status)}</b>
-                  {' '}
-                  by
-                  {' '}
-                  {s.approver}
-                </li>
-              );
-            })
+            approverStatus.map((s) => (
+              <li className="margin-bottom-205" key={s.approver}>
+                {getStatusIcon(s.status)}
+                <b>{getDisplayStatus(s.status)}</b>
+                {' '}
+                by
+                {' '}
+                {s.approver}
+              </li>
+            ))
           }
         </>
       );
@@ -53,7 +51,7 @@ const ApproverStatusList = ({
     return null;
   };
 
-/*
+  /*
 const ApproverStatusList = ({
   approverStatus,
 }) => {
