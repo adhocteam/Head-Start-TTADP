@@ -253,19 +253,19 @@ export function TopicFrequencyGraphWidget({ data, dateTime }) {
     <Container className="ttahub--argraph overflow-x-scroll" padding={3}>
       <Grid row className="position-relative">
         <Tooltip show={showTooltip} x={tooltipX} y={tooltipY} text={tooltipText} />
-        <Grid col={4}><h2>Topics in Activity Report by Frequency</h2></Grid>
+        <Grid desktop={{ col: 'auto' }} tabletLg={{ col: 12 }}>
+          <h2>Topics in Activity Report by Frequency</h2>
+        </Grid>
         <Grid col="auto" className="display-flex padding-x-2 flex-align-self-center">
           <DateTime classNames="display-flex flex-align-center padding-x-1" timestamp={dateTime.timestamp} label={dateTime.label} />
         </Grid>
         <Grid col="auto" className="display-flex padding-x-2">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label className="usa-label sr-only" htmlFor="arGraphOrder">Change topic data order</label>
-          <select className="usa-select radius-md" id="arGraphOrder" name="arGraphOrder" value={order} onChange={handleSelect}>
+          <select className="usa-select radius-md margin-right-2" id="arGraphOrder" name="arGraphOrder" value={order} onChange={handleSelect}>
             <option value="desc">High To Low</option>
             <option value="asc">Low to High</option>
           </select>
-        </Grid>
-        <Grid col="auto" className="display-flex padding-x-2 ">
           <Select
             classNamePrefix="ar"
             id="arGraphSpecialists"
