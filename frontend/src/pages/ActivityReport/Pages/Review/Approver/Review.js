@@ -11,6 +11,7 @@ import { managerReportStatuses } from '../../../../../Constants';
 import { getEditorState } from '../../../../../utils';
 import FormItem from '../../../../../components/FormItem';
 import HookFormRichEditor from '../../../../../components/HookFormRichEditor';
+import ApproverStatusList from '../../components/ApproverStatusList';
 
 const Review = ({
   additionalNotes,
@@ -48,11 +49,14 @@ const Review = ({
             ))}
           </Dropdown>
         </FormItem>
+        <ApproverStatusList approverStatus={null} />
         <Button type="submit">Submit</Button>
       </Form>
     </>
   );
 };
+
+//  <ApproverStatusList approverStatus={[{ approver: 'Test Approver 1', status: 'approved' }, { approver: 'Test Approver 2', status: '' }, { approver: 'Test Approver 3', status: 'needs_action' }]} />
 
 Review.propTypes = {
   additionalNotes: PropTypes.string.isRequired,
