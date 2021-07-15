@@ -711,10 +711,13 @@ async function getDownloadableActivityReports(where) {
 
 export async function getAllDownloadableActivityReports(readRegions, filters) {
   const regions = readRegions || [];
+
   const scopes = filtersToScopes(filters);
 
   const where = {
-    regionId: regions,
+    regionId: {
+      [Op.in]: regions,
+    },
     status: REPORT_STATUSES.APPROVED,
     imported: null,
     [Op.and]: scopes,
