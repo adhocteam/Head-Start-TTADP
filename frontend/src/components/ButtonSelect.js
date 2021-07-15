@@ -25,6 +25,7 @@ function ButtonSelect(props) {
   const [selectedItem, setSelectedItem] = useState();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [range, setRange] = useState();
+  const [showDateError, setShowDateError] = useState(false);
 
   /**
    * just so we always have something selected
@@ -52,12 +53,19 @@ function ButtonSelect(props) {
    * new date range
    */
   const onApplyClick = () => {
-    onApply(selectedItem);
-
     if (hasDateRange && selectedItem && selectedItem.value === CUSTOM_DATE_RANGE) {
+      const isValidDateRange = range.trim().split('-').filter((str) => str !== '').length === 2;
+
+      if (!isValidDateRange) {
+        setShowDateError(true);
+
+        return;
+      }
+
       updateDateRange(range);
     }
 
+    onApply(selectedItem);
     setMenuIsOpen(false);
   };
 
@@ -68,6 +76,7 @@ function ButtonSelect(props) {
    */
   const onUpdateDateRange = (query, date) => {
     setRange(date);
+    setShowDateError(false);
   };
 
   /**
@@ -140,13 +149,24 @@ function ButtonSelect(props) {
 
             { hasDateRange && selectedItem && selectedItem.value === CUSTOM_DATE_RANGE
               ? (
-                <DateRangePicker
-                  id={dateRangePickerId}
-                  query={dateRange}
-                  onUpdateFilter={onUpdateDateRange}
-                  classNames={['display-flex']}
-                  gainFocus={dateRangeShouldGainFocus}
-                />
+                <>
+                  { showDateError ? (
+                    <div className="usa-alert usa-alert--error margin-1" role="alert">
+                      <div className="usa-alert__body">
+                        <p className="usa-alert__text">
+                          Please enter a valid date
+                        </p>
+                      </div>
+                    </div>
+                  ) : null }
+                  <DateRangePicker
+                    id={dateRangePickerId}
+                    query={dateRange}
+                    onUpdateFilter={onUpdateDateRange}
+                    classNames={['display-flex']}
+                    gainFocus={dateRangeShouldGainFocus}
+                  />
+                </>
               ) : null }
 
             <button type="button" onKeyDown={onKeyDown} className="usa-button smart-hub--button margin-2" onClick={onApplyClick} aria-label="Apply filters">Apply</button>
