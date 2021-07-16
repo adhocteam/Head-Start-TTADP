@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { TotalHrsAndGranteeGraph, Tooltip } from '../TotalHrsAndGranteeGraph';
+import { TotalHrsAndGranteeGraph } from '../TotalHrsAndGranteeGraph';
 
 const TEST_DATA_MONTHS = [
   { name: 'Grantee Rec TTA', x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], y: [1, 2, 3, 4, 5, 6] },
@@ -74,12 +74,6 @@ describe('Total Hrs And Grantee Graph Widget', () => {
 
     // Verify Number of 'Hours of Both' Trace Points.
     await expect(nodes[0].childNodes[3].childNodes[3].childNodes.length).toEqual(1);
-  });
-
-  it('tooltip props', () => {
-    render(<Tooltip x={0} text="Test" show />);
-
-    expect(screen.getByText(/test/i)).toBeInTheDocument();
   });
 
   it('handles null data', async () => {

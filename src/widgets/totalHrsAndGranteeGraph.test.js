@@ -116,7 +116,7 @@ describe('Total Hrs and Grantee Graph widget', () => {
     const reportTwo = await ActivityReport.findOne({ where: { duration: 2, startDate: '2021-02-15' } });
     await createOrUpdate({ ...regionOneReport, startDate: '2021-02-15', duration: 2 }, reportTwo);
 
-    // Three Reports in June.
+    // Three Reports in Jun.
     const reportThree = await ActivityReport.findOne({ where: { duration: 3, ttaType: ['training'], startDate: '2021-06-10' } });
     await createOrUpdate({
       ...regionOneReport, startDate: '2021-06-10', duration: 3, ttaType: ['training'],
@@ -132,7 +132,7 @@ describe('Total Hrs and Grantee Graph widget', () => {
       ...regionOneReport, startDate: '2021-06-20', duration: 5.5, ttaType: ['training', 'technical-assistance'],
     }, reportFive);
 
-    // Two Reports in July.
+    // Two Reports in Jul.
     const reportSix = await ActivityReport.findOne({ where: { duration: 6, ttaType: ['training'], startDate: '2021-07-01' } });
     await createOrUpdate({
       ...regionOneReport, startDate: '2021-07-01', duration: 6, ttaType: ['training'],
@@ -164,28 +164,28 @@ describe('Total Hrs and Grantee Graph widget', () => {
     expect(data[0].x.length).toEqual(3);
     expect(data[0].y.length).toEqual(3);
 
-    expect(data[0].x).toEqual(['February', 'June', 'July']);
+    expect(data[0].x).toEqual(['Feb', 'Jun', 'Jul']);
     expect(data[0].y).toStrictEqual([2, 6, 4]);
 
     // Hours of Training.
     expect(data[1].x.length).toEqual(2);
     expect(data[1].y.length).toEqual(2);
 
-    expect(data[1].x).toEqual(['June', 'July']);
+    expect(data[1].x).toEqual(['Jun', 'Jul']);
     expect(data[1].y).toStrictEqual([3, 6]);
 
     // Hours of Technical Assistance.
     expect(data[2].x.length).toEqual(2);
     expect(data[2].y.length).toEqual(2);
 
-    expect(data[2].x).toEqual(['February', 'June']);
+    expect(data[2].x).toEqual(['Feb', 'Jun']);
     expect(data[2].y).toStrictEqual([2, 4]);
 
     // Both.
     expect(data[3].x.length).toEqual(2);
     expect(data[3].y.length).toEqual(2);
 
-    expect(data[3].x).toEqual(['June', 'July']);
+    expect(data[3].x).toEqual(['Jun', 'Jul']);
     expect(data[3].y).toStrictEqual([5.5, 7]);
   });
 

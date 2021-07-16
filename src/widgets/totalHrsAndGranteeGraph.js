@@ -97,7 +97,7 @@ export default async function totalHrsAndGranteeGraph(scopes, query) {
 
   reports.forEach((r) => {
     // Get X Axis value to use.
-    const xValue = useDays ? moment(r.startDate).format('DD') : moment(r.startDate).format('MMMM');
+    const xValue = useDays ? moment(r.startDate).format('DD') : moment(r.startDate).format('MMM');
 
     // Grantee Rec TTA (every row).
     if (r.granteeId) {
