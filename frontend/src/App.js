@@ -13,6 +13,7 @@ import SiteNav from './components/SiteNav';
 import Header from './components/Header';
 import IdleModal from './components/IdleModal';
 import Admin from './pages/Admin';
+import Dashboard from './pages/Dashboard';
 import Unauthenticated from './pages/Unauthenticated';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
@@ -29,6 +30,7 @@ import LandingLayout from './components/LandingLayout';
 import RequestPermissions from './components/RequestPermissions';
 import AriaLiveContext from './AriaLiveContext';
 import AriaLiveRegion from './components/AriaLiveRegion';
+// import { SCOPE_IDS } from './Constants';
 
 function App() {
   const [user, updateUser] = useState();
@@ -106,8 +108,13 @@ function App() {
         <Route
           exact
           path="/"
+          render={() => <Home />}
+        />
+        <Route
+          exact
+          path="/dashboard"
           render={() => (
-            <Home />
+            <Dashboard user={user} />
           )}
         />
         <Route
@@ -132,11 +139,9 @@ function App() {
             )}
           />
         )}
-
         <Route
           render={() => <NotFound />}
         />
-
       </Switch>
     </div>
   );
