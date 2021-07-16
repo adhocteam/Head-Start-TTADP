@@ -28,7 +28,7 @@ import {
   reportApprovedNotification,
   collaboratorAddedNotification,
 } from '../../lib/mailer';
-import { activityReportToCsvRecord } from '../../lib/transform';
+import { activityReportToCsvRecord, validateCsvRows } from '../../lib/transform';
 
 const { APPROVE_REPORTS } = SCOPES;
 
@@ -40,8 +40,9 @@ const logContext = {
 
 async function sendActivityReportCSV(reports, res) {
   const csvRows = await Promise.all(reports.map((r) => activityReportToCsvRecord(r)));
+
   const csvData = stringify(
-    csvRows,
+    validateCsvRows(csvRows),
     {
       header: true,
       quoted: true,

@@ -634,6 +634,15 @@ async function getDownloadableActivityReports(where) {
       attributes: { include: ['displayId'], exclude: ['imported', 'legacyId'] },
       include: [
         {
+          model: Objective,
+          as: 'objectives',
+          include: [{
+            model: Goal,
+            as: 'goal',
+          }],
+          attributes: ['title', 'status', 'ttaProvided'],
+        },
+        {
           model: ActivityRecipient,
           attributes: ['id', 'name', 'activityRecipientId', 'grantId', 'nonGranteeId'],
           as: 'activityRecipients',

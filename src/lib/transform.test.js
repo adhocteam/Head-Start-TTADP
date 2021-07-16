@@ -4,7 +4,7 @@ import {
   Objective,
   User,
 } from '../models';
-import { activityReportToCsvRecord, makeGoalsAndObjectivesObject } from './transform';
+import { activityReportToCsvRecord, makeGoalsAndObjectivesObject, validateCsvRows } from './transform';
 
 describe('activityReportToCsvRecord', () => {
   const mockAuthor = {
@@ -165,6 +165,54 @@ describe('activityReportToCsvRecord', () => {
       'objective-3.1-ttaProvided': 'Training',
       'objective-3.1-status': '',
     });
+  });
+
+  it('returns a matching set of goals based on the report with the most', () => {
+    const csvData = [
+      {
+        'test-1': 'butter',
+        'objective-1': 'cream',
+      },
+      {
+        'test-1': 'butter',
+        'objective-1': 'cream',
+        'test-2': 'butter',
+        'objective-2': 'cream',
+      },
+      {
+        'test-3': 'butter',
+        'objective-3': 'cream',
+      },
+    ];
+
+    const validated = validateCsvRows(csvData);
+
+    expect(validated).toStrictEqual([
+      {
+        'objective-1': 'cream',
+        'objective-2': '',
+        'objective-3': '',
+        'test-1': 'butter',
+        'test-2': '',
+        'test-3': '',
+      },
+      {
+        'objective-1': 'cream',
+        'objective-2': 'cream',
+        'objective-3': '',
+        'test-1': 'butter',
+        'test-2': 'butter',
+        'test-3': '',
+      },
+      {
+        'objective-1': '',
+        'objective-2': '',
+        'objective-3': 'cream',
+        'test-1': '',
+        'test-2': '',
+        'test-3': 'butter',
+      },
+    ]);
   });
 
   it('does not provide values for builders that are not strings or functions', async () => {

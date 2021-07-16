@@ -109,10 +109,12 @@ function makeGoalsAndObjectivesObject(objectiveRecords) {
  */
 async function transformGoalsAndObjectives(report) {
   let obj = {};
+
   const objectiveRecords = await report.objectives;
   if (objectiveRecords) {
     obj = makeGoalsAndObjectivesObject(objectiveRecords);
   }
+
   return obj;
 }
 
@@ -150,6 +152,24 @@ const arTransformers = [
   'lastSaved',
 ];
 
+function validateCsvRows(csvRows) {
+  let keys = [];
+  csvRows.forEach((row) => keys.push(Object.keys(row)));
+
+  // dedupe keys
+  keys = Array.from(new Set(keys.flat()));
+  return csvRows.map((row) => {
+    const newRow = row;
+    keys.forEach((key) => {
+      if (!newRow[key]) {
+        newRow[key] = '';
+      }
+    });
+
+    return newRow;
+  });
+}
+
 async function activityReportToCsvRecord(report, transformers = arTransformers) {
   const callFunctionOrValueGetter = (x) => {
     if (typeof x === 'function') {
@@ -162,6 +182,7 @@ async function activityReportToCsvRecord(report, transformers = arTransformers) 
   };
   const recordObjects = await Promise.all(transformers.map(callFunctionOrValueGetter));
   const record = recordObjects.reduce((obj, value) => Object.assign(obj, value), {});
+
   return record;
 }
 
@@ -169,4 +190,5 @@ export {
   activityReportToCsvRecord,
   arTransformers,
   makeGoalsAndObjectivesObject,
+  validateCsvRows,
 };
