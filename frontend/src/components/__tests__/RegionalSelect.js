@@ -7,15 +7,20 @@ import { Router } from 'react-router';
 import { createMemoryHistory } from 'history';
 import RegionalSelect from '../RegionalSelect';
 
-const renderRegionalSelect = (onApplyRegion) => {
+const renderRegionalSelect = (
+  onApplyRegion = jest.fn(),
+  hasCentralOffice = true,
+  appliedRegion = 14,
+) => {
   const history = createMemoryHistory();
 
   render(
     <Router history={history}>
       <RegionalSelect
+        appliedRegion={appliedRegion}
         regions={[1, 2]}
         onApply={onApplyRegion}
-        hasCentralOffice
+        hasCentralOffice={hasCentralOffice}
       />
     </Router>,
   );
@@ -24,14 +29,15 @@ const renderRegionalSelect = (onApplyRegion) => {
 
 describe('Regional Select', () => {
   test('displays correct region in input', async () => {
-    renderRegionalSelect();
+    const onApplyRegion = jest.fn();
+    renderRegionalSelect(onApplyRegion);
     const input = await screen.findByText(/all regions/i);
     expect(input).toBeVisible();
   });
 
   test('changes input value on apply', async () => {
     const onApplyRegion = jest.fn();
-    renderRegionalSelect(onApplyRegion);
+    renderRegionalSelect(onApplyRegion, false, 1);
     const input = await screen.findByText(/region 1/i);
     expect(input).toBeVisible();
 

@@ -153,7 +153,7 @@ export function TopicFrequencyGraphWidget({ data, dateTime }) {
   // set y position of tooltip
   const [tooltipY, setTooltipY] = useState(0);
   // set tooltip text
-  const [tooltipText, setTooltipText] = useState('1');
+  const [tooltipText, setTooltipText] = useState(0);
 
   // the dom el for drawing the chart
   const bars = useRef();

@@ -30,7 +30,7 @@ function Field({
 
 Field.propTypes = {
   label: PropTypes.string.isRequired,
-  labelExt: PropTypes.string.isRequired,
+  labelExt: PropTypes.string,
   data: PropTypes.string.isRequired,
   icon: PropTypes.shape({
     prefix: PropTypes.string,
@@ -42,10 +42,15 @@ Field.propTypes = {
   backgroundColor: PropTypes.string.isRequired,
 };
 
+Field.defaultProps = {
+  labelExt: '',
+};
+
 export function DashboardOverviewWidget({ data }) {
-  if (!data) {
-    return <p>Loading...</p>;
+  if (!data || Object.keys(data).length < 1) {
+    return null;
   }
+
   return (
     <Grid row className="smart-hub--dashboard-overview margin-bottom-3">
       <Field icon={faChartBar} iconColor="#148439" backgroundColor="#F0FCF4" label="Activity reports" data={data.numReports} />
