@@ -48,7 +48,7 @@ Field.defaultProps = {
 
 export function DashboardOverviewWidget({ data }) {
   if (!data || Object.keys(data).length < 1) {
-    return null;
+    return <p>Loading...</p>;
   }
 
   return (
