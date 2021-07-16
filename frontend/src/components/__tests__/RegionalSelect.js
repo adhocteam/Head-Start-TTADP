@@ -15,6 +15,7 @@ const renderRegionalSelect = (onApplyRegion) => {
       <RegionalSelect
         regions={[1, 2]}
         onApply={onApplyRegion}
+        hasCentralOffice
       />
     </Router>,
   );
@@ -24,7 +25,7 @@ const renderRegionalSelect = (onApplyRegion) => {
 describe('Regional Select', () => {
   test('displays correct region in input', async () => {
     renderRegionalSelect();
-    const input = await screen.findByText(/region 1/i);
+    const input = await screen.findByText(/all regions/i);
     expect(input).toBeVisible();
   });
 
